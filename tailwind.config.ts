@@ -55,9 +55,19 @@ const config: Config = {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+		fontFamily: {
+			poppins: ['Poppins'],
+		},
+		fontWeight: {
+			regular: '400',
+			semibold: '600',
+			bold: '700',
+			extrabold: '800',
+		},
   	}
   },
   plugins: [require("tailwindcss-animate")],
 };
+
 export default config;
