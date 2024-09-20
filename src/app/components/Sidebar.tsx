@@ -9,7 +9,7 @@ export default function Sidebar() {
   const [isActive, setIsActive] = useState("Lottery")
 
   return (
-    <div className={`${isOpen ? 'w-64' : 'w-20'} font-poppins h-screen bg-white border-r border-gray-200 flex flex-col transition-all duration-300 relative`}>
+    <div className={`${isOpen ? 'w-64' : 'w-20'} font-poppins h-screen bg-[#F3F3F3] border-r border-gray-200 flex flex-col transition-all duration-300 relative`}>
       <Button
         variant="ghost"
         size="icon"
@@ -52,7 +52,7 @@ function NavItem({ href, icon, text, isOpen, isActive = false, setIsActive }) {
       <Link 
         href={href} 
         className={`flex items-center ${isOpen ? 'space-x-3' : 'justify-center'} ${
-          isActive ? 'text-[#000072] font-bold' : 'text-gray-700 hover:bg-gray-100 hover:font-bold'
+          isActive ? 'text-[#000072] font-bold' : 'text-[#333333]/[0.6] hover:text-[#333333] hover:font-bold'
         } rounded-lg p-2`}
         onClick={() => setIsActive(text)}
       >
