@@ -57,7 +57,7 @@ return (
                 value={eventName}
                 onChange={handleNameChange}
                 onBlur={handleNameBlur}
-                className="text-3xl font-bold p-0"
+                className="text-3xl font-bold p-0 border-0"
                 autoFocus
                 />
             ) : (
