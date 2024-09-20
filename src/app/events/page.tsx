@@ -1,7 +1,8 @@
-// pages/_app.tsx
+"use client";
+
 import Sidebar from '@/app/components/Sidebar';
 
-export default function EventPage({ children }) {
+export default function Events({ children }) {
     return (
       <div className="flex">
         <Sidebar />
