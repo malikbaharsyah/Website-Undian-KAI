@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -12,12 +12,15 @@ interface Prize {
 id: number
 name: string
 quantity: string
+image: string | null
 }
 
 export default function Component() {
 const [eventName, setEventName] = useState("Untitled Event")
 const [isEditing, setIsEditing] = useState(false)
-const [prizes, setPrizes] = useState<Prize[]>([{ id: 1, name: "", quantity: "" }])
+const [prizes, setPrizes] = useState<Prize[]>([{ id: 1, name: "", quantity: "", image: null }])
+const [backgroundImage, setBackgroundImage] = useState<string | null>(null)
+const fileInputRef = useRef<HTMLInputElement>(null)
 
 const handleRename = () => {
     setIsEditing(true)
@@ -32,17 +35,40 @@ const handleNameBlur = () => {
 }
 
 const addPrize = () => {
-    setPrizes([...prizes, { id: Date.now(), name: "", quantity: "" }])
+    setPrizes([...prizes, { id: Date.now(), name: "", quantity: "", image: null }])
 }
 
 const removePrize = (id: number) => {
     setPrizes(prizes.filter(prize => prize.id !== id))
 }
 
-const updatePrize = (id: number, field: 'name' | 'quantity', value: string) => {
+const updatePrize = (id: number, field: 'name' | 'quantity' | 'image', value: string | null) => {
     setPrizes(prizes.map(prize => 
     prize.id === id ? { ...prize, [field]: value } : prize
     ))
+}
+
+const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>, id?: number) => {
+    const file = event.target.files?.[0]
+    if (file) {
+    const reader = new FileReader()
+    reader.onloadend = () => {
+        if (id) {
+        updatePrize(id, 'image', reader.result as string)
+        } else {
+        setBackgroundImage(reader.result as string)
+        }
+    }
+    reader.readAsDataURL(file)
+    }
+}
+
+const removeImage = (id?: number) => {
+    if (id) {
+    updatePrize(id, 'image', null)
+    } else {
+    setBackgroundImage(null)
+    }
 }
 
 return (
@@ -72,22 +98,48 @@ return (
         <div className="flex-1 overflow-auto border-y">
         <div className="container mx-auto px-4">
             <Card className="mb-6">
-                <CardHeader className="pt-4 pl-6">
-                    <CardTitle>Background Picture</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                    <Card className="border shadow-sm">
-                        <CardContent className="pt-3 space-y-4 relative">
-                            <Button
-                            variant="outline"
-                            className="w-full h-40 border-dashed mt-2"
-                            >
-                            <UploadIcon className="mr-2 h-4 w-4" />
-                            Upload
-                            </Button>
-                        </CardContent>
-                    </Card>
+            <CardHeader className="pt-4 pl-6">
+                <CardTitle>Background Picture</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+                <Card className="border shadow-sm">
+                <CardContent className="pt-3 space-y-4 relative">
+                    {backgroundImage ? (
+                    <div className="relative h-40 w-full">
+                        <img
+                        src={backgroundImage}
+                        alt="Background"
+                        className="h-full w-auto max-w-full object-contain mx-auto"
+                        />
+                        <Button
+                        variant="destructive"
+                        size="icon"
+                        className="absolute top-2 right-2"
+                        onClick={() => removeImage()}
+                        >
+                        <XIcon className="h-4 w-4" />
+                        </Button>
+                    </div>
+                    ) : (
+                    <Button
+                        variant="outline"
+                        className="w-full h-40 border-dashed mt-2"
+                        onClick={() => fileInputRef.current?.click()}
+                    >
+                        <UploadIcon className="mr-2 h-4 w-4" />
+                        Upload
+                    </Button>
+                    )}
+                    <input
+                    type="file"
+                    ref={fileInputRef}
+                    className="hidden"
+                    accept="image/jpeg,image/png,image/jpg"
+                    onChange={handleImageUpload}
+                    />
                 </CardContent>
+                </Card>
+            </CardContent>
             <CardHeader className="pt-0 pl-6">
                 <CardTitle>Prizes</CardTitle>
             </CardHeader>
@@ -125,10 +177,39 @@ return (
                     </div>
                     <div>
                         <Label htmlFor={`prize-picture-${prize.id}`}>Picture</Label>
-                        <Button variant="outline" className="w-full h-40 border-dashed mt-2">
-                        <UploadIcon className="mr-2 h-4 w-4" />
-                        Upload
+                        {prize.image ? (
+                        <div className="relative h-40 w-full">
+                            <img
+                            src={prize.image}
+                            alt={`Prize ${prize.name}`}
+                            className="h-full w-auto max-w-full object-contain mx-auto"
+                            />
+                            <Button
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-2 right-2"
+                            onClick={() => removeImage(prize.id)}
+                            >
+                            <XIcon className="h-4 w-4" />
+                            </Button>
+                        </div>
+                        ) : (
+                        <Button
+                            variant="outline"
+                            className="w-full h-40 border-dashed mt-2"
+                            onClick={() => document.getElementById(`prize-picture-${prize.id}`)?.click()}
+                        >
+                            <UploadIcon className="mr-2 h-4 w-4" />
+                            Upload
                         </Button>
+                        )}
+                        <input
+                        type="file"
+                        id={`prize-picture-${prize.id}`}
+                        className="hidden"
+                        accept="image/jpeg,image/png,image/jpg"
+                        onChange={(e) => handleImageUpload(e, prize.id)}
+                        />
                     </div>
                     </CardContent>
                 </Card>
