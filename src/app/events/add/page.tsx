@@ -51,7 +51,7 @@ return (
     <main className="flex-1 flex flex-col overflow-hidden">
         <div className="container mx-auto p-4 border-0">
         <Card>
-            <CardHeader className="flex flex-row items-center justify-between content-center">
+            <CardHeader className="flex flex-row items-center justify-between content-center text-[#000072]">
             {isEditing ? (
                 <Input
                 value={eventName}
@@ -64,7 +64,7 @@ return (
                 <CardTitle className="text-3xl font-bold">{eventName}</CardTitle>
             )}
             <Button variant="ghost" size="icon" onClick={handleRename} className="hover:bg-white">
-                <PencilIcon className="h-6 w-6 text-blue-600" />
+                <PencilIcon className="h-6 w-6 text-[#000072]" />
             </Button>
             </CardHeader>
         </Card>
@@ -88,7 +88,7 @@ return (
                         </CardContent>
                     </Card>
                 </CardContent>
-            <CardHeader className="pt-2 pl-6">
+            <CardHeader className="pt-0 pl-6">
                 <CardTitle>Prizes</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -137,7 +137,7 @@ return (
                 <Button
                     type="button"
                     onClick={addPrize}
-                    className="bg-blue-600 text-white hover:bg-blue-700 w-max-self"
+                    className="bg-[#000072] text-white hover:bg-blue-700 w-max-self"
                 >
                     + Prize
                 </Button>
@@ -147,7 +147,7 @@ return (
         </div>
         </div>
         <div className="flex justify-end p-6">
-        <Button className="bg-blue-600 text-white hover:bg-blue-700">
+        <Button className="bg-[#000072] text-white hover:bg-blue-700">
             Save
         </Button>
         </div>
