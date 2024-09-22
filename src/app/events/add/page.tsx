@@ -156,7 +156,7 @@ return (
                         <XIcon className="h-4 w-4" />
                     </Button>
                     <div>
-                        <Label htmlFor={`prize-name-${prize.id}`}>Name of prize</Label>
+                        <Label htmlFor={`prize-name-${prize.id}`}>Name of prize {index+1}</Label>
                         <Input
                         id={`prize-name-${prize.id}`}
                         value={prize.name}
