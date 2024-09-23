@@ -28,6 +28,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import Sidebar from "../components/Sidebar";
 import { useState } from "react";
+import Link from "next/link";
 
 interface Event {
   id: number
@@ -74,7 +75,9 @@ export default function Events() {
         <div className="p-6 space-y-6">
           <div className="flex justify-between items-center">
             <h1 className="text-3xl font-bold text-[#000072]">Events</h1>
-            <Button className="bg-[#000072] hover:bg-[#000072]/90 text-white">Add Event</Button>
+            <Button className="bg-[#000072] hover:bg-[#000072]/90 text-white">
+              <Link href="/events/add">Add Event</Link>
+            </Button>
           </div>
           <p className="text-muted-foreground">Lorem ipsum dolor sit amet</p>
             <Table>
