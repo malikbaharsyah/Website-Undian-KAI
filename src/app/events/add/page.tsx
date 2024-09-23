@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { PencilIcon, UploadIcon, XIcon } from "lucide-react"
+import { PencilIcon, UploadIcon, XIcon, FileSpreadsheet } from "lucide-react"
 import Sidebar from "@/app/components/Sidebar"
 import { DatePicker } from "@/components/ui/date-picker"
 import { DateRange } from "react-day-picker"
+import { FILE } from "dns"
 
 interface Prize {
 id: number
@@ -100,7 +101,6 @@ const handleBack = () => {
 }
 
 const handleSave = () => {
-    // Implement save functionality here
     console.log("Saving event...")
 }
 
@@ -133,48 +133,6 @@ return (
             {step === 1 && (
             <Card className="mb-6">
                 <CardHeader className="pt-4 pl-6">
-                <CardTitle>Background Picture</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                <Card className="border shadow-sm">
-                    <CardContent className="pt-3 space-y-4 relative">
-                    {backgroundImage ? (
-                        <div className="relative h-40 w-full">
-                        <img
-                            src={backgroundImage}
-                            alt="Background"
-                            className="h-full w-auto max-w-full object-contain mx-auto"
-                        />
-                        <Button
-                            variant="destructive"
-                            size="icon"
-                            className="absolute top-2 right-2"
-                            onClick={() => removeImage()}
-                        >
-                            <XIcon className="h-4 w-4" />
-                        </Button>
-                        </div>
-                    ) : (
-                        <Button
-                        variant="outline"
-                        className="w-full h-40 border-dashed mt-2"
-                        onClick={() => fileInputRef.current?.click()}
-                        >
-                        <UploadIcon className="mr-2 h-4 w-4" />
-                        Upload
-                        </Button>
-                    )}
-                    <input
-                        type="file"
-                        ref={fileInputRef}
-                        className="hidden"
-                        accept="image/jpeg,image/png,image/jpg"
-                        onChange={handleImageUpload}
-                    />
-                    </CardContent>
-                </Card>
-                </CardContent>
-                <CardHeader className="pt-0 pl-6">
                 <CardTitle>Prizes</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -261,40 +219,91 @@ return (
             </Card>
             )}
             {step === 2 && (
-            <Card className="mb-6">
+            <Card className="mb-4">
                 <CardHeader className="pt-4 pl-6">
+                <CardTitle>Background Picture</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                <Card className="border shadow-sm">
+                    <CardContent className="pt-3 space-y-4 relative">
+                    {backgroundImage ? (
+                        <div className="relative h-40 w-full">
+                        <img
+                            src={backgroundImage}
+                            alt="Background"
+                            className="h-full w-auto max-w-full object-contain mx-auto"
+                        />
+                        <Button
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-2 right-2"
+                            onClick={() => removeImage()}
+                        >
+                            <XIcon className="h-4 w-4" />
+                        </Button>
+                        </div>
+                    ) : (
+                        <Button
+                        variant="outline"
+                        className="w-full h-40 border-dashed mt-2"
+                        onClick={() => fileInputRef.current?.click()}
+                        >
+                        <UploadIcon className="mr-2 h-4 w-4" />
+                        Upload
+                        </Button>
+                    )}
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        className="hidden"
+                        accept="image/jpeg,image/png,image/jpg"
+                        onChange={handleImageUpload}
+                    />
+                    </CardContent>
+                </Card>
+                </CardContent>
+                <CardHeader className="pt-0 pl-6">
                 <CardTitle>Event Details</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                <div>
-                    <Label htmlFor="date-range">Event Date Range</Label>
+                <Card className="border shadow-sm">
+                <CardContent className="pt-3 space-y-2 relative">
+                <Label htmlFor="date-range">Start Date - End Date</Label>
                     <DatePicker
-                    className="w-full"
                     date={dateRange}
                     setDate={setDateRange}
                     />
-                </div>
-                <div>
-                    <Label htmlFor="participant-file">Participant Excel File</Label>
+                </CardContent>
+                </Card>
+                </CardContent>
+                <CardHeader className="pt-0 pl-6">
+                <CardTitle>Participants</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                <Card className="border shadow-sm">
+                <CardContent className="pt-3 space-y-2 relative">
                     {participantFile ? (
-                    <div className="flex items-center justify-between mt-2 p-2 border rounded">
+                    <div className="flex flex-col h-40 items-center justify-center mt-2 p-2 border rounded space-x-3">
+                        <FileSpreadsheet strokeWidth={0.5} className="h-20 w-20" />
+                        <div className="flex items-center space-x-2">
                         <span>{participantFile.name}</span>
                         <Button
                         variant="ghost"
                         size="sm"
                         onClick={removeParticipantFile}
                         >
-                        <XIcon className="h-4 w-4" />
+                        <XIcon className="h-4 w-4 text-red-500" />
                         </Button>
+                        </div>
                     </div>
                     ) : (
                     <Button
                         variant="outline"
-                        className="w-full mt-2"
+                        className="w-full h-40 mt-2 border-dashed"
                         onClick={() => participantFileInputRef.current?.click()}
                     >
                         <UploadIcon className="mr-2 h-4 w-4" />
-                        Upload Participant Excel
+                        Upload (.xlsx, .xls)
                     </Button>
                     )}
                     <input
@@ -305,7 +314,8 @@ return (
                     accept=".xlsx,.xls"
                     onChange={handleParticipantFileUpload}
                     />
-                </div>
+                </CardContent>
+                </Card>
                 </CardContent>
             </Card>
             )}
