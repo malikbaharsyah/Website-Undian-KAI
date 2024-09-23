@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import LandingPage from './pages/LandingPage';
+import LandingPage from './components/pages/LandingPage';
 
 export default function App() {
   return (
