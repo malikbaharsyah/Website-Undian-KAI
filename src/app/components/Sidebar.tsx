@@ -48,7 +48,7 @@ export default function Sidebar() {
             icon={<CalendarIcon className="h-5 w-5" />}
             text="Events"
             isOpen={isOpen}
-            isActive={pathname === "/events"}
+            isActive={pathname === "/events" || pathname === "/events/add"}
           />
           <NavItem
             href="/participants"
