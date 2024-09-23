@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -25,14 +23,13 @@ interface ComboBoxContent {
 
 interface ComboBoxProps {
   name: string;
-  comboBoxContents: ComboBoxContent[]; // Ensure this prop is correctly spelled
+  comboBoxContents: ComboBoxContent[];
 }
 
 export default function ComboBox({ name, comboBoxContents }: ComboBoxProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
 
-  // Ensure comboBoxContents is an array
   if (!Array.isArray(comboBoxContents)) {
     return <div>No {name} available.</div>;
   }
