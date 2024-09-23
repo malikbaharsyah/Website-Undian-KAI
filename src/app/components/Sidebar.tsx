@@ -78,7 +78,7 @@ export default function Sidebar() {
   );
 }
 
-function NavItem({ href, icon, text, isOpen, isActive = false }) {
+function NavItem({ href, icon, text, isOpen, isActive = false } : NavItemProps) {
   return (
     <Link
       href={href}
@@ -92,4 +92,12 @@ function NavItem({ href, icon, text, isOpen, isActive = false }) {
       {isOpen && <span>{text}</span>}
     </Link>
   );
+}
+
+interface NavItemProps {
+  href: string;
+  icon: JSX.Element;
+  text: string;
+  isOpen: boolean;
+  isActive?: boolean;
 }
