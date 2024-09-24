@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,4 +5,60 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Event {
+  event_id        Int           @id @default(autoincrement()) @unique
+  name            String
+  operating_area  String
+  image           String?
+  start_date      DateTime      @default(now())
+  end_date        DateTime      @default(now())
+  participants    Participant[]
+  winner_history  WinnerHistory[]
+  prizes          Prize[]
+}
+
+model Participant {
+  participant_id  Int           @id @default(autoincrement()) @unique
+  nipp            String        @unique
+  name            String
+  operating_area  String
+  address         String?
+  event_id        Int
+  event           Event?        @relation(fields: [event_id], references: [event_id], onUpdate: Restrict, onDelete: Restrict)
+  winner_history  WinnerHistory[]
+  
+  @@index([nipp])
+}
+
+model WinnerHistory {
+  winner_history_id Int           @id @default(autoincrement()) @unique
+  event_id          Int
+  participant_id    Int
+  prize_id          Int
+  operating_area    String
+  timestamp         DateTime      @default(now())
+  
+  event             Event?        @relation(fields: [event_id], references: [event_id], onUpdate: Restrict, onDelete: Restrict) // Foreign Key
+  participant       Participant?  @relation(fields: [participant_id], references: [participant_id], onUpdate: Restrict, onDelete: Restrict) // Foreign Key
+  prize             Prize?        @relation(fields: [prize_id], references: [prize_id], onUpdate: Restrict, onDelete: Restrict) // Foreign Key
+}
+
+model Prize {
+  prize_id         Int            @id @default(autoincrement()) @unique
+  name             String
+  quantity         Int
+  image            String?
+  operating_area   String
+  event_id         Int
+  winner_history   WinnerHistory[]
+  event            Event?         @relation(fields: [event_id], references: [event_id], onUpdate: Restrict, onDelete: Restrict)
+}
+
+model User {
+  nipp             String         @id @unique
+  user_name        String
+  position         String
+  unit             String
 }
