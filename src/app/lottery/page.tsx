@@ -5,6 +5,7 @@ import Sidebar from "../components/Sidebar";
 
 import SelectEventPage from "../components/pages/SelectEventPage";
 import SelectPrizePage from "../components/pages/SelectPrizePage";
+import StartLotteryPage from "../components/pages/StartLotteryPage";
 
 const events = [
   { event_id: 1, name: "Jalan Sehat 17 Agustus", list_prize_id: 1, operating_area: "Jakarta", start_date: new Date(), end_date: new Date() },
@@ -19,7 +20,7 @@ const events = [
   { event_id: 10, name: "Jalan Sehat 26 Agustus", list_prize_id: 3, operating_area: "Jakarta", start_date: new Date(), end_date: new Date() },
   { event_id: 11, name: "Jalan Sehat 27 Agustus", list_prize_id: 3, operating_area: "Jakarta", start_date: new Date(), end_date: new Date() },
   { event_id: 12, name: "Jalan Sehat 28 Agustus", list_prize_id: 3, operating_area: "Jakarta", start_date: new Date(), end_date: new Date() },
-  { event_id: 13, name: "Jalan Sehat 29 Agustus", list_prize_id: 3, operating_area: "Jakarta", start_date: new Date(), end_date: new Date() },
+  { event_id: 13, name: "Jalan Sehat 29 Maret", list_prize_id: 3, operating_area: "Jakarta", start_date: new Date(), end_date: new Date() },
 ];
 
 const prizes = [
@@ -46,10 +47,14 @@ export default function Lottery() {
     <div className="flex flex-row font-poppins bg-white text-black">
       <Sidebar />
 
-      {step === 1 ? (
+      {step === 1 && (
         <SelectEventPage setStep={setStep} events={events} step={step} />
-      ) : (
+      ) }
+      {step === 2 && (
         <SelectPrizePage setStep={setStep} prizes={prizes} step={step}/>
+      ) }
+      {step === 3 && (
+        <StartLotteryPage setStep={setStep} step={step} numOfWinners={6}/>
       )}
     </div>
   );
