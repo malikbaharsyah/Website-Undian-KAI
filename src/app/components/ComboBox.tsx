@@ -24,15 +24,23 @@ interface ComboBoxContent {
 interface ComboBoxProps {
   name: string;
   comboBoxContents: ComboBoxContent[];
+  onChange: (value: number | null) => void;
 }
 
-export default function ComboBox({ name, comboBoxContents }: ComboBoxProps) {
+export default function ComboBox({ name, comboBoxContents, onChange }: ComboBoxProps) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
+  const [value, setValue] = React.useState<string>("");
 
-  if (!Array.isArray(comboBoxContents)) {
+  if (!Array.isArray(comboBoxContents) || comboBoxContents.length === 0) {
     return <div>No {name} available.</div>;
   }
+
+  const handleSelect = (selectedValue: string) => {
+    const newValue = selectedValue === value ? "" : selectedValue;
+    setValue(newValue);
+    onChange(newValue ? parseInt(newValue, 10) : null);
+    setOpen(false);
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -44,7 +52,7 @@ export default function ComboBox({ name, comboBoxContents }: ComboBoxProps) {
           className="w-[400px] justify-between"
         >
           {value
-            ? comboBoxContents.find((item) => item.value === value)?.label
+            ? comboBoxContents.find((item) => item.value === value)?.label || `Select ${name}...`
             : `Select ${name}...`}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -58,10 +66,7 @@ export default function ComboBox({ name, comboBoxContents }: ComboBoxProps) {
               {comboBoxContents.map((comboBoxContent) => (
                 <CommandItem
                   key={comboBoxContent.value}
-                  onSelect={() => {
-                    setValue(comboBoxContent.value === value ? "" : comboBoxContent.value);
-                    setOpen(false);
-                  }}
+                  onSelect={() => handleSelect(comboBoxContent.value)}
                 >
                   <Check
                     className={cn(
