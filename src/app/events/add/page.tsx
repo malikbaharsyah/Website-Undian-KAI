@@ -117,7 +117,7 @@ export default function Component() {
                 method: 'POST',
                 body: JSON.stringify(payload),
             })
-            // showAlert("success", "Event created successfully")
+            showAlert("success", "Event created successfully")
         } catch (error) {
             showAlert("error", error.message || "An error occurred while saving the event.")
         }
