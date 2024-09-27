@@ -47,6 +47,14 @@ const SkeletonRow = () => (
     </TableRow>
 );
 
+const SkeletonDialogRow = () => (
+    <TableRow>
+        <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+        <TableCell><Skeleton className="h-4 w-[150px]" /></TableCell>
+        <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+    </TableRow>
+);
+
 export default function WinnerHistory() {
     const [events, setEvents] = useState<Event[]>([]);
     const [selectedHistory, setSelectedHistory] = useState<Event | null>(null);
@@ -54,6 +62,7 @@ export default function WinnerHistory() {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
+    const [isDialogLoading, setIsDialogLoading] = useState(false);
 
     const fetchEvents = async (page: number) => {
         setIsLoading(true);
@@ -70,6 +79,7 @@ export default function WinnerHistory() {
     };
 
     const fetchWinnerHistory = async (eventId: number) => {
+        setIsDialogLoading(true);
         try {
             const res = await fetch(`/api/detail-winner-history?event_id=${eventId}`);
             const data = await res.json();
@@ -79,6 +89,8 @@ export default function WinnerHistory() {
         } catch (error) {
             console.error("Error fetching winner history:", error);
             setShow([]); // Fallback to empty array in case of an error
+        } finally {
+            setIsDialogLoading(false);
         }
     };
 
@@ -142,7 +154,11 @@ export default function WinnerHistory() {
                                                                 </TableRow>
                                                             </TableHeader>
                                                             <TableBody>
-                                                                {show.length === 0 ? (
+                                                                {isDialogLoading ? (
+                                                                    Array.from({ length: 7 }).map((_, index) => (
+                                                                        <SkeletonDialogRow key={index} />
+                                                                    ))
+                                                                ) : show.length === 0 ? (
                                                                     <TableRow>
                                                                         <TableCell colSpan={3} className="text-center">
                                                                             No winner history available for this event.
