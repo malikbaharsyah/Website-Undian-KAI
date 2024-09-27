@@ -1,6 +1,6 @@
 import { createEvent } from "@/controllers/EventController";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest } from "next/server";
 
-export async function POST(req: NextApiRequest, res: NextApiResponse) {
-    return createEvent(req, res);
+export async function POST(req: NextRequest) {
+    return createEvent(req);
 }
