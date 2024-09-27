@@ -59,6 +59,7 @@ model Prize {
 model User {
   nipp             String         @id @unique
   user_name        String
+  password         String
   position         String
   unit             String
 }
