@@ -26,6 +26,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
 import Sidebar from "../components/Sidebar";
 
 interface Event {
@@ -39,14 +40,23 @@ interface Show {
     prize: string;
 }
 
+const SkeletonRow = () => (
+    <TableRow>
+        <TableCell><Skeleton className="h-4 w-[250px]" /></TableCell>
+        <TableCell className="text-right"><Skeleton className="h-8 w-[60px] ml-auto" /></TableCell>
+    </TableRow>
+);
+
 export default function WinnerHistory() {
     const [events, setEvents] = useState<Event[]>([]);
     const [selectedHistory, setSelectedHistory] = useState<Event | null>(null);
     const [show, setShow] = useState<Show[]>([]);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [isLoading, setIsLoading] = useState(true);
 
     const fetchEvents = async (page: number) => {
+        setIsLoading(true);
         try {
             const res = await fetch(`/api/winner-histories?page=${page}`);
             const data = await res.json();
@@ -54,6 +64,8 @@ export default function WinnerHistory() {
             setTotalPages(data.meta.totalPage);
         } catch (error) {
             console.error("Error fetching events:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -91,63 +103,69 @@ export default function WinnerHistory() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {events.map((event) => (
-                                <TableRow key={event.event_id}>
-                                    <TableCell>{event.name}</TableCell>
-                                    <TableCell className="text-right">
-                                        <Dialog>
-                                            <DialogTrigger asChild>
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className="border-[#000072] text-[#000072] hover:bg-[#000072] hover:text-white"
-                                                    onClick={() => {
-                                                        setSelectedHistory(event);
-                                                        fetchWinnerHistory(event.event_id);
-                                                    }}
-                                                >
-                                                    Show
-                                                </Button>
-                                            </DialogTrigger>
-                                            <DialogContent className="sm:max-w-[700px] bg-white text-black font-poppins">
-                                                <DialogHeader>
-                                                    <DialogTitle className="font-medium">
-                                                        {selectedHistory?.name}
-                                                    </DialogTitle>
-                                                </DialogHeader>
-                                                <Table>
-                                                    <ScrollArea className="h-[475px] w-full rounded-md border p-4">
-                                                        <TableHeader>
-                                                            <TableRow>
-                                                                <TableHead>NIPP</TableHead>
-                                                                <TableHead>Participant</TableHead>
-                                                                <TableHead>Prize</TableHead>
-                                                            </TableRow>
-                                                        </TableHeader>
-                                                        <TableBody>
-                                                            {show.length === 0 ? (
+                            {isLoading ? (
+                                Array.from({ length: 7 }).map((_, index) => (
+                                    <SkeletonRow key={index} />
+                                ))
+                            ) : (
+                                events.map((event) => (
+                                    <TableRow key={event.event_id}>
+                                        <TableCell>{event.name}</TableCell>
+                                        <TableCell className="text-right">
+                                            <Dialog>
+                                                <DialogTrigger asChild>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="border-[#000072] text-[#000072] hover:bg-[#000072] hover:text-white"
+                                                        onClick={() => {
+                                                            setSelectedHistory(event);
+                                                            fetchWinnerHistory(event.event_id);
+                                                        }}
+                                                    >
+                                                        Show
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent className="sm:max-w-[700px] bg-white text-black font-poppins">
+                                                    <DialogHeader>
+                                                        <DialogTitle className="font-medium">
+                                                            {selectedHistory?.name}
+                                                        </DialogTitle>
+                                                    </DialogHeader>
+                                                    <Table>
+                                                        <ScrollArea className="h-[475px] w-full rounded-md border p-4">
+                                                            <TableHeader>
                                                                 <TableRow>
-                                                                    <TableCell colSpan={3} className="text-center">
-                                                                        No winner history available for this event.
-                                                                    </TableCell>
+                                                                    <TableHead>NIPP</TableHead>
+                                                                    <TableHead>Participant</TableHead>
+                                                                    <TableHead>Prize</TableHead>
                                                                 </TableRow>
-                                                            ) : (
-                                                                show.map((showItem, index) => (
-                                                                    <TableRow key={index}>
-                                                                        <TableCell>{showItem.nipp}</TableCell>
-                                                                        <TableCell>{showItem.participant}</TableCell>
-                                                                        <TableCell>{showItem.prize}</TableCell>
+                                                            </TableHeader>
+                                                            <TableBody>
+                                                                {show.length === 0 ? (
+                                                                    <TableRow>
+                                                                        <TableCell colSpan={3} className="text-center">
+                                                                            No winner history available for this event.
+                                                                        </TableCell>
                                                                     </TableRow>
-                                                                ))
-                                                            )}
-                                                        </TableBody>
-                                                    </ScrollArea>
-                                                </Table>
-                                            </DialogContent>
-                                        </Dialog>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
+                                                                ) : (
+                                                                    show.map((showItem, index) => (
+                                                                        <TableRow key={index}>
+                                                                            <TableCell>{showItem.nipp}</TableCell>
+                                                                            <TableCell>{showItem.participant}</TableCell>
+                                                                            <TableCell>{showItem.prize}</TableCell>
+                                                                        </TableRow>
+                                                                    ))
+                                                                )}
+                                                            </TableBody>
+                                                        </ScrollArea>
+                                                    </Table>
+                                                </DialogContent>
+                                            </Dialog>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            )}
                         </TableBody>
                     </Table>
                     <p className="text-sm text-muted-foreground text-center">
