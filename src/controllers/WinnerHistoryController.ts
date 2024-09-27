@@ -1,43 +1,30 @@
 import { PrismaClient } from "@prisma/client";
-import { URL } from "next/dist/compiled/@edge-runtime/primitives/url";
 import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-export const createWinnerHistory = async (req: NextRequest) => {
+export const createWinnerHistory = async (req : NextRequest) => {
     try {
         const body = await req.json();
-        const { eventId, participantId, prizeId, operatingArea } = body;
+        console.log("body", body);
 
         const winnerHistory = await prisma.winnerHistory.create({
-            data: {
-                event_id: eventId,
-                participant_id: participantId,
-                prize_id: prizeId,
-                operating_area: operatingArea,
-            },
+            data:body
         });
 
-        return NextResponse.json(winnerHistory, { status: 201 });
+        return NextResponse.json({ message: "Winner history created successfully", data:winnerHistory }, { status: 201 });
     } catch (error) {
-        if (error instanceof Error) {
-            return NextResponse.json({ error: error.message }, { status: 500 });
-        } else {
-            return NextResponse.json({ error: "An unknown error occurred" }, { status: 500 });
-        }
+        return NextResponse.json({message: error instanceof Error ? error.message : "An unknown error occurred"}, { status: 500 });
     }
 };
 
 // TODO : get operating_area from jwt
-export const getWinnerHistories = async (req: NextRequest, res: NextResponse) => {
+export const getWinnerHistories = async (page: number) => {
     try {
         const operating_area = "Pusat";
-
-        const { searchParams } = new URL(req.url);
-        const page = parseInt(searchParams.get("page") || "1");
-        const limit = 8;
+        const limit = 7;
         const skip = (page - 1) * limit;
-        
+
         const events = await prisma.event.findMany({
             where: { operating_area },
             skip,
@@ -48,36 +35,32 @@ export const getWinnerHistories = async (req: NextRequest, res: NextResponse) =>
             },
         });
 
-        return NextResponse.json({
-            data : events,
-            meta : {
-                totalRecords: events.length,
+        const totalRecords = await prisma.event.count({
+            where: { operating_area },
+        });
+
+        return {
+            data: events,
+            meta: {
+                totalRecords,
                 currentPage: page,
                 limit,
-                totalPage: Math.ceil(events.length / limit),
-            }
-        }, { status: 201 });
-
+                totalPage: Math.ceil(totalRecords / limit),
+            },
+        };
     } catch (error) {
-            if (error instanceof Error) {
-                return NextResponse.json({ error: error.message }, { status: 500 });
-            } else {
-                return NextResponse.json({ error: "An unknown error occurred" }, { status: 500 });
-            }
+        throw new Error(error instanceof Error ? error.message : "An unknown error occurred");
     }
-}
+};
 
-export const getDetailWinnerHistoryByEventId = async (req: NextRequest) => {
+export const getDetailWinnerHistory = async (eventId: number) => {
     try {
-        const { searchParams } = new URL(req.url);
-        const eventId = searchParams.get("event_id");
-
         if (!eventId) {
-            return NextResponse.json({ error: "Event ID is required" }, { status: 400 });
+            throw new Error("Event ID is required");
         }
 
         const winnerHistories = await prisma.winnerHistory.findMany({
-            where: { event_id: parseInt(eventId) },
+            where: { event_id: eventId },
             include: {
                 participant: {
                     select: {
@@ -94,15 +77,19 @@ export const getDetailWinnerHistoryByEventId = async (req: NextRequest) => {
         });
 
         if (winnerHistories.length === 0) {
-            return NextResponse.json({ message: "No winner history found for this event" }, { status: 404 });
+            return { message: "No winner history found for this event" };
         }
 
-        return NextResponse.json(winnerHistories, { status: 200 });
+        const formattedWinnerHistories = winnerHistories.map((winnerHistory) => {
+            return {
+                nipp: winnerHistory.participant?.nipp || "N/A",
+                participant: winnerHistory.participant?.name || "N/A",
+                prize: winnerHistory.prize?.name || "N/A",
+            };
+        });
+
+        return formattedWinnerHistories;
     } catch (error) {
-        if (error instanceof Error) {
-            return NextResponse.json({ error: error.message }, { status: 500 });
-        } else {
-            return NextResponse.json({ error: "An unknown error occurred" }, { status: 500 });
-        }
+        throw new Error(error instanceof Error ? error.message : "An unknown error occurred");
     }
 };
