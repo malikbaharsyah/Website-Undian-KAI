@@ -32,7 +32,8 @@ export default function ComboBox({ name, comboBoxContents, onChange }: ComboBoxP
   const [value, setValue] = React.useState<string>("");
 
   if (!Array.isArray(comboBoxContents) || comboBoxContents.length === 0) {
-    return <div>No {name} available.</div>;
+    return <div className="text-center pt-4">
+      No {name} available.</div>;
   }
 
   const handleSelect = (selectedValue: string) => {
