@@ -69,10 +69,16 @@ export default function WinnerHistory() {
         try {
             const res = await fetch(`/api/winner-histories?page=${page}`);
             const data = await res.json();
-            setEvents(data.data);
-            setTotalPages(data.meta.totalPage);
+
+            if (Array.isArray(data.data)) {
+                setEvents(data.data);
+                setTotalPages(data.meta.totalPage);
+            } else {
+                setEvents([]);
+            }
         } catch (error) {
             console.error("Error fetching events:", error);
+            setEvents([]);
         } finally {
             setIsLoading(false);
         }
@@ -83,12 +89,11 @@ export default function WinnerHistory() {
         try {
             const res = await fetch(`/api/detail-winner-history?event_id=${eventId}`);
             const data = await res.json();
-            
-            // Ensure that the response is an array or set to an empty array
+
             setShow(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error("Error fetching winner history:", error);
-            setShow([]); // Fallback to empty array in case of an error
+            setShow([]);
         } finally {
             setIsDialogLoading(false);
         }
@@ -119,7 +124,7 @@ export default function WinnerHistory() {
                                 Array.from({ length: 7 }).map((_, index) => (
                                     <SkeletonRow key={index} />
                                 ))
-                            ) : (
+                            ) : events && events.length > 0 ? (
                                 events.map((event) => (
                                     <TableRow key={event.event_id}>
                                         <TableCell>{event.name}</TableCell>
@@ -181,6 +186,12 @@ export default function WinnerHistory() {
                                         </TableCell>
                                     </TableRow>
                                 ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={2} className="text-center">
+                                        No events found.
+                                    </TableCell>
+                                </TableRow>
                             )}
                         </TableBody>
                     </Table>

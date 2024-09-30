@@ -1,28 +1,48 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { useState } from "react";
+// import { useRouter } from "next/router";
 
 export default function LoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  // const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    if (username === "admin" && password === "password123") {
-      console.log("Login successful");
-    } else {
-      setError("Invalid username or password");
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ nipp: username, password: password }),
+      });
+
+      if (response.ok) {
+        const { token } = await response.json();
+
+        localStorage.setItem("token", token);
+
+        // router.push("/");
+        window.location.href = "/events";
+      } else {
+        const { message } = await response.json();
+        setError(message || "Login failed");
+      }
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
     }
   };
 
   return (
     <div className="w-screen min-h-screen flex items-center justify-center bg-gray-100">
       <Card className="w-full max-w-md">
-        <CardHeader className="flex items-center mb-12">
+        <CardHeader className="flex items-center mb-12 mt-6">
           <img src="/images/logo.svg" alt="logo" className="w-[175px] h-[70px]" />
         </CardHeader>
         <CardContent>
@@ -31,12 +51,9 @@ export default function LoginForm() {
             <div className="w-full max-w-[304px] space-y-2">
               <Input
                 type="text"
-                placeholder="Username"
+                placeholder="NIPP"
                 value={username}
-                onChange={(e) => {
-                  setUsername(e.target.value);
-                  setError("");
-                }}
+                onChange={(e) => setUsername(e.target.value)}
                 className="w-full px-3 py-2 border rounded-md"
               />
             </div>
@@ -45,10 +62,7 @@ export default function LoginForm() {
                 type="password"
                 placeholder="Password"
                 value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  setError("");
-                }}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-3 border rounded-md"
               />
             </div>
