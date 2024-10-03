@@ -1,8 +1,7 @@
 const fetchAPI = async (endpoint: string, options: RequestInit = {}) => {
     const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000/api';
   
-    const defaultHeaders: { 'Content-Type': string; 'Authorization'?: string } = {
-      'Content-Type': 'application/json',
+    const defaultHeaders: { 'Content-Type'?: string; 'Authorization'?: string } = {
     };
   
     const token = localStorage.getItem('token');

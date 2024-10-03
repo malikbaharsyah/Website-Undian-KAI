@@ -11,7 +11,7 @@ model Event {
   event_id        Int           @id @default(autoincrement()) @unique
   name            String
   operating_area  String
-  image           String?
+  image           String?       @default("")
   start_date      DateTime      @default(now())
   end_date        DateTime      @default(now())
   participants    Participant[]
@@ -21,7 +21,7 @@ model Event {
 
 model Participant {
   participant_id  Int           @id @default(autoincrement()) @unique
-  nipp            String        @unique
+  nipp            String        
   name            String
   operating_area  String
   address         String?
@@ -40,16 +40,16 @@ model WinnerHistory {
   operating_area    String
   timestamp         DateTime      @default(now())
   
-  event             Event?        @relation(fields: [event_id], references: [event_id], onUpdate: Restrict, onDelete: Restrict) // Foreign Key
-  participant       Participant?  @relation(fields: [participant_id], references: [participant_id], onUpdate: Restrict, onDelete: Restrict) // Foreign Key
-  prize             Prize?        @relation(fields: [prize_id], references: [prize_id], onUpdate: Restrict, onDelete: Restrict) // Foreign Key
+  event             Event?        @relation(fields: [event_id], references: [event_id], onUpdate: Restrict, onDelete: Restrict)
+  participant       Participant?  @relation(fields: [participant_id], references: [participant_id], onUpdate: Restrict, onDelete: Restrict)
+  prize             Prize?        @relation(fields: [prize_id], references: [prize_id], onUpdate: Restrict, onDelete: Restrict)
 }
 
 model Prize {
   prize_id         Int            @id @default(autoincrement()) @unique
   name             String
   quantity         Int
-  image            String?
+  image            String?        @default("")
   operating_area   String
   event_id         Int
   winner_history   WinnerHistory[]
@@ -59,7 +59,6 @@ model Prize {
 model User {
   nipp             String         @id @unique
   user_name        String
-  password         String
   position         String
   unit             String
 }

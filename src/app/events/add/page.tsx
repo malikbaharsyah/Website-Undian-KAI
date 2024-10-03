@@ -11,21 +11,22 @@ import { DatePicker } from "@/components/ui/date-picker"
 import { DateRange } from "react-day-picker"
 import fetchAPI from "@/app/components/hooks/fetchAPI"
 import useAlert from "@/app/components/hooks/useAlert"
+import { useRouter } from 'next/navigation';
 import { FILE } from "dns"
 
 interface Prize {
-id: number
-name: string
-quantity: string
-image: string | null
+    id: number
+    name: string
+    quantity: string
+    image: File | null
 }
 
 export default function Component() {
     const [step, setStep] = useState(1)
     const [eventName, setEventName] = useState("Untitled Event")
     const [isEditing, setIsEditing] = useState(false)
-    const [prizes, setPrizes] = useState<Prize[]>([{ id: 1, name: "", quantity: "", image: null }])
-    const [backgroundImage, setBackgroundImage] = useState<string | null>(null)
+    const [prizes, setPrizes] = useState<Prize[]>([{id: 1, name: "", quantity: "", image: null}])
+    const [backgroundImage, setBackgroundImage] = useState<File | null>(null)
     const [dateRange, setDateRange] = useState<DateRange | undefined>()
     const [participantFile, setParticipantFile] = useState<File | null>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
@@ -35,6 +36,7 @@ export default function Component() {
     const [errorString, setErrorString] = useState<string | null>(null)
 
     const {showAlert, AlertComponent} = useAlert()
+    const router = useRouter()
 
     const handleRename = () => {
         setIsEditing(true)
@@ -49,14 +51,20 @@ export default function Component() {
     }
 
     const addPrize = () => {
-        setPrizes([...prizes, { id: Date.now(), name: "", quantity: "", image: null }])
+        setPrizes([...prizes, { id: prizes.length + 1, name: "", quantity: "", image: null }])
     }
 
     const removePrize = (id: number) => {
         setPrizes(prizes.filter(prize => prize.id !== id))
     }
 
-    const updatePrize = (id: number, field: 'name' | 'quantity' | 'image', value: string | null) => {
+    const updatePrize = (id: number, field: 'name' | 'quantity', value: string | null) => {
+        setPrizes(prizes.map(prize => 
+        prize.id === id ? { ...prize, [field]: value } : prize
+        ))
+    }
+
+    const updateImagePrize = (id: number, field: 'image', value: File | null) => {
         setPrizes(prizes.map(prize => 
         prize.id === id ? { ...prize, [field]: value } : prize
         ))
@@ -68,9 +76,9 @@ export default function Component() {
         const reader = new FileReader()
         reader.onloadend = () => {
             if (id) {
-            updatePrize(id, 'image', reader.result as string)
+            updateImagePrize(id, 'image', file)
             } else {
-            setBackgroundImage(reader.result as string)
+            setBackgroundImage(file)
             }
         }
         reader.readAsDataURL(file)
@@ -79,7 +87,7 @@ export default function Component() {
 
     const removeImage = (id?: number) => {
         if (id) {
-        updatePrize(id, 'image', null)
+        updateImagePrize(id, 'image', null)
         } else {
         setBackgroundImage(null)
         }
@@ -108,20 +116,39 @@ export default function Component() {
     }
 
     const handleSave = async () => {
-        const payload = {
-            name: eventName,
-        }
+        const formData = new FormData();
+        formData.append('name', eventName);
+        formData.append('start_date', dateRange?.from?.toISOString() || "");
+        formData.append('end_date', dateRange?.to?.toISOString() || "");
+        if (backgroundImage) formData.append('image', backgroundImage);
+        if (participantFile) formData.append('participants', participantFile);
+        formData.append('prize_length', (prizes.length + 1).toString());
+        prizes.forEach((prize, index) => {
+            const prizeData = { name: prize.name, quantity: prize.quantity };
+            const prizeImage = prize.image;
+            formData.append(`prize[${index}]`, JSON.stringify(prizeData));
+            if (prizeImage) formData.append(`prize_image[${index}]`, prizeImage);
+        });
         showAlert("loading", null)
         try {
             await fetchAPI('/events', {
                 method: 'POST',
-                body: JSON.stringify(payload),
+                body: formData,
             })
             showAlert("success", "Event created successfully")
+            router.push('/events')
         } catch (error) {
-            showAlert("error", error.message || "An error occurred while saving the event.")
+            const errorMessage = error instanceof Error ? error.message : "An error occurred while saving the event.";
+            showAlert("error", errorMessage);
         }
     }
+
+    const renderImagePreview = (image: File | null) => {
+        if (image) {
+            return URL.createObjectURL(image);
+        }
+        return '';
+    }   
 
     return (
         <div className="flex h-screen font-poppins bg-white text-black">
@@ -155,7 +182,7 @@ export default function Component() {
                     <CardHeader className="pt-4 pl-6">
                     <CardTitle>Prizes</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-6">
+                    <CardContent className="sce-y-6">
                     {prizes.map((prize, index) => (
                         <Card key={prize.id} className="border shadow-sm">
                         <CardContent className="pt-6 space-y-4 relative">
@@ -175,6 +202,7 @@ export default function Component() {
                                 onChange={(e) => updatePrize(prize.id, 'name', e.target.value)}
                                 placeholder="Input Prize Name Here"
                                 className="mt-2"
+                                required={true}
                             />
                             </div>
                             <div>
@@ -185,6 +213,9 @@ export default function Component() {
                                 onChange={(e) => updatePrize(prize.id, 'quantity', e.target.value)}
                                 placeholder="Input Prize Quantity Here"
                                 className="mt-2"
+                                type="number"
+                                min="0"
+                                required={true}
                             />
                             </div>
                             <div>
@@ -192,7 +223,7 @@ export default function Component() {
                             {prize.image ? (
                                 <div className="relative h-40 w-full">
                                 <img
-                                    src={prize.image}
+                                    src={renderImagePreview(prize.image)}
                                     alt={`Prize ${prize.name}`}
                                     className="h-full w-auto max-w-full object-contain mx-auto"
                                 />
@@ -249,7 +280,7 @@ export default function Component() {
                         {backgroundImage ? (
                             <div className="relative h-40 w-full">
                             <img
-                                src={backgroundImage}
+                                src={renderImagePreview(backgroundImage)}
                                 alt="Background"
                                 className="h-full w-auto max-w-full object-contain mx-auto"
                             />

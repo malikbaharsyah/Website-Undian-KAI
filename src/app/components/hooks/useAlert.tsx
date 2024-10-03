@@ -28,7 +28,7 @@ export default function useAlert() {
       setTimeout(() => {
         setError(null)
         setSuccess(null)
-      }, 5000) // Hide after 5 seconds
+      }, 5000)
     }
   }
 
@@ -59,7 +59,6 @@ export default function useAlert() {
       </Dialog>
 
       <AnimatePresence>
-        {/* Error Alert */}
         {error && (
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -76,7 +75,6 @@ export default function useAlert() {
           </motion.div>
         )}
 
-        {/* Success Alert */}
         {success && (
           <motion.div
             initial={{ opacity: 0, y: 50 }}

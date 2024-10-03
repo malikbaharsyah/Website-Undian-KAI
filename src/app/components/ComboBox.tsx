@@ -24,9 +24,10 @@ interface ComboBoxContent {
 interface ComboBoxProps {
   name: string;
   comboBoxContents: ComboBoxContent[];
+  onChange: (value: string) => void;
 }
 
-export default function ComboBox({ name, comboBoxContents }: ComboBoxProps) {
+export default function ComboBox({ name, comboBoxContents, onChange }: ComboBoxProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
 
@@ -59,7 +60,9 @@ export default function ComboBox({ name, comboBoxContents }: ComboBoxProps) {
                 <CommandItem
                   key={comboBoxContent.value}
                   onSelect={() => {
-                    setValue(comboBoxContent.value === value ? "" : comboBoxContent.value);
+                    const newValue = comboBoxContent.value === value ? "" : comboBoxContent.value;
+                    setValue(newValue);
+                    onChange(newValue);
                     setOpen(false);
                   }}
                 >

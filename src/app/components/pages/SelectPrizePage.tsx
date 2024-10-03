@@ -1,17 +1,29 @@
 import { Button } from "@/components/ui/button"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Prize from "../interfaces/Prize"
 import CustomCarousel from "../CustomCarousel"
+import fetchAPI from "../hooks/fetchAPI"
 
 interface SelectPrizePageProps {
     setStep: (step: number) => void
-    prizes: Prize[]
     step: number
+    selectedEventId: number
 }
 
-export default function SelectPrizePage({setStep, prizes, step}: SelectPrizePageProps): JSX.Element {
-    const [selectedPrize, setSelectedPrize] = useState<Prize | null>(null)
-    
+export default function SelectPrizePage({setStep, step, selectedEventId}: SelectPrizePageProps): JSX.Element {
+    const [selectedPrize, setSelectedPrize] = useState<Prize | null>(null);
+    const [prizes, setPrizes] = useState<Prize[]>([]);
+
+    useEffect(() => {
+      fetchAPI(`/events/${selectedEventId}`)
+      .then((data) => {
+        setPrizes(data.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    }, [selectedEventId]);
+
     return (
         <div className="p-6 space-y-6 flex-1 flex flex-col">
           <h1 className="text-3xl font-bold text-[#000072]">
@@ -20,7 +32,11 @@ export default function SelectPrizePage({setStep, prizes, step}: SelectPrizePage
 
           <div className="space-y-4 flex-1">
             <h2 className="text-xl font-semibold">Select Prize</h2>
-            <CustomCarousel prizes={prizes} setSelectedPrize={setSelectedPrize}/>
+            {prizes.length > 0 ? (
+              <CustomCarousel prizes={prizes} setSelectedPrize={setSelectedPrize}/>
+            ) : (
+              <p className="text-gray-500">No prizes available for this event.</p>
+            )}
             <div className="space-y-2">
               <h2 className="text-xl font-semibold">Input Quantity(s)</h2>
               <p className="text-sm text-gray-400">Maximum {selectedPrize?.quantity} pcs.</p>

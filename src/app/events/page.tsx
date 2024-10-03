@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import { Button } from "@/components/ui/button"
 import {
@@ -26,47 +26,78 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import Sidebar from "../components/Sidebar";
-import { useState } from "react";
-import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton"
+import Sidebar from "../components/Sidebar"
+import { useEffect, useState } from "react"
+import Link from "next/link"
+import fetchAPI from "../components/hooks/fetchAPI"
 
 interface Event {
-  id: number
+  event_id: number
   name: string
 }
 
 interface Detail {
-  id: number
-  prize: string
-  qty: number
+  prize_id: number
+  name: string
+  quantity: number
 }
-
-const events: Event[] = [
-  { id: 1, name: "Jalan Sehat 17 Agustus" },
-  { id: 2, name: "Jalan Sehat 17 Agustus" },
-  { id: 3, name: "Jalan Sehat 17 Agustus" },
-  { id: 4, name: "Jalan Sehat 17 Agustus" },
-  { id: 5, name: "Jalan Sehat 17 Agustus" },
-  { id: 6, name: "Jalan Sehat 17 Agustus" },
-]
-
-const details: Detail[] = [
-  { id: 1, prize: "Mobil", qty: 1 },
-  { id: 2, prize: "Motor", qty: 2 },
-  { id: 3, prize: "TV", qty: 3 },
-  { id: 4, prize: "Kulkas", qty: 4 },
-  { id: 5, prize: "AC", qty: 5 },
-  { id: 6, prize: "Kipas Angin", qty: 6 },
-  { id: 1, prize: "Mobil", qty: 1 },
-  { id: 2, prize: "Motor", qty: 2 },
-  { id: 3, prize: "TV", qty: 3 },
-  { id: 4, prize: "Kulkas", qty: 4 },
-  { id: 5, prize: "AC", qty: 5 },
-  { id: 6, prize: "Kipas Angin", qty: 6 },
-]
 
 export default function Events() {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
+  const [events, setEvents] = useState<Event[]>([])
+  const [details, setDetails] = useState<Detail[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [isLoadingDetails, setIsLoadingDetails] = useState(false)
+
+  useEffect(() => {
+    setIsLoading(true)
+    fetchAPI('/events')
+      .then((data) => {
+        setEvents(data.data)
+        setIsLoading(false)
+      })
+      .catch((error) => {
+        console.error(error)
+        setIsLoading(false)
+      })
+  }, [])
+
+  const handleShowDetails = async (event: Event) => {
+    setSelectedEvent(event)
+    setIsLoadingDetails(true)
+    if (event) {
+      try {
+        const data = await fetchAPI(`/events/${event.event_id}`)
+        setDetails(data.data)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setIsLoadingDetails(false)
+      }
+    }
+  }
+
+  const TableRowSkeleton = () => (
+    <TableRow>
+      <TableCell><Skeleton className="h-4 w-[250px]" /></TableCell>
+      <TableCell className="text-right"><Skeleton className="h-8 w-[100px] ml-auto" /></TableCell>
+    </TableRow>
+  )
+
+  const DialogContentSkeleton = () => (
+    <div className="space-y-4">
+      <Skeleton className="h-4 w-[200px]" />
+      <div className="space-y-2">
+        {[...Array(5)].map((_, index) => (
+          <div key={index} className="flex justify-between">
+            <Skeleton className="h-4 w-[150px]" />
+            <Skeleton className="h-4 w-[50px]" />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
   
   return (
     <div className="flex font-poppins bg-white text-black">
@@ -80,58 +111,64 @@ export default function Events() {
             </Button>
           </div>
           <p className="text-muted-foreground">Lorem ipsum dolor sit amet</p>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Event</TableHead>
-                  <TableHead className="text-right">Action</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {events.map((event) => (
-                  <TableRow key={event.id}>
-                    <TableCell>{event.name}</TableCell>
-                    <TableCell className="text-right">
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            className="border-[#000072] text-[#000072] hover:bg-[#000072] hover:text-white"
-                            onClick={() => setSelectedEvent(event)}
-                          >
-                            Details
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-[700px] bg-white text-black font-poppins">
-                          <DialogHeader>
-                            <DialogTitle className="font-medium">{selectedEvent?.name}</DialogTitle>
-                          </DialogHeader>
-                          <Table>
-                        <ScrollArea className="h-[475px] w-full rounded-md border p-4">
-                            <TableHeader>
-                              <TableRow>
-                                <TableHead>Prize</TableHead>
-                                <TableHead className="text-right">Quantity</TableHead>
-                              </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              {details.map((detail) => (
-                                <TableRow key={detail.id}>
-                                  <TableCell>{detail.prize}</TableCell>
-                                  <TableCell className="text-right">{detail.qty}</TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                        </ScrollArea>
-                          </Table>
-                        </DialogContent>
-                      </Dialog>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Event</TableHead>
+                <TableHead className="text-right">Action</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isLoading
+                ? [...Array(6)].map((_, index) => <TableRowSkeleton key={index} />)
+                : events.map((event) => (
+                    <TableRow key={event.event_id}>
+                      <TableCell>{event.name}</TableCell>
+                      <TableCell className="text-right">
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              className="border-[#000072] text-[#000072] hover:bg-[#000072] hover:text-white"
+                              onClick={() => handleShowDetails(event)}
+                            >
+                              Details
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-[700px] bg-white text-black font-poppins">
+                            <DialogHeader>
+                              <DialogTitle className="font-medium">{selectedEvent?.name}</DialogTitle>
+                            </DialogHeader>
+                            {isLoadingDetails ? (
+                              <DialogContentSkeleton />
+                            ) : (
+                              <Table>
+                                <ScrollArea className="h-[475px] w-full rounded-md border p-4">
+                                  <TableHeader>
+                                    <TableRow>
+                                      <TableHead>Prize</TableHead>
+                                      <TableHead className="text-right">Quantity</TableHead>
+                                    </TableRow>
+                                  </TableHeader>
+                                  <TableBody>
+                                    {details.map((detail) => (
+                                      <TableRow key={detail.prize_id}>
+                                        <TableCell>{detail.name}</TableCell>
+                                        <TableCell className="text-right">{detail.quantity}</TableCell>
+                                      </TableRow>
+                                    ))}
+                                  </TableBody>
+                                </ScrollArea>
+                              </Table>
+                            )}
+                          </DialogContent>
+                        </Dialog>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+            </TableBody>
+          </Table>
           <p className="text-sm text-muted-foreground text-center">
             Showing 8-16 categories of total 17 categories
           </p>
