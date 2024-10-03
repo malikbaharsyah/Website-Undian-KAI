@@ -24,7 +24,7 @@ interface ComboBoxContent {
 interface ComboBoxProps {
   name: string;
   comboBoxContents: ComboBoxContent[];
-  onChange: (value: string) => void;
+  onChange: (value: number | null) => void;
 }
 
 export default function ComboBox({ name, comboBoxContents, onChange }: ComboBoxProps) {
@@ -34,6 +34,13 @@ export default function ComboBox({ name, comboBoxContents, onChange }: ComboBoxP
   if (!Array.isArray(comboBoxContents)) {
     return <div>No {name} available.</div>;
   }
+
+  const handleSelect = (selectedValue: string) => {
+    const newValue = selectedValue === value ? "" : selectedValue;
+    setValue(newValue);
+    onChange(newValue ? parseInt(newValue, 10) : null);
+    setOpen(false);
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -59,12 +66,7 @@ export default function ComboBox({ name, comboBoxContents, onChange }: ComboBoxP
               {comboBoxContents.map((comboBoxContent) => (
                 <CommandItem
                   key={comboBoxContent.value}
-                  onSelect={() => {
-                    const newValue = comboBoxContent.value === value ? "" : comboBoxContent.value;
-                    setValue(newValue);
-                    onChange(newValue);
-                    setOpen(false);
-                  }}
+                  onSelect={() => handleSelect(comboBoxContent.value)}
                 >
                   <Check
                     className={cn(

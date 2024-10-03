@@ -12,7 +12,7 @@ interface SelectEventPageProps {
 
 
 export default function SelectEventPage({ setStep, step, setSelectedEventId }: SelectEventPageProps): JSX.Element {
-    const [events, setEvents] = useState<Event[]>([]);
+    const [, setEvents] = useState<Event[]>([]);
     const [eventOptions, setEventOptions] = useState([]);
 
     useEffect(() => {
@@ -30,8 +30,10 @@ export default function SelectEventPage({ setStep, step, setSelectedEventId }: S
         });
     }, []);
     
-    const handleEventChange = (value: string) => {
-        setSelectedEventId(parseInt(value));
+    const handleEventChange = (value: number | null) => {
+        if (value !== null) {
+            setSelectedEventId(value);
+        }
     }
 
     return (
