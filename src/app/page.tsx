@@ -2,10 +2,10 @@
 
 import React from 'react';
 
-import LandingPage from './components/pages/LandingPage';
+import LoginPage from './login/page';
 
 export default function App() {
   return (
-    <LandingPage />
+    <LoginPage />
   );
 }
