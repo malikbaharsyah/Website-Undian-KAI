@@ -49,7 +49,7 @@ export default function CustomCarousel({ prizes, setSelectedPrize }: CustomCarou
                 }}
                 animate={{
                   x: offset * 280,
-                  opacity: offset === 0 ? 1 : 0.5,
+                  opacity: offset === 0 ? 1 : 0.75,
                   scale: offset === 0 ? 1.25 : 0.75,
                 }}
                 exit={{
@@ -64,7 +64,7 @@ export default function CustomCarousel({ prizes, setSelectedPrize }: CustomCarou
               >
                 <div className="bg-white rounded-lg shadow-lg overflow-hidden h-full">
                   <img
-                    src={prize.image}
+                    src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${prize.image}`}
                     alt={prize.name}
                     className="w-full h-48 object-cover"
                   />
