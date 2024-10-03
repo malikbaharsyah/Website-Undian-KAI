@@ -29,10 +29,11 @@ interface ComboBoxProps {
 
 export default function ComboBox({ name, comboBoxContents, onChange }: ComboBoxProps) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
+  const [value, setValue] = React.useState<string>("");
 
-  if (!Array.isArray(comboBoxContents)) {
-    return <div>No {name} available.</div>;
+  if (!Array.isArray(comboBoxContents) || comboBoxContents.length === 0) {
+    return <div className="text-center pt-4">
+      No {name} available.</div>;
   }
 
   const handleSelect = (selectedValue: string) => {
@@ -52,7 +53,7 @@ export default function ComboBox({ name, comboBoxContents, onChange }: ComboBoxP
           className="w-[400px] justify-between"
         >
           {value
-            ? comboBoxContents.find((item) => item.value === value)?.label
+            ? comboBoxContents.find((item) => item.value === value)?.label || `Select ${name}...`
             : `Select ${name}...`}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>

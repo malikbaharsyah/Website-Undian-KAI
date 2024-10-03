@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import {
   Popover,
-  PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { CheckIcon, RefreshCwIcon } from 'lucide-react'
@@ -13,20 +12,20 @@ interface EmployeeButtonProps {
   initialId: string | null
 }
 
-export default function Component({ initialId = null }: EmployeeButtonProps) {
+export default function WinnerButton({ initialId = null }: EmployeeButtonProps) {
   const [employeeId, setEmployeeId] = useState<string | null>(initialId)
   const [isDisabled, setIsDisabled] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
 
   const handleCheck = () => {
     setIsDisabled(true)
-    setIsHovered(false) // Close hover state when checking
+    setIsHovered(false)
   }
 
   const handleRetry = () => {
     setEmployeeId(null)
     setIsDisabled(false)
-    setIsHovered(false) // Close hover state when retrying
+    setIsHovered(false)
   }
 
   const handleMouseEnter = () => {
@@ -48,7 +47,6 @@ export default function Component({ initialId = null }: EmployeeButtonProps) {
           onMouseLeave={handleMouseLeave}
         >
           {isHovered && employeeId ? (
-            // Replace button content with Retry and Check when hovered
             <div className="flex w-full justify-between">
               <Button 
                 className="flex-1 rounded-none hover:text-red-500" 

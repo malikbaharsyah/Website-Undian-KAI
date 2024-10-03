@@ -56,7 +56,8 @@ export default function SelectPrizePage({setStep, step, selectedEventId}: Select
             >
               Back
             </Button>
-            <Button className="bg-[#000072] hover:bg-[#000072]/90 text-white">
+            <Button className="bg-[#000072] hover:bg-[#000072]/90 text-white"
+            onClick={() => setStep(step+1)}>
               Next
             </Button>
           </div>

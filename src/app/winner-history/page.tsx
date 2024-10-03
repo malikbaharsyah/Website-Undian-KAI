@@ -1,6 +1,7 @@
 "use client";
 
-import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
     Table,
     TableBody,
@@ -8,144 +9,209 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 import {
     Pagination,
     PaginationContent,
-    PaginationEllipsis,
     PaginationItem,
     PaginationLink,
     PaginationNext,
     PaginationPrevious,
-} from "@/components/ui/pagination"
+} from "@/components/ui/pagination";
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/components/ui/dialog"
-import { ScrollArea } from "@/components/ui/scroll-area"
+} from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
 import Sidebar from "../components/Sidebar";
-import { useState } from "react";
 
 interface Event {
-id: number
-name: string
+    event_id: number;
+    name: string;
 }
 
 interface Show {
-id: number
-nipp: string
-participant: string
-prize: string
+    nipp: string;
+    participant: string;
+    prize: string;
 }
 
-const events: Event[] = [
-{ id: 1, name: "Jalan Sehat 17 Agustus" },
-{ id: 2, name: "Jalan Sehat 17 Agustus" },
-{ id: 3, name: "Jalan Sehat 17 Agustus" },
-{ id: 4, name: "Jalan Sehat 17 Agustus" },
-{ id: 5, name: "Jalan Sehat 17 Agustus" },
-{ id: 6, name: "Jalan Sehat 17 Agustus" },
-]
+const SkeletonRow = () => (
+    <TableRow>
+        <TableCell><Skeleton className="h-4 w-[250px]" /></TableCell>
+        <TableCell className="text-right"><Skeleton className="h-8 w-[60px] ml-auto" /></TableCell>
+    </TableRow>
+);
 
-const show: Show[] = [
-{ id: 1, nipp: "13510", participant: "Hakim", prize: "Mobil" },
-{ id: 2, nipp: "13510", participant: "Hakim", prize: "Motor" },
-{ id: 3, nipp: "13510", participant: "Hakim", prize: "TV" },
-]
+const SkeletonDialogRow = () => (
+    <TableRow>
+        <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+        <TableCell><Skeleton className="h-4 w-[150px]" /></TableCell>
+        <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+    </TableRow>
+);
 
-export default function () {
-const [selectedHistory, setSelectedHistory] = useState<Event | null>(null)
+export default function WinnerHistory() {
+    const [events, setEvents] = useState<Event[]>([]);
+    const [selectedHistory, setSelectedHistory] = useState<Event | null>(null);
+    const [show, setShow] = useState<Show[]>([]);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isDialogLoading, setIsDialogLoading] = useState(false);
 
-return (
-    <div className="flex font-poppins bg-white text-black">
-    <Sidebar />
-    <main className="flex-1">
-        <div className="p-6 space-y-6">
-        <div className="flex justify-between items-center">
-            <h1 className="text-3xl font-bold text-[#000072]">Winner History</h1>
-            {/* <Button className="bg-[#000072] hover:bg-[#000072]/90 text-white">
-            <Link href="/events/add">Add Event</Link>
-            </Button> */}
-        </div>
-        <p className="text-muted-foreground">Lorem ipsum dolor sit amet</p>
-            <Table>
-            <TableHeader>
-                <TableRow>
-                <TableHead>Event</TableHead>
-                <TableHead className="text-right">Winner</TableHead>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {events.map((event) => (
-                <TableRow key={event.id}>
-                    <TableCell>{event.name}</TableCell>
-                    <TableCell className="text-right">
-                    <Dialog>
-                        <DialogTrigger asChild>
-                        <Button 
-                            variant="outline" 
-                            size="sm"
-                            className="border-[#000072] text-[#000072] hover:bg-[#000072] hover:text-white"
-                            onClick={() => setSelectedHistory(event)}
-                        >
-                            Show
-                        </Button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-[700px] bg-white text-black font-poppins">
-                        <DialogHeader>
-                            <DialogTitle className="font-medium">{selectedHistory?.name}</DialogTitle>
-                        </DialogHeader>
-                        <Table>
-                        <ScrollArea className="h-[475px] w-full rounded-md border p-4">
-                            <TableHeader>
+    const fetchEvents = async (page: number) => {
+        setIsLoading(true);
+        try {
+            const res = await fetch(`/api/winner-histories?page=${page}`);
+            const data = await res.json();
+            setEvents(data.data);
+            setTotalPages(data.meta.totalPage);
+        } catch (error) {
+            console.error("Error fetching events:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const fetchWinnerHistory = async (eventId: number) => {
+        setIsDialogLoading(true);
+        try {
+            const res = await fetch(`/api/detail-winner-history?event_id=${eventId}`);
+            const data = await res.json();
+            
+            // Ensure that the response is an array or set to an empty array
+            setShow(Array.isArray(data) ? data : []);
+        } catch (error) {
+            console.error("Error fetching winner history:", error);
+            setShow([]); // Fallback to empty array in case of an error
+        } finally {
+            setIsDialogLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchEvents(page);
+    }, [page]);
+
+    return (
+        <div className="flex font-poppins bg-white text-black">
+            <Sidebar />
+            <main className="flex-1">
+                <div className="p-6 space-y-6">
+                    <div className="flex justify-between items-center">
+                        <h1 className="text-3xl font-bold text-[#000072]">Winner History</h1>
+                    </div>
+                    <p className="text-muted-foreground">Event winner histories</p>
+                    <Table>
+                        <TableHeader>
                             <TableRow>
-                                <TableHead>NIPP</TableHead>
-                                <TableHead>Participant</TableHead>
-                                <TableHead>Prize</TableHead>
+                                <TableHead>Event</TableHead>
+                                <TableHead className="text-right">Winner</TableHead>
                             </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                            {show.map((show) => (
-                                <TableRow key={show.id}>
-                                <TableCell>{show.nipp}</TableCell>
-                                <TableCell>{show.participant}</TableCell>
-                                <TableCell>{show.prize}</TableCell>
-                                </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {isLoading ? (
+                                Array.from({ length: 7 }).map((_, index) => (
+                                    <SkeletonRow key={index} />
+                                ))
+                            ) : (
+                                events.map((event) => (
+                                    <TableRow key={event.event_id}>
+                                        <TableCell>{event.name}</TableCell>
+                                        <TableCell className="text-right">
+                                            <Dialog>
+                                                <DialogTrigger asChild>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="border-[#000072] text-[#000072] hover:bg-[#000072] hover:text-white"
+                                                        onClick={() => {
+                                                            setSelectedHistory(event);
+                                                            fetchWinnerHistory(event.event_id);
+                                                        }}
+                                                    >
+                                                        Show
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent className="sm:max-w-[700px] bg-white text-black font-poppins">
+                                                    <DialogHeader>
+                                                        <DialogTitle className="font-medium">
+                                                            {selectedHistory?.name}
+                                                        </DialogTitle>
+                                                    </DialogHeader>
+                                                    <Table>
+                                                        <ScrollArea className="h-[475px] w-full rounded-md border p-4">
+                                                            <TableHeader>
+                                                                <TableRow>
+                                                                    <TableHead>NIPP</TableHead>
+                                                                    <TableHead>Participant</TableHead>
+                                                                    <TableHead>Prize</TableHead>
+                                                                </TableRow>
+                                                            </TableHeader>
+                                                            <TableBody>
+                                                                {isDialogLoading ? (
+                                                                    Array.from({ length: 7 }).map((_, index) => (
+                                                                        <SkeletonDialogRow key={index} />
+                                                                    ))
+                                                                ) : show.length === 0 ? (
+                                                                    <TableRow>
+                                                                        <TableCell colSpan={3} className="text-center">
+                                                                            No winner history available for this event.
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                ) : (
+                                                                    show.map((showItem, index) => (
+                                                                        <TableRow key={index}>
+                                                                            <TableCell>{showItem.nipp}</TableCell>
+                                                                            <TableCell>{showItem.participant}</TableCell>
+                                                                            <TableCell>{showItem.prize}</TableCell>
+                                                                        </TableRow>
+                                                                    ))
+                                                                )}
+                                                            </TableBody>
+                                                        </ScrollArea>
+                                                    </Table>
+                                                </DialogContent>
+                                            </Dialog>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            )}
+                        </TableBody>
+                    </Table>
+                    <p className="text-sm text-muted-foreground text-center">
+                        Showing page {page} of {totalPages}
+                    </p>
+                    <Pagination>
+                        <PaginationContent>
+                            <PaginationItem>
+                                <PaginationPrevious
+                                    onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                                />
+                            </PaginationItem>
+                            {[...Array(totalPages)].map((_, index) => (
+                                <PaginationItem key={index}>
+                                    <PaginationLink
+                                        onClick={() => setPage(index + 1)}
+                                    >
+                                        {index + 1}
+                                    </PaginationLink>
+                                </PaginationItem>
                             ))}
-                            </TableBody>
-                        </ScrollArea>
-                        </Table>
-                        </DialogContent>
-                    </Dialog>
-                    </TableCell>
-                </TableRow>
-                ))}
-            </TableBody>
-            </Table>
-        <p className="text-sm text-muted-foreground text-center">
-            Showing 8-16 categories of total 17 categories
-        </p>
-        <Pagination>
-            <PaginationContent>
-            <PaginationItem>
-                <PaginationPrevious href="#" />
-            </PaginationItem>
-            <PaginationItem>
-                <PaginationLink href="#">1</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-                <PaginationEllipsis />
-            </PaginationItem>
-            <PaginationItem>
-                <PaginationNext href="#" />
-            </PaginationItem>
-            </PaginationContent>
-        </Pagination>
+                            <PaginationItem>
+                                <PaginationNext
+                                    onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+                                />
+                            </PaginationItem>
+                        </PaginationContent>
+                    </Pagination>
+                </div>
+            </main>
         </div>
-    </main>
-    </div>
-)
+    );
 }
