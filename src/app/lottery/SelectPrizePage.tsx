@@ -22,14 +22,33 @@ export default function SelectPrizePage(): JSX.Element {
     } = useLottery();
 
     useEffect(() => {
-      fetchAPI(`/events/${selectedEvent?.event_id}`)
-      .then((data) => {
-        setPrizes(data.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+      if (!selectedEvent?.event_id) return;
+    
+      fetchAPI(`/events/${selectedEvent.event_id}`)
+        .then((prizesRes) => {
+          return fetchAPI(`/winner-histories/${selectedEvent.event_id}`).then((whRes) => {
+            const winnerHistory = whRes.data;
+    
+            const prizeCount = winnerHistory.reduce((acc: any, curr: any) => {
+              acc[curr.prize.prize_id] = (acc[curr.prize.prize_id] || 0) + 1;
+              return acc;
+            }, {});
+    
+            const availablePrizes = prizesRes.data
+              .map((prize: Prize) => {
+                prize.quantity = prize.quantity - (prizeCount[prize.prize_id] || 0);
+                return prize;
+              })
+              .filter((prize: Prize) => prize.quantity > 0);
+    
+            setPrizes(availablePrizes);
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     }, [selectedEvent]);
+    
 
     const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       let inputValue = parseInt(e.target.value);

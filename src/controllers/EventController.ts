@@ -19,7 +19,7 @@ export const createEvent = async (req: NextRequest) => {
     const prisma = new PrismaClient();
 
     try {
-        const operating_area = "Jakarta";
+        const operating_area = "Pusat";
         const latestEvent = await prisma.event.findFirst({
             orderBy: {
                 event_id: 'desc'
@@ -116,7 +116,6 @@ export const createEvent = async (req: NextRequest) => {
         const limit = 7;
         const skip = (page - 1) * limit;
         const operating_area = "Pusat";
-
         const events = await prisma.event.findMany({
         where: { operating_area },
         skip,

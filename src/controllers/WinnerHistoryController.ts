@@ -5,19 +5,37 @@ const prisma = new PrismaClient();
 
 export const createWinnerHistory = async (req : NextRequest) => {
     try {
+        const operating_area = "Pusat";
         const body = await req.json();
+        const { event_id, prize_id, nipp } = body;
 
-        const winnerHistory = await prisma.winnerHistory.create({
-            data:body
+        const participant = await prisma.participant.findFirst({
+            where: {
+                nipp,
+                event_id,
+            }
         });
 
-        return NextResponse.json({ message: "Winner history created successfully", data:winnerHistory }, { status: 201 });
+        if (participant) {
+            const winnerHistory = await prisma.winnerHistory.create({
+                data: {
+                    event_id,
+                    prize_id,
+                    operating_area,
+                    participant_id: participant.participant_id,
+                },
+            });
+
+            return NextResponse.json({message: "Success Create Winner"}, { status: 201 });
+        }
+
+        return NextResponse.json({message: "Participant not found"}, { status: 404 });
+
     } catch (error) {
-        return NextResponse.json({message: error instanceof Error ? error.message : "An unknown error occurred"}, { status: 500 });
+        return NextResponse.json({message: error instanceof Error ? error.message : "An unknown error occurred"}, { status: 401 });
     }
 };
 
-// TODO : get operating_area from jwt
 export const getWinnerHistories = async (page: number) => {
     try {
         const operating_area = "Pusat";
@@ -92,3 +110,30 @@ export const getDetailWinnerHistory = async (eventId: number) => {
         throw new Error(error instanceof Error ? error.message : "An unknown error occurred");
     }
 };
+
+export const getWinnerHistory = async (eventId: number) => {
+    try {
+        const winnerHistories = await prisma.winnerHistory.findMany({
+            where: { event_id: eventId },
+            include: {
+                participant: {
+                    select: {
+                        nipp: true,
+                        name: true,
+                    },
+                },
+                prize: {
+                    select: {
+                        prize_id: true,
+                    },
+                },
+            }
+        });
+        if (winnerHistories) {
+            return NextResponse.json({message:"Success GET Winner History", data:winnerHistories}, { status: 201 });
+        }
+        return NextResponse.json({message:"Error", error: "Failed to fetch winner history" }, { status: 401 });
+    } catch (error) {
+        return NextResponse.json({message: error instanceof Error ? error.message : "An unknown error occurred"}, { status: 401 });
+    }
+}

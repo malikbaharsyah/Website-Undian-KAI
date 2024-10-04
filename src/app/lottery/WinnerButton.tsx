@@ -1,25 +1,44 @@
 "use client"
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import {
   Popover,
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { CheckIcon, RefreshCwIcon } from 'lucide-react'
+import { useLottery } from './LotteryContext'
+import fetchAPI from '../components/hooks/fetchAPI'
 
 interface EmployeeButtonProps {
   initialId: string | null
+  isShuffling: boolean
 }
 
-export default function WinnerButton({ initialId = null }: EmployeeButtonProps) {
+export default function WinnerButton({ initialId = null, isShuffling }: EmployeeButtonProps) {
   const [employeeId, setEmployeeId] = useState<string | null>(initialId)
   const [isDisabled, setIsDisabled] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
 
+  const { selectedPrize, selectedEvent } = useLottery()
+
   const handleCheck = () => {
-    setIsDisabled(true)
-    setIsHovered(false)
+    try {
+      fetchAPI(`/winner-histories`,
+        {
+          method : 'POST',
+          body : JSON.stringify({
+            event_id: selectedEvent?.event_id,
+            prize_id: selectedPrize?.prize_id,
+            nipp: employeeId
+          }),
+        }
+      )
+      setIsDisabled(true)
+      setIsHovered(false)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const handleRetry = () => {
@@ -36,13 +55,20 @@ export default function WinnerButton({ initialId = null }: EmployeeButtonProps) 
     setIsHovered(false)
   }
 
+  useEffect(() => {
+    if (!isDisabled && isShuffling) {
+      setEmployeeId(initialId)
+    }
+  }, [initialId, isShuffling, isDisabled])
+
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className="w-[280px] h-[72px] border-[#000072]"
-          disabled={isDisabled}
+          // className={"w-[280px] h-[72px] font-bold text-2xl" + (isDisabled ? "" : "border-[#000072] text-[#000072]")}
+          className={`w-[280px] h-[72px] font-bold text-2xl border-[#000072] text-[#000072] 
+            ${isDisabled ? "bg-[#23C552] text-white border-none" : "hover:bg-gray-100"}`}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
