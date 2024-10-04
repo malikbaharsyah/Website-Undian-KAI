@@ -1,28 +1,31 @@
-"use client";
+"use client"
 
-import { useState } from "react";
 import Sidebar from "../components/Sidebar";
-
-import SelectEventPage from "../components/pages/SelectEventPage";
-import SelectPrizePage from "../components/pages/SelectPrizePage";
-import StartLotteryPage from "../components/pages/StartLotteryPage";
+import SelectEventPage from "./SelectEventPage";
+import SelectPrizePage from "./SelectPrizePage";
+import StartLotteryPage from "./StartLotteryPage";
+import {useLottery, LotteryProvider } from "./LotteryContext";
+import React from "react";
 
 export default function Lottery() {
-  const [step, setStep] = useState(1);
-  const [selectedEventId, setSelectedEventId] = useState(0);
+  return (
+    <LotteryProvider>
+      <div className="flex flex-row font-poppins bg-white text-black">
+        <Sidebar />
+        <LotteryContent />
+      </div>
+    </LotteryProvider>
+  );
+}
+
+function LotteryContent() {
+  const { step } = useLottery();
 
   return (
-    <div className="flex flex-row font-poppins bg-white text-black">
-      <Sidebar />
-        {step === 1 && (
-          <SelectEventPage setStep={setStep} step={step} setSelectedEventId={setSelectedEventId} />
-        ) }
-        {step === 2 && (
-          <SelectPrizePage setStep={setStep} step={step} selectedEventId={selectedEventId}/>
-        ) }
-        {step === 3 && (
-          <StartLotteryPage setStep={setStep} step={step} numOfWinners={6}/>
-        )}
-    </div>
+    <>
+      {step === 1 && <SelectEventPage />}
+      {step === 2 && <SelectPrizePage />}
+      {step === 3 && <StartLotteryPage />}
+    </>
   );
 }

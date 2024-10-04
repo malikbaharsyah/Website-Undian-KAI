@@ -1,19 +1,20 @@
-import ComboBox from "../ComboBox";
+import ComboBox from "../components/ComboBox";
 import { Button } from "@/components/ui/button";
-import Event from "../interfaces/Event";
+import Event from "../components/interfaces/Event";
 import { useEffect, useState } from "react";
-import fetchAPI from "../hooks/fetchAPI";
+import fetchAPI from "../components/hooks/fetchAPI";
+import { useLottery } from "./LotteryContext";
 
-interface SelectEventPageProps {
-  setStep: (step: number) => void;
-  setSelectedEventId: (eventId: number) => void;
-  step: number;
-}
+// interface SelectEventPageProps {
+//   setStep: (step: number) => void;
+//   step: number;
+// }
 
 
-export default function SelectEventPage({ setStep, step, setSelectedEventId }: SelectEventPageProps): JSX.Element {
-    const [, setEvents] = useState<Event[]>([]);
+export default function SelectEventPage(): JSX.Element {
+    const [events, setEvents] = useState<Event[]>([]);
     const [eventOptions, setEventOptions] = useState([]);
+    const { setStep, step, setSelectedEvent } = useLottery();
 
     useEffect(() => {
         fetchAPI("/events")
@@ -32,7 +33,8 @@ export default function SelectEventPage({ setStep, step, setSelectedEventId }: S
     
     const handleEventChange = (value: number | null) => {
         if (value !== null) {
-            setSelectedEventId(value);
+            const selectedEvent = events.find((event) => event.event_id === value);
+            setSelectedEvent(selectedEvent ?? null);
         }
     }
 

@@ -26,10 +26,8 @@ model Participant {
   operating_area  String
   address         String?
   event_id        Int
-  event           Event?        @relation(fields: [event_id], references: [event_id], onUpdate: Restrict, onDelete: Restrict)
+  event           Event?        @relation(fields: [event_id], references: [event_id], onDelete: Cascade)
   winner_history  WinnerHistory[]
-  
-  @@index([nipp])
 }
 
 model WinnerHistory {
@@ -39,10 +37,10 @@ model WinnerHistory {
   prize_id          Int
   operating_area    String
   timestamp         DateTime      @default(now())
-  
-  event             Event?        @relation(fields: [event_id], references: [event_id], onUpdate: Restrict, onDelete: Restrict)
-  participant       Participant?  @relation(fields: [participant_id], references: [participant_id], onUpdate: Restrict, onDelete: Restrict)
-  prize             Prize?        @relation(fields: [prize_id], references: [prize_id], onUpdate: Restrict, onDelete: Restrict)
+
+  event             Event?        @relation(fields: [event_id], references: [event_id], onDelete: Cascade)
+  participant       Participant?  @relation(fields: [participant_id], references: [participant_id], onDelete: Cascade)
+  prize             Prize?        @relation(fields: [prize_id], references: [prize_id], onDelete: Cascade)
 }
 
 model Prize {
@@ -53,7 +51,7 @@ model Prize {
   operating_area   String
   event_id         Int
   winner_history   WinnerHistory[]
-  event            Event?         @relation(fields: [event_id], references: [event_id], onUpdate: Restrict, onDelete: Restrict)
+  event            Event?         @relation(fields: [event_id], references: [event_id], onDelete: Cascade)
 }
 
 model User {

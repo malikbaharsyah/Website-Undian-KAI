@@ -31,11 +31,13 @@ import Sidebar from "../components/Sidebar"
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import fetchAPI from "../components/hooks/fetchAPI"
+import { format } from "date-fns"
+import Event from "../components/interfaces/Event"
 
-interface Event {
-  event_id: number
-  name: string
-}
+// interface Event {
+//   event_id: number
+//   name: string
+// }
 
 interface Detail {
   prize_id: number
@@ -114,7 +116,9 @@ export default function Events() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Event</TableHead>
+                <TableHead className="text-left">Event</TableHead>
+                <TableHead>Start Date</TableHead>
+                <TableHead>End Date</TableHead>
                 <TableHead className="text-right">Action</TableHead>
               </TableRow>
             </TableHeader>
@@ -124,6 +128,8 @@ export default function Events() {
                 : events.map((event) => (
                     <TableRow key={event.event_id}>
                       <TableCell>{event.name}</TableCell>
+                      <TableCell>{format(new Date(event.start_date).toLocaleDateString(), "MMMM dd, yyyy")}</TableCell>
+                      <TableCell>{format(new Date(event.end_date).toLocaleDateString(), "MMMM dd, yyyy")}</TableCell>
                       <TableCell className="text-right">
                         <Dialog>
                           <DialogTrigger asChild>

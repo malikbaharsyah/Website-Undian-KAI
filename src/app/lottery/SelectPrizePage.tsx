@@ -1,28 +1,45 @@
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
-import Prize from "../interfaces/Prize"
-import CustomCarousel from "../CustomCarousel"
-import fetchAPI from "../hooks/fetchAPI"
+import Prize from "../components/interfaces/Prize"
+import CustomCarousel from "../components/CustomCarousel"
+import fetchAPI from "../components/hooks/fetchAPI"
+import { Input } from "@/components/ui/input"
+import { useLottery } from "./LotteryContext"
 
-interface SelectPrizePageProps {
-    setStep: (step: number) => void
-    step: number
-    selectedEventId: number
-}
+// interface SelectPrizePageProps {
+//     setStep: (step: number) => void
+//     step: number
+//     selectedEventId: number
+//     setQty: (q: number) => void
+//     qty: number
+// }
 
-export default function SelectPrizePage({setStep, step, selectedEventId}: SelectPrizePageProps): JSX.Element {
-    const [selectedPrize, setSelectedPrize] = useState<Prize | null>(null);
+export default function SelectPrizePage(): JSX.Element {
+    
     const [prizes, setPrizes] = useState<Prize[]>([]);
+    const { setStep, step, selectedEvent,
+      setSelectedEvent, setQty, qty, selectedPrize, setSelectedPrize
+    } = useLottery();
 
     useEffect(() => {
-      fetchAPI(`/events/${selectedEventId}`)
+      fetchAPI(`/events/${selectedEvent?.event_id}`)
       .then((data) => {
         setPrizes(data.data);
       })
       .catch((error) => {
         console.error(error);
       });
-    }, [selectedEventId]);
+    }, [selectedEvent]);
+
+    const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      let inputValue = parseInt(e.target.value);
+      if (inputValue < 0) {
+        inputValue = 0;
+      } else if (selectedPrize && inputValue > selectedPrize.quantity) {
+        inputValue = 1;
+      }
+      setQty(inputValue);
+    };
 
     return (
         <div className="p-6 space-y-6 flex-1 flex flex-col">
@@ -40,10 +57,14 @@ export default function SelectPrizePage({setStep, step, selectedEventId}: Select
             <div className="space-y-2">
               <h2 className="text-xl font-semibold">Input Quantity(s)</h2>
               <p className="text-sm text-gray-400">Maximum {selectedPrize?.quantity} pcs.</p>
-              <input
+              <Input
                 type="number"
                 defaultValue="0"
-                className="border rounded-md px-3 py-2 w-[50px] text-center"
+                value={qty}
+                min={0}
+                max={selectedPrize?.quantity}
+                onChange={(e) => handleQuantityChange(e)}
+                className="border rounded-md px-3 py-2 w-[75px] text-center"
               />
             </div>
           </div>
@@ -52,7 +73,7 @@ export default function SelectPrizePage({setStep, step, selectedEventId}: Select
             <Button
               variant="outline"
               className="border-[#000072] text-[#000072] hover:bg-[#000072] hover:text-white"
-              onClick={() => setStep(step-1)}
+              onClick={() => { setStep(step-1); setSelectedEvent(null); }}
             >
               Back
             </Button>
