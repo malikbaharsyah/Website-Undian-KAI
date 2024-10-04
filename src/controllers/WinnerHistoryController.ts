@@ -39,7 +39,7 @@ export const createWinnerHistory = async (req : NextRequest) => {
 export const getWinnerHistories = async (page: number) => {
     try {
         const operating_area = "Pusat";
-        const limit = 7;
+        const limit = 6;
         const skip = (page - 1) * limit;
 
         const events = await prisma.event.findMany({
