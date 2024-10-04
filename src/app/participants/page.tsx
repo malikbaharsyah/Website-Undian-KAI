@@ -124,7 +124,7 @@ return (
                 Array.from({ length: 9 }).map((_, index) => (
                 <TableRow key={`skeleton-${index}`}>
                     <TableCell>
-                    <Skeleton className="h-4 w-16" />
+                    <Skeleton className="h-4 w-8 p-2" />
                     </TableCell>
                     <TableCell>
                     <Skeleton className="h-4 w-32" />
@@ -155,27 +155,40 @@ return (
             Showing {currentPage} of {totalPages} pages
         </p>
         <Pagination>
-            <PaginationContent>
+        <PaginationContent>
             <PaginationItem>
-                <PaginationPrevious
+            <PaginationPrevious
                 href="#"
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                />
+            />
             </PaginationItem>
-            {[...Array(totalPages)].map((_, index) => (
-                <PaginationItem key={`page-${index + 1}`}>
-                <PaginationLink href="#" onClick={() => setCurrentPage(index + 1)}>
-                    {index + 1}
+            {Array.from({ length: 3 }).map((_, index) => {
+            const startPage = Math.max(1, currentPage - 1);
+            const pageNumber = startPage + index;
+
+            if (pageNumber > totalPages) return null;
+
+            return (
+                <PaginationItem key={`page-${pageNumber}`}>
+                <PaginationLink
+                    className={`${
+                    pageNumber === currentPage
+                        ? "text-[#000072] bg-[#e0e0f7]"
+                        : "text-[#6666A3] bg-white"
+                    } hover:bg-[#e0e0f7]`}
+                    onClick={() => setCurrentPage(pageNumber)}
+                >
+                    {pageNumber}
                 </PaginationLink>
                 </PaginationItem>
-            ))}
+            );
+            })}
             <PaginationItem>
-                <PaginationNext
-                href="#"
+            <PaginationNext
                 onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                />
+            />
             </PaginationItem>
-            </PaginationContent>
+        </PaginationContent>
         </Pagination>
         </div>
     </main>

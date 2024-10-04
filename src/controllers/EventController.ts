@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
-import multer from 'multer';
+// import multer from 'multer';
 import path, { parse } from 'path';
 import fs from 'fs';
 
@@ -109,32 +109,44 @@ export const createEvent = async (req: NextRequest) => {
     }
 };
 
-
-export const getEvents = async () => {
+    export const getEvents = async (req: NextRequest) => {
     try {
+        const { searchParams } = new URL(req.url);
+        const page = parseInt(searchParams.get("page") || "1", 10);
+        const limit = 7;
+        const skip = (page - 1) * limit;
+        const operating_area = "Pusat";
 
-        // const body = await req.json();
-        // body.operating_area = "Jakarta";
-        const operating_area = "Jakarta";
-        // sort by end_date
         const events = await prisma.event.findMany({
-            where: {
-                operating_area: operating_area
-            },
-            orderBy: {
-                end_date: 'desc'
-            }
+        where: { operating_area },
+        skip,
+        take: limit,
+        select: {
+            event_id: true,
+            name: true,
+            start_date: true,
+            end_date: true,
+        },
         });
 
-        return NextResponse.json({message:"Success GET events", data:events}, { status: 201 });
+        const totalRecords = await prisma.event.count({ where: { operating_area } });
+
+        return NextResponse.json({
+        data: events,
+        meta: {
+            totalRecords,
+            currentPage: page,
+            totalPages: Math.ceil(totalRecords / limit),
+        },
+        });
     } catch (error) {
-        if (error instanceof Error) {
-            return NextResponse.json({ error: error.message }, { status: 500 });
-        } else {
-            return NextResponse.json({ error: "An unknown error occurred" }, { status: 500 });
-        }
+        return NextResponse.json(
+        { error: error instanceof Error ? error.message : "Unknown error occurred" },
+        { status: 500 }
+        );
     }
-}
+};
+
 
 export const getEventDetail = async (id: string) => {
     try {

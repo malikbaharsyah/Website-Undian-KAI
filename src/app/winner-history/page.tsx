@@ -200,27 +200,41 @@ export default function WinnerHistory() {
                     </p>
                     <Pagination>
                         <PaginationContent>
+                            {/* Previous Button */}
                             <PaginationItem>
-                                <PaginationPrevious
-                                    onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                                />
+                            <PaginationPrevious
+                                onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                            />
                             </PaginationItem>
-                            {[...Array(totalPages)].map((_, index) => (
+
+                            {/* Page Numbers */}
+                            {[...Array(totalPages)].map((_, index) => {
+                            const pageNumber = index + 1;
+                            return (
                                 <PaginationItem key={index}>
-                                    <PaginationLink
-                                        onClick={() => setPage(index + 1)}
-                                    >
-                                        {index + 1}
-                                    </PaginationLink>
+                                <PaginationLink
+                                    href="#"
+                                    className={`${
+                                    pageNumber === page
+                                        ? "text-[#000072] bg-[#e0e0f7]" // Active page style
+                                        : "text-[#6666A3] bg-white" // Inactive page style
+                                    } hover:bg-[#e0e0f7]`}
+                                    onClick={() => setPage(pageNumber)}
+                                >
+                                    {pageNumber}
+                                </PaginationLink>
                                 </PaginationItem>
-                            ))}
+                            );
+                            })}
+
+                            {/* Next Button */}
                             <PaginationItem>
-                                <PaginationNext
-                                    onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-                                />
+                            <PaginationNext
+                                onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+                            />
                             </PaginationItem>
                         </PaginationContent>
-                    </Pagination>
+                        </Pagination>
                 </div>
             </main>
         </div>

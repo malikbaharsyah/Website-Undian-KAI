@@ -6,7 +6,6 @@ const prisma = new PrismaClient();
 export const createWinnerHistory = async (req : NextRequest) => {
     try {
         const body = await req.json();
-        console.log("body", body);
 
         const winnerHistory = await prisma.winnerHistory.create({
             data:body
@@ -22,7 +21,7 @@ export const createWinnerHistory = async (req : NextRequest) => {
 export const getWinnerHistories = async (page: number) => {
     try {
         const operating_area = "Pusat";
-        const limit = 7;
+        const limit = 6;
         const skip = (page - 1) * limit;
 
         const events = await prisma.event.findMany({

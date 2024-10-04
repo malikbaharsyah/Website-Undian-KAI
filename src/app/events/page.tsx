@@ -34,58 +34,60 @@ import fetchAPI from "../components/hooks/fetchAPI"
 import { format } from "date-fns"
 import Event from "../components/interfaces/Event"
 
-// interface Event {
-//   event_id: number
-//   name: string
-// }
-
 interface Detail {
-  prize_id: number
-  name: string
-  quantity: number
+  prize_id: number;
+  name: string;
+  quantity: number;
 }
 
 export default function Events() {
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
-  const [events, setEvents] = useState<Event[]>([])
-  const [details, setDetails] = useState<Detail[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [isLoadingDetails, setIsLoadingDetails] = useState(false)
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [details, setDetails] = useState<Detail[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingDetails, setIsLoadingDetails] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    setIsLoading(true)
-    fetchAPI('/events')
+    setIsLoading(true);
+    fetchAPI(`/events?page=${currentPage}`)
       .then((data) => {
-        setEvents(data.data)
-        setIsLoading(false)
+        setEvents(data.data);
+        setTotalPages(data.meta.totalPages);
+        setIsLoading(false);
       })
       .catch((error) => {
-        console.error(error)
-        setIsLoading(false)
-      })
-  }, [])
+        console.error(error);
+        setIsLoading(false);
+      });
+  }, [currentPage]);
 
   const handleShowDetails = async (event: Event) => {
-    setSelectedEvent(event)
-    setIsLoadingDetails(true)
-    if (event) {
-      try {
-        const data = await fetchAPI(`/events/${event.event_id}`)
-        setDetails(data.data)
-      } catch (error) {
-        console.error(error)
-      } finally {
-        setIsLoadingDetails(false)
-      }
+    setSelectedEvent(event);
+    setIsLoadingDetails(true);
+    try {
+      const data = await fetchAPI(`/events/${event.event_id}`);
+      setDetails(data.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoadingDetails(false);
     }
-  }
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   const TableRowSkeleton = () => (
     <TableRow>
       <TableCell><Skeleton className="h-4 w-[250px]" /></TableCell>
-      <TableCell className="text-right"><Skeleton className="h-8 w-[100px] ml-auto" /></TableCell>
+      <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+      <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+      <TableCell className="text-right"><Skeleton className="h-8 w-[100px]" /></TableCell>
     </TableRow>
-  )
+  );
 
   const DialogContentSkeleton = () => (
     <div className="space-y-4">
@@ -99,8 +101,8 @@ export default function Events() {
         ))}
       </div>
     </div>
-  )
-  
+  );
+
   return (
     <div className="flex font-poppins bg-white text-black">
       <Sidebar />
@@ -112,11 +114,10 @@ export default function Events() {
               <Link href="/events/add">Add Event</Link>
             </Button>
           </div>
-          <p className="text-muted-foreground">Lorem ipsum dolor sit amet</p>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="text-left">Event</TableHead>
+                <TableHead>Event</TableHead>
                 <TableHead>Start Date</TableHead>
                 <TableHead>End Date</TableHead>
                 <TableHead className="text-right">Action</TableHead>
@@ -128,8 +129,8 @@ export default function Events() {
                 : events.map((event) => (
                     <TableRow key={event.event_id}>
                       <TableCell>{event.name}</TableCell>
-                      <TableCell>{format(new Date(event.start_date).toLocaleDateString(), "MMMM dd, yyyy")}</TableCell>
-                      <TableCell>{format(new Date(event.end_date).toLocaleDateString(), "MMMM dd, yyyy")}</TableCell>
+                      <TableCell>{format(new Date(event.start_date), "MMMM dd, yyyy")}</TableCell>
+                      <TableCell>{format(new Date(event.end_date), "MMMM dd, yyyy")}</TableCell>
                       <TableCell className="text-right">
                         <Dialog>
                           <DialogTrigger asChild>
@@ -142,9 +143,9 @@ export default function Events() {
                               Details
                             </Button>
                           </DialogTrigger>
-                          <DialogContent className="sm:max-w-[700px] bg-white text-black font-poppins">
+                          <DialogContent className="sm:max-w-[700px] bg-white text-black">
                             <DialogHeader>
-                              <DialogTitle className="font-medium">{selectedEvent?.name}</DialogTitle>
+                              <DialogTitle>{selectedEvent?.name}</DialogTitle>
                             </DialogHeader>
                             {isLoadingDetails ? (
                               <DialogContentSkeleton />
@@ -176,26 +177,30 @@ export default function Events() {
             </TableBody>
           </Table>
           <p className="text-sm text-muted-foreground text-center">
-            Showing 8-16 categories of total 17 categories
-          </p>
+            Showing {currentPage} of {totalPages} pages
+        </p>
           <Pagination>
             <PaginationContent>
               <PaginationItem>
-                <PaginationPrevious href="#" />
+                <PaginationPrevious onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} />
               </PaginationItem>
+              {Array.from({ length: totalPages }).map((_, index) => (
+                <PaginationItem key={index}>
+                  <PaginationLink
+                    className={`${index + 1 === currentPage ? "text-[#000072] bg-[#e0e0f7]" : "text-[#6666A3] bg-white"} hover:bg-[#e0e0f7]`}
+                    onClick={() => handlePageChange(index + 1)}
+                  >
+                    {index + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
               <PaginationItem>
-                <PaginationLink href="#">1</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext href="#" />
+                <PaginationNext onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))} />
               </PaginationItem>
             </PaginationContent>
           </Pagination>
         </div>
       </main>
     </div>
-  )
+  );
 }
