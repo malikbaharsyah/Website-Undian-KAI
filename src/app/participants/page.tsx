@@ -46,13 +46,14 @@ const fetchEvents = async () => {
     try {
     const res = await fetch("/api/combobox-event");
     const data = await res.json();
-    data.map((ev: { event_id: { toString: () => any; }; }) => ev.event_id = ev.event_id.toString());
-    setEvents(
-        data.map((ev: { event_id: string; name: string; }) => ({
-        id: ev.event_id,
-        name: ev.name,
+    if (Array.isArray(data)) {
+        setEvents(
+        data.map((ev: { event_id: string; name: string }) => ({
+            id: ev.event_id.toString(),
+            name: ev.name,
         }))
-    )
+        );
+    }
     } catch (error) {
     console.error("Error fetching events:", error);
     }
@@ -63,9 +64,13 @@ const fetchParticipants = async (page: number, eventId: string | null) => {
     try {
     const res = await fetch(`/api/participants?page=${page}&event_id=${eventId || ""}`);
     const data = await res.json();
-    setParticipants(data.data);
-    setTotalRecords(data.meta.totalRecords);
-    setTotalPages(data.meta.totalPages);
+    if (data && Array.isArray(data.data)) {
+        setParticipants(data.data);
+        setTotalRecords(data.meta.totalRecords);
+        setTotalPages(data.meta.totalPages);
+    } else {
+        setParticipants([]);
+    }
     } catch (error) {
     console.error("Error fetching participants:", error);
     } finally {
@@ -93,14 +98,18 @@ return (
         </div>
         <p className="text-muted-foreground">Lorem ipsum dolor sit amet</p>
         <div className="flex justify-end">
+            {events.length > 0 ? (
             <ComboBox
-            name="Event"
-            comboBoxContents={events.map((event) => ({
+                name="Event"
+                comboBoxContents={events.map((event) => ({
                 value: event.id,
                 label: event.name,
-            }))}
-            onChange={handleEventChange}
+                }))}
+                onChange={handleEventChange}
             />
+            ) : (
+            <Skeleton className="h-8 w-[150px]" />
+            )}
         </div>
         <Table>
             <TableHeader>
@@ -111,21 +120,35 @@ return (
             </TableRow>
             </TableHeader>
             <TableBody>
-            {isLoading
-                ? Array.from({ length: 9 }).map((_, index) => (
-                    <TableRow key={`skeleton-${index}`}>
-                    <TableCell><Skeleton className="h-4 w-16" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-32" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-                    </TableRow>
+            {isLoading ? (
+                Array.from({ length: 9 }).map((_, index) => (
+                <TableRow key={`skeleton-${index}`}>
+                    <TableCell>
+                    <Skeleton className="h-4 w-16" />
+                    </TableCell>
+                    <TableCell>
+                    <Skeleton className="h-4 w-32" />
+                    </TableCell>
+                    <TableCell>
+                    <Skeleton className="h-4 w-24" />
+                    </TableCell>
+                </TableRow>
                 ))
-                : participants.map((participant) => (
-                    <TableRow key={`participant-${participant.id}-${participant.nipp}`}>
+            ) : participants.length > 0 ? (
+                participants.map((participant) => (
+                <TableRow key={`participant-${participant.id}-${participant.nipp}`}>
                     <TableCell>{participant.nipp}</TableCell>
                     <TableCell>{participant.name}</TableCell>
                     <TableCell>{participant.operating_area}</TableCell>
-                    </TableRow>
-                ))}
+                </TableRow>
+                ))
+            ) : (
+                <TableRow>
+                <TableCell colSpan={3} className="text-center">
+                    No participants found
+                </TableCell>
+                </TableRow>
+            )}
             </TableBody>
         </Table>
         <p className="text-sm text-muted-foreground text-center">
@@ -141,10 +164,7 @@ return (
             </PaginationItem>
             {[...Array(totalPages)].map((_, index) => (
                 <PaginationItem key={`page-${index + 1}`}>
-                <PaginationLink
-                    href="#"
-                    onClick={() => setCurrentPage(index + 1)}
-                >
+                <PaginationLink href="#" onClick={() => setCurrentPage(index + 1)}>
                     {index + 1}
                 </PaginationLink>
                 </PaginationItem>
