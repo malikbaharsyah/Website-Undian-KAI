@@ -4,4 +4,5 @@ export default interface Prize {
     quantity: number;
     image: string;
     operating_area: string;
+    event_id: number;
 }
