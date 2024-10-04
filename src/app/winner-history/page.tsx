@@ -28,6 +28,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import Sidebar from "../components/Sidebar";
+import fetchAPI from "../components/hooks/fetchAPI";
 
 interface Event {
     event_id: number;
@@ -67,7 +68,7 @@ export default function WinnerHistory() {
     const fetchEvents = async (page: number) => {
         setIsLoading(true);
         try {
-            const res = await fetch(`/api/winner-histories?page=${page}`);
+            const res = await fetchAPI(`/api/winner-histories?page=${page}`);
             const data = await res.json();
             setEvents(data.data);
             setTotalPages(data.meta.totalPage);

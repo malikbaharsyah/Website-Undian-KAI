@@ -2,12 +2,19 @@ import * as XLSX from 'xlsx';
 import fs from 'fs';
 import path from 'path';
 
-export interface Participant {
-    nipp: string;
-    name: string;
-    operating_area: string;
-    event_id: number;
-}
+import { PrismaClient } from '@prisma/client';
+import { NextRequest, NextResponse } from 'next/server';
+
+import Participant from '../app/components/interfaces/Participant';
+
+const prisma = new PrismaClient();
+
+// export interface Participant {
+//     nipp: string;
+//     name: string;
+//     operating_area: string;
+//     event_id: number;
+// }
 
 export async function parseExcel(filePath: string, eventId: number): Promise<Participant[]> {
     if (!fs.existsSync(filePath)) {
@@ -30,3 +37,29 @@ export async function parseExcel(filePath: string, eventId: number): Promise<Par
     console.log("Participants", participants);
     return participants;
 }
+
+
+export async function getNIPPParticipants(eventId: number): Promise<string[]> {
+    const participants = await prisma.participant.findMany({
+        where: {
+            event_id: eventId,
+        },
+        select: {
+            nipp:true,
+        }
+    });
+    return participants.map(participant => participant.nipp);
+}
+
+export async function getAndShuffleParticipants(eventId: number): Promise<string[]> {
+    const participants = await getNIPPParticipants(eventId);
+    return shuffleArray(participants);
+}
+
+function shuffleArray<T>(array: T[]): T[] {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
