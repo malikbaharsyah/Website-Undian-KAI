@@ -1,8 +1,8 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction } from "react";
-import Prize from "../components/interfaces/Prize";
-import Event from "../components/interfaces/Event";
+import Prize from "../../components/interfaces/Prize";
+import Event from "../../components/interfaces/Event";
 interface LotteryContextType {
   step: number;
   setStep: Dispatch<SetStateAction<number>>;

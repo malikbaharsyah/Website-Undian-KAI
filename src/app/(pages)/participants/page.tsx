@@ -8,7 +8,7 @@ TableCell,
 TableHead,
 TableHeader,
 TableRow,
-} from "@/components/ui/table";
+} from "@/app/components/ui/table";
 import {
 Pagination,
 PaginationContent,
@@ -16,10 +16,10 @@ PaginationItem,
 PaginationLink,
 PaginationNext,
 PaginationPrevious,
-} from "@/components/ui/pagination";
-import { Skeleton } from "@/components/ui/skeleton";
-import Sidebar from "../components/Sidebar";
-import ComboBox from "../components/ComboBox";
+} from "@/app/components/ui/pagination";
+import { Skeleton } from "@/app/components/ui/skeleton";
+import Sidebar from "../../components/Sidebar";
+import ComboBox from "../../components/ComboBox";
 
 interface Participant {
 id: number;

@@ -1,10 +1,8 @@
-'use client'
-
 import React from "react"
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/app/components/ui/button"
 import Prize from "../components/interfaces/Prize"
 
 interface CustomCarouselProps {

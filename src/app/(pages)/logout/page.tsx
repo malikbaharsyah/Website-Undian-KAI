@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import fetchAPI from "../components/hooks/fetchAPI";
+import fetchAPI from "../../components/hooks/fetchAPI";
 
 export default function LogoutPage() {
     const router = useRouter();

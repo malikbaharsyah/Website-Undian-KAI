@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import LoginPage from './login/page';
+import LoginPage from './(pages)/login/page';
 
 export default function App() {
   return (

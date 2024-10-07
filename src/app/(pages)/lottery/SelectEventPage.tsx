@@ -1,8 +1,8 @@
-import ComboBox from "../components/ComboBox";
-import { Button } from "@/components/ui/button";
-import Event from "../components/interfaces/Event";
+import ComboBox from "../../components/ComboBox";
+import { Button } from "@/app/components/ui/button";
+import Event from "../../components/interfaces/Event";
 import { useEffect, useState } from "react";
-import fetchAPI from "../components/hooks/fetchAPI";
+import fetchAPI from "../../components/hooks/fetchAPI";
 import { useLottery } from "./LotteryContext";
 
 export default function SelectEventPage(): JSX.Element {
