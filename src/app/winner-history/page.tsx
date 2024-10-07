@@ -201,14 +201,11 @@ export default function WinnerHistory() {
                     </p>
                     <Pagination>
                         <PaginationContent>
-                            {/* Previous Button */}
                             <PaginationItem>
                             <PaginationPrevious
                                 onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
                             />
                             </PaginationItem>
-
-                            {/* Page Numbers */}
                             {[...Array(totalPages)].map((_, index) => {
                             const pageNumber = index + 1;
                             return (
@@ -227,8 +224,6 @@ export default function WinnerHistory() {
                                 </PaginationItem>
                             );
                             })}
-
-                            {/* Next Button */}
                             <PaginationItem>
                             <PaginationNext
                                 onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}

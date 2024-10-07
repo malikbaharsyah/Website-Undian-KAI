@@ -45,7 +45,6 @@ export default function useAlert() {
 
   const AlertComponent = () => (
     <div className="absolute items-center justify-center min-h-screen p-4">
-      {/* Loading Dialog */}
       <Dialog open={loading} onOpenChange={() => showAlert(null, null)}>
         <DialogContent className="sm:max-w-[425px] bg-white">
           <DialogHeader>
