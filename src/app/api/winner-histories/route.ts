@@ -10,7 +10,6 @@ export async function GET(req: NextRequest) {
         const winnerHistories = await getWinnerHistories(pageNumber);
         return NextResponse.json(winnerHistories, { status: 200 });
     } catch (error) {
-        console.error("Error fetching winner histories:", error);
         return NextResponse.json({ error: "Failed to fetch winner histories" }, { status: 500 });
     }
 }

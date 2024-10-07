@@ -9,13 +9,6 @@ import Participant from '../app/components/interfaces/Participant';
 
 const prisma = new PrismaClient();
 
-// export interface Participant {
-//     nipp: string;
-//     name: string;
-//     operating_area: string;
-//     event_id: number;
-// }
-
 export async function parseExcel(filePath: string, eventId: number): Promise<Participant[]> {
     if (!fs.existsSync(filePath)) {
         throw new Error(`File not found: ${filePath}`);
@@ -33,8 +26,6 @@ export async function parseExcel(filePath: string, eventId: number): Promise<Par
     }));
 
     fs.unlinkSync(filePath);
-
-    console.log("Participants", participants);
     return participants;
 }
 
@@ -58,8 +49,8 @@ export async function getAndShuffleParticipants(eventId: number): Promise<string
 
 function shuffleArray<T>(array: T[]): T[] {
     for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
-  }
+}

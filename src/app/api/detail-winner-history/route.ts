@@ -9,7 +9,6 @@ export async function GET(req: NextRequest) {
         const winnerHistory = await getDetailWinnerHistory(eventId);
         return NextResponse.json({message:"Success GET Winner History", winnerHistory}, { status: 201 });
     }  catch (error) {
-        console.error("Error fetching detail winner history:", error);
         return NextResponse.json({ error: "Failed to fetch detail winner history" }, { status: 500 });
     }
 }
