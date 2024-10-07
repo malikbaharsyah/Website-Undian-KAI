@@ -1,6 +1,6 @@
 import { createEvent, getEvents } from "@/controllers/EventController";
 import { verifyToken } from "@/controllers/LoginController";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
     return createEvent(req);

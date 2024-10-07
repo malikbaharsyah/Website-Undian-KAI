@@ -36,7 +36,7 @@ name: string;
 export default function Participants() {
 const [participants, setParticipants] = useState<Participant[]>([]);
 const [events, setEvents] = useState<Event[]>([]);
-const [totalRecords, setTotalRecords] = useState(0);
+const [, setTotalRecords] = useState(0);
 const [currentPage, setCurrentPage] = useState(1);
 const [totalPages, setTotalPages] = useState(1);
 const [selectedEventId, setSelectedEventId] = useState<string | null>(null);

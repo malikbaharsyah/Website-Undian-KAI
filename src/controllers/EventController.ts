@@ -79,7 +79,7 @@ export const createEvent = async (req: NextRequest) => {
         const endDate = formData.get('end_date') as string;
 
         const newEvent = await prisma.$transaction(async (prisma) => {
-            const event = await prisma.event.create({
+            await prisma.event.create({
                 data: {
                     event_id: newEvent_id,
                     name,

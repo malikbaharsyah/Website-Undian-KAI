@@ -30,7 +30,7 @@ export default function StartLotteryPage(): JSX.Element {
         setIsShuffling(true);
         if (!intervalRef.current) {
           intervalRef.current = setInterval(() => {
-            setCurrentParticipants((prev) => {
+            setCurrentParticipants(() => {
               const shuffledParticipants = shuffleParticipants(participants).slice(0, qty);
               return shuffledParticipants;
             });
