@@ -4,11 +4,6 @@ const fetchAPI = async (endpoint: string, options: RequestInit = {}) => {
     const defaultHeaders: { 'Content-Type'?: string; 'Authorization'?: string } = {
     };
   
-    const token = localStorage.getItem('token');
-    if (token) {
-      defaultHeaders['Authorization'] = `Bearer ${token}`;
-    }
-  
     options.headers = {
       ...defaultHeaders,
       ...options.headers,
@@ -17,9 +12,12 @@ const fetchAPI = async (endpoint: string, options: RequestInit = {}) => {
     const url = `${baseURL}${endpoint}`;
   
     const response = await fetch(url, options);
-  
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    
+    if (response.status === 401 || response.status === 403) {
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+      }
+      throw new Error('Unauthorized access. Redirecting to login.');
     }
   
     return response.json();
