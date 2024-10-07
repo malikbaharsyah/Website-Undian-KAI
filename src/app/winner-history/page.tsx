@@ -68,8 +68,9 @@ export default function WinnerHistory() {
     const fetchEvents = async (page: number) => {
         setIsLoading(true);
         try {
-            const res = await fetchAPI(`/api/winner-histories?page=${page}`);
+            const res = await fetch(`/api/winner-histories?page=${page}`);
             const data = await res.json();
+            console.log("data", data);
 
             if (Array.isArray(data.data)) {
                 setEvents(data.data);
@@ -86,12 +87,14 @@ export default function WinnerHistory() {
     };
 
     const fetchWinnerHistory = async (eventId: number) => {
+        console.log("fetching winner history for event", eventId);
         setIsDialogLoading(true);
         try {
             const res = await fetch(`/api/detail-winner-history?event_id=${eventId}`);
             const data = await res.json();
+            const winnerHistory = data.winnerHistory;
 
-            setShow(Array.isArray(data) ? data : []);
+            setShow(Array.isArray(winnerHistory) ? winnerHistory : []);
         } catch (error) {
             console.error("Error fetching winner history:", error);
             setShow([]);
