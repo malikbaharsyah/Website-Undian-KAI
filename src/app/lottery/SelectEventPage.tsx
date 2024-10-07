@@ -5,30 +5,24 @@ import { useEffect, useState } from "react";
 import fetchAPI from "../components/hooks/fetchAPI";
 import { useLottery } from "./LotteryContext";
 
-// interface SelectEventPageProps {
-//   setStep: (step: number) => void;
-//   step: number;
-// }
-
-
 export default function SelectEventPage(): JSX.Element {
     const [events, setEvents] = useState<Event[]>([]);
     const [eventOptions, setEventOptions] = useState([]);
-    const { setStep, step, setSelectedEvent } = useLottery();
+    const { setStep, step, selectedEvent, setSelectedEvent } = useLottery();
 
     useEffect(() => {
         fetchAPI("/events")
-        .then((data) => {
-            setEvents(data.data);
-            const eventOptions = data.data.map((event: Event) => ({
-                label: event.name,
-                value: event.event_id.toString(),
-            }));
-            setEventOptions(eventOptions);
-        })
-        .catch((error) => {
-            console.error(error);
-        });
+            .then((data) => {
+                setEvents(data.data);
+                const eventOptions = data.data.map((event: Event) => ({
+                    label: event.name,
+                    value: event.event_id.toString(),
+                }));
+                setEventOptions(eventOptions);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     }, []);
     
     const handleEventChange = (value: number | null) => {
@@ -36,7 +30,7 @@ export default function SelectEventPage(): JSX.Element {
             const selectedEvent = events.find((event) => event.event_id === value);
             setSelectedEvent(selectedEvent ?? null);
         }
-    }
+    };
 
     return (
         <div className="p-6 space-y-6 flex-1 flex flex-col">
@@ -56,21 +50,21 @@ export default function SelectEventPage(): JSX.Element {
 
             <div className="flex justify-between mt-8">
                 <Button
-                variant="outline"
-                className="border-[#000072] text-[#000072] hover:bg-[#000072] hover:text-white"
-                onClick={() => setStep(step - 1)}
-                disabled={step === 1}
+                    variant="outline"
+                    className="border-[#000072] text-[#000072] hover:bg-[#000072] hover:text-white"
+                    onClick={() => setStep(step - 1)}
+                    disabled={step === 1}
                 >
-                Back
+                    Back
                 </Button>
                 <Button
-                className="bg-[#000072] hover:bg-[#000072]/90 text-white"
-                onClick={() => setStep(2)}
+                    className="bg-[#000072] hover:bg-[#000072]/90 text-white"
+                    onClick={() => setStep(step + 1)}
+                    disabled={!selectedEvent}
                 >
-                Next
+                    Next
                 </Button>
             </div>
         </div>
     );
 }
-

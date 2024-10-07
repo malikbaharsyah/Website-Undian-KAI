@@ -6,14 +6,6 @@ import fetchAPI from "../components/hooks/fetchAPI"
 import { Input } from "@/components/ui/input"
 import { useLottery } from "./LotteryContext"
 
-// interface SelectPrizePageProps {
-//     setStep: (step: number) => void
-//     step: number
-//     selectedEventId: number
-//     setQty: (q: number) => void
-//     qty: number
-// }
-
 export default function SelectPrizePage(): JSX.Element {
     
     const [prizes, setPrizes] = useState<Prize[]>([]);
@@ -22,11 +14,9 @@ export default function SelectPrizePage(): JSX.Element {
     } = useLottery();
 
     useEffect(() => {
-      if (!selectedEvent?.event_id) return;
-    
-      fetchAPI(`/events/${selectedEvent.event_id}`)
+      fetchAPI(`/events/${selectedEvent?.event_id}`)
         .then((prizesRes) => {
-          return fetchAPI(`/winner-histories/${selectedEvent.event_id}`).then((whRes) => {
+          return fetchAPI(`/winner-histories/${selectedEvent?.event_id}`).then((whRes) => {
             const winnerHistory = whRes.data;
     
             const prizeCount = winnerHistory.reduce((acc: any, curr: any) => {
@@ -63,7 +53,7 @@ export default function SelectPrizePage(): JSX.Element {
     return (
         <div className="p-6 space-y-6 flex-1 flex flex-col">
           <h1 className="text-3xl font-bold text-[#000072]">
-            Jalan Sehat 17 Agustus
+            {selectedEvent?.name}
           </h1>
 
           <div className="space-y-4 flex-1">
@@ -96,8 +86,13 @@ export default function SelectPrizePage(): JSX.Element {
             >
               Back
             </Button>
-            <Button className="bg-[#000072] hover:bg-[#000072]/90 text-white"
-            onClick={() => setStep(step+1)}>
+            <Button 
+              className="bg-[#000072] hover:bg-[#000072]/90 text-white"
+              onClick={() => setStep(step+1)}
+              disabled={
+                (step === 2 && qty === 0)
+              }
+            >
               Next
             </Button>
           </div>
