@@ -28,7 +28,6 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import Sidebar from "../components/Sidebar";
-import fetchAPI from "../components/hooks/fetchAPI";
 
 interface Event {
     event_id: number;
@@ -218,8 +217,8 @@ export default function WinnerHistory() {
                                     href="#"
                                     className={`${
                                     pageNumber === page
-                                        ? "text-[#000072] bg-[#e0e0f7]" // Active page style
-                                        : "text-[#6666A3] bg-white" // Inactive page style
+                                        ? "text-[#000072] bg-[#e0e0f7]"
+                                        : "text-[#6666A3] bg-white"
                                     } hover:bg-[#e0e0f7]`}
                                     onClick={() => setPage(pageNumber)}
                                 >

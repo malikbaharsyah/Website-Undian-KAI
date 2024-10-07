@@ -66,7 +66,6 @@ export default function WinnerButton({ initialId = null, isShuffling }: Employee
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          // className={"w-[280px] h-[72px] font-bold text-2xl" + (isDisabled ? "" : "border-[#000072] text-[#000072]")}
           className={`w-[280px] h-[72px] font-bold text-2xl border-[#000072] text-[#000072] 
             ${isDisabled ? "bg-[#23C552] text-white border-none" : "hover:bg-gray-100"}`}
           onMouseEnter={handleMouseEnter}

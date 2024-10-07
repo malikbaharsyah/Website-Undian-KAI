@@ -1,9 +1,6 @@
 import * as XLSX from 'xlsx';
 import fs from 'fs';
-import path from 'path';
-
 import { PrismaClient } from '@prisma/client';
-import { NextRequest, NextResponse } from 'next/server';
 
 import Participant from '../app/components/interfaces/Participant';
 
@@ -18,7 +15,7 @@ export async function parseExcel(filePath: string, eventId: number): Promise<Par
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
     const participantsData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-    const participants: Participant[] = participantsData.slice(1).map(row => ({
+    const participants: Participant[] = participantsData.slice(1).map((row: any) => ({
         nipp: row[0].toString(),
         name: row[1],
         operating_area: row[2],

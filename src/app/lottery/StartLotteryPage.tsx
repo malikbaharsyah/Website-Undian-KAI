@@ -10,7 +10,7 @@ export default function StartLotteryPage(): JSX.Element {
     const [selectedNumber, setSelectedNumber] = useState<string | null>(null)
     const { setStep, step, qty, setQty, selectedPrize,
         selectedEvent,
-     } = useLottery()
+    } = useLottery()
 
     const [participants, setParticipants] = useState<string[]>([])
     const [currentParticipants, setCurrentParticipants] = useState<string[]>([]);

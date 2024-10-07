@@ -19,7 +19,6 @@ export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
   const pathname = usePathname();
 
-  // Responsive Sidebar Toggle
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 768) {
