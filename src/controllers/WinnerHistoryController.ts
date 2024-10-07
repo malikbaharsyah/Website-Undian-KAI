@@ -18,7 +18,7 @@ export const createWinnerHistory = async (req : NextRequest) => {
         });
 
         if (participant) {
-            const winnerHistory = await prisma.winnerHistory.create({
+            await prisma.winnerHistory.create({
                 data: {
                     event_id,
                     prize_id,
