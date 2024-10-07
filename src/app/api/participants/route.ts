@@ -1,6 +1,7 @@
 // pages/api/participants.ts
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { verifyToken } from "@/controllers/LoginController";
 
 const prisma = new PrismaClient();
 
@@ -12,6 +13,10 @@ export async function GET(req: NextRequest) {
     const eventId = parseInt(searchParams.get("event_id") || "", 10);
 
     try {
+        const { response, isRedirect } = await verifyToken(req);
+        if (isRedirect) {
+            return response;
+        }
         const participants = await prisma.participant.findMany({
             where: {
                 ...(eventId && { event_id: eventId }),

@@ -24,7 +24,7 @@ export async function getImage(type: string, id: string) {
         //         "Content-Disposition": `inline; filename=${id}.png`,
         //     },
         // });
-        return new NextResponse(file, { status: 201, headers: { "Content-Type": 'image/png' } });
+        return new NextResponse(file, { status: 200, headers: { "Content-Type": 'image/png' } });
              
     } catch (error) {
         return NextResponse.json({ message: "File not found" }, { status: 404 });
