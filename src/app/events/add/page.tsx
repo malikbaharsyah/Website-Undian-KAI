@@ -12,7 +12,6 @@ import { DateRange } from "react-day-picker"
 import fetchAPI from "@/app/components/hooks/fetchAPI"
 import useAlert from "@/app/components/hooks/useAlert"
 import { useRouter } from 'next/navigation';
-import { FILE } from "dns"
 
 interface Prize {
     id: number
@@ -31,9 +30,6 @@ export default function Component() {
     const [participantFile, setParticipantFile] = useState<File | null>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
     const participantFileInputRef = useRef<HTMLInputElement>(null)
-
-    const [isloading, setIsLoading] = useState(false)
-    const [errorString, setErrorString] = useState<string | null>(null)
 
     const {showAlert, AlertComponent} = useAlert()
     const router = useRouter()

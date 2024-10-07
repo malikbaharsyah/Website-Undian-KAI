@@ -2,25 +2,19 @@ import { useEffect, useRef, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import WinnerButton from './WinnerButton'
 import { useLottery } from './LotteryContext'
-import Participant from '../components/interfaces/Participant'
 import { Slider } from "@/components/ui/slider";
 import fetchAPI from '../components/hooks/fetchAPI'
 
 export default function StartLotteryPage(): JSX.Element {
-    const [selectedNumber, setSelectedNumber] = useState<string | null>(null)
     const { setStep, step, qty, setQty, selectedPrize,
         selectedEvent,
-     } = useLottery()
+    } = useLottery()
 
     const [participants, setParticipants] = useState<string[]>([])
     const [currentParticipants, setCurrentParticipants] = useState<string[]>([]);
     const [isShuffling, setIsShuffling] = useState(false);
     const [speed, setSpeed] = useState(250);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
-
-    const numbers = Array.from({ length: qty }, () =>
-        Math.floor(10000 + Math.random() * 90000).toString()
-    )
 
     const shuffleParticipants = (array: string[]) => {
         const shuffled = [...array];

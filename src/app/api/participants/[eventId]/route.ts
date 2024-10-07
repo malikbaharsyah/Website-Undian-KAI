@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getAndShuffleParticipants } from "@/controllers/ParticipantController";
 import { verifyToken } from "@/controllers/LoginController";
 
-export async function GET(req: NextRequest, {params}: {params: {eventId:string}}) {
+export async function GET({params}: {params: {eventId:string}}) {
     try { 
         const { response, isRedirect } = await verifyToken(req);
         if (isRedirect) {

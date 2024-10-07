@@ -1,20 +1,10 @@
 import * as XLSX from 'xlsx';
 import fs from 'fs';
-import path from 'path';
-
 import { PrismaClient } from '@prisma/client';
-import { NextRequest, NextResponse } from 'next/server';
 
 import Participant from '../app/components/interfaces/Participant';
 
 const prisma = new PrismaClient();
-
-// export interface Participant {
-//     nipp: string;
-//     name: string;
-//     operating_area: string;
-//     event_id: number;
-// }
 
 export async function parseExcel(filePath: string, eventId: number): Promise<Participant[]> {
     if (!fs.existsSync(filePath)) {
@@ -25,7 +15,7 @@ export async function parseExcel(filePath: string, eventId: number): Promise<Par
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
     const participantsData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-    const participants: Participant[] = participantsData.slice(1).map(row => ({
+    const participants: Participant[] = participantsData.slice(1).map((row: any) => ({
         nipp: row[0].toString(),
         name: row[1],
         operating_area: row[2],
@@ -33,8 +23,6 @@ export async function parseExcel(filePath: string, eventId: number): Promise<Par
     }));
 
     fs.unlinkSync(filePath);
-
-    console.log("Participants", participants);
     return participants;
 }
 
@@ -58,8 +46,8 @@ export async function getAndShuffleParticipants(eventId: number): Promise<string
 
 function shuffleArray<T>(array: T[]): T[] {
     for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
-  }
+}

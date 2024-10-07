@@ -1,10 +1,12 @@
 import { PrismaClient } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
-// import multer from 'multer';
-import path, { parse } from 'path';
+import path from 'path';
 import fs from 'fs';
 
-import { Participant, parseExcel } from '@/controllers/ParticipantController';
+import { parseExcel } from '@/controllers/ParticipantController';
+import Participant from '../app/components/interfaces/Participant';
+
+
 
 const UPLOAD_PATH = process.env.UPLOAD_PATH || path.join(process.cwd(), 'uploads');
 
@@ -48,7 +50,7 @@ export const createEvent = async (req: NextRequest) => {
             await saveFile(eventImage, 'events', '2');
         }
 
-        const prizes: Prize[] = [];
+        const prizes: any[] = [];
         const prize_length = parseInt(formData.get('prize_length') as string);
         for (let i = 0; i < prize_length; i++) {
             const prizeData = formData.get(`prize[${i}]`) as string;
@@ -67,7 +69,7 @@ export const createEvent = async (req: NextRequest) => {
                     quantity: parseInt(prizeQuantity),
                     operating_area: operating_area,
                     image: `events/${newEvent_id}/prizes/${i}`,
-                    event_id: newEvent_id
+                    event_id: newEvent_id,
                 });
             }
         }
@@ -105,7 +107,7 @@ export const createEvent = async (req: NextRequest) => {
         return NextResponse.json({ message: 'Event created successfully', event: newEvent }, { status: 201 });
 
     } catch (error) {
-        return NextResponse.json({ error: error.message }, { status: 501 });
+        return NextResponse.json({ error: error instanceof Error ? error.message : "Unknown error occurred" }, { status: 501 });
     } finally {
         await prisma.$disconnect();
     }

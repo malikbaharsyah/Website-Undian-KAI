@@ -7,13 +7,6 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Prize from "../components/interfaces/Prize"
 
-// interface Prize {
-//   prize_id: number
-//   name: string
-//   image: string
-//   quantity: number
-// }
-
 interface CustomCarouselProps {
   prizes: Prize[]
   setSelectedPrize: (prize: Prize | null) => void
