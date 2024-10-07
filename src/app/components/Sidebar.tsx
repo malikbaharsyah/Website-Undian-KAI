@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { CircleUser } from "lucide-react";
+import { useRouter } from "next/router";
 import {
   HomeIcon,
   CalendarIcon,
@@ -17,6 +19,7 @@ import {
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
+  const [username, setUsername] = useState("");
   const pathname = usePathname();
 
   useEffect(() => {
@@ -31,6 +34,11 @@ export default function Sidebar() {
     window.addEventListener("resize", handleResize);
     handleResize();
 
+    const storedUsername = localStorage.getItem("username");
+    if (storedUsername) {
+        setUsername(storedUsername);
+    }
+
     return () => {
       window.removeEventListener("resize", handleResize);
     };
@@ -40,7 +48,7 @@ export default function Sidebar() {
     <div
       className={`${
         isOpen ? "w-64" : "w-20"
-      } font-poppins h-screen bg-[#F3F3F3] border-r border-gray-200 flex flex-col transition-all duration-500 ease-in-out relative`}
+      } font-poppins min-h-screen bg-[#F3F3F3] border-r border-gray-200 flex flex-col transition-all duration-500 ease-in-out relative`}
     >
       <Button
         variant="ghost"
@@ -60,12 +68,15 @@ export default function Sidebar() {
             isOpen ? "space-x-3" : "justify-center"
           }`}
         >
-          <Avatar>
-            <AvatarImage src="/placeholder-avatar.jpg" alt="Admin" />
-            <AvatarFallback>AD</AvatarFallback>
+          <Avatar className="">
+            <CircleUser
+              strokeWidth={2}
+              size={42}
+              color="#000072"
+            />
           </Avatar>
           {isOpen && (
-            <span className="text-lg text-[#333333] font-bold">Admin</span>
+            <span className="text-lg text-[#000072] font-bold">{username}</span>
           )}
         </div>
       </div>

@@ -16,7 +16,7 @@ export async function getImage(type: string, id: string) {
             filePath = path.join(UPLOAD_PATH, type, eventId, `${prizeId}.png`);
         }
         const file = fs.readFileSync(filePath);
-        return new NextResponse(file, { status: 201, headers: { "Content-Type": 'image/png' } });
+        return new NextResponse(file, { status: 200, headers: { "Content-Type": 'image/png' } });
     } catch (error) {
         return NextResponse.json({ message: "File not found" }, { status: 404 });
     }

@@ -5,7 +5,8 @@ const prisma = new PrismaClient();
 
 export const createWinnerHistory = async (req : NextRequest) => {
     try {
-        const operating_area = "Pusat";
+        const xUser = JSON.parse(req.headers.get('x-user')??'{}');
+        const operating_area = xUser.operating_area as string;
         const body = await req.json();
         const { event_id, prize_id, nipp } = body;
 
@@ -32,13 +33,14 @@ export const createWinnerHistory = async (req : NextRequest) => {
         return NextResponse.json({message: "Participant not found"}, { status: 404 });
 
     } catch (error) {
-        return NextResponse.json({message: error instanceof Error ? error.message : "An unknown error occurred"}, { status: 401 });
+        return NextResponse.json({message: error instanceof Error ? error.message : "An unknown error occurred"}, { status: 404 });
     }
 };
 
-export const getWinnerHistories = async (page: number) => {
+export const getWinnerHistories = async (req: NextRequest, page: number) => {
     try {
-        const operating_area = "Pusat";
+        const xUser = JSON.parse(req.headers.get('x-user')??'{}');
+        const operating_area = xUser.operating_area as string;
         const limit = 6;
         const skip = (page - 1) * limit;
 
@@ -130,10 +132,10 @@ export const getWinnerHistory = async (eventId: number) => {
             }
         });
         if (winnerHistories) {
-            return NextResponse.json({message:"Success GET Winner History", data:winnerHistories}, { status: 201 });
+            return NextResponse.json({message:"Success GET Winner History", data:winnerHistories}, { status: 200 });
         }
         return NextResponse.json({message:"Error", error: "Failed to fetch winner history" }, { status: 401 });
     } catch (error) {
-        return NextResponse.json({message: error instanceof Error ? error.message : "An unknown error occurred"}, { status: 401 });
+        return NextResponse.json({message: error instanceof Error ? error.message : "An unknown error occurred"}, { status: 404 });
     }
 }

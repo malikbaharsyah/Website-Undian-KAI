@@ -21,7 +21,9 @@ export const createEvent = async (req: NextRequest) => {
     const prisma = new PrismaClient();
 
     try {
-        const operating_area = "Pusat";
+        const xUser = JSON.parse(req.headers.get('x-user')??'{}');
+
+        const operating_area = xUser.operating_area as string;
         const latestEvent = await prisma.event.findFirst({
             orderBy: {
                 event_id: 'desc'
@@ -113,11 +115,14 @@ export const createEvent = async (req: NextRequest) => {
 
     export const getEvents = async (req: NextRequest) => {
     try {
+        const xUser = JSON.parse(req.headers.get('x-user')??'{}');
+        const operating_area = xUser.operating_area as string;
+
         const { searchParams } = new URL(req.url);
+        console.log("req",req.url);
         const page = parseInt(searchParams.get("page") || "1", 10);
         const limit = 7;
         const skip = (page - 1) * limit;
-        const operating_area = "Pusat";
         const events = await prisma.event.findMany({
         where: { operating_area },
         skip,
@@ -157,7 +162,7 @@ export const getEventDetail = async (id: string) => {
                 event_id: event_id
             }
         });
-        return NextResponse.json({message:"Success GET event detail", data:prizes}, { status: 201 });
+        return NextResponse.json({message:"Success GET event detail", data:prizes}, { status: 200 });
     } catch (error) {
         if (error instanceof Error) {
             return NextResponse.json({ error: error.message }, { status: 500 });

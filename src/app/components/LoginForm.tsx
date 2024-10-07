@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';   
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { useRouter } from 'next/navigation';
 
 export default function LoginForm() {
 const [username, setUsername] = useState('');
 const [password, setPassword] = useState('');
 const [error, setError] = useState('');
+const router = useRouter();
 
 const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,19 +18,19 @@ const handleSubmit = async (e: React.FormEvent) => {
     const response = await fetch('/api/login', {
         method: 'POST',
         headers: {
-        'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
         },
         body: JSON.stringify({ nipp: username, password }),
     });
 
-    if (response.ok) {
-        const { token } = await response.json();
-        localStorage.setItem('token', token);
-        window.location.href = '/lottery';
+    const data = await response.json();
+    if (data.success) {
+        localStorage.setItem('username', username);
+        router.push('/lottery');
     } else {
-        const { message } = await response.json();
-        setError(message || 'Login failed');
+        setError(data.message);
     }
+
     } catch (err) {
     setError('Something went wrong. Please try again.');
     }

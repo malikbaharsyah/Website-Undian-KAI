@@ -21,25 +21,61 @@ export const login = async (req: NextRequest) => {
         });
 
         if (!user) {
-            return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 });
+            return NextResponse.json({ message: 'Invalid credentials', success: false }, { status: 401 });
         }
 
         const token = jwt.sign(
             {
                 nipp: user.nipp,
                 user_name: user.user_name,
-                position: user.position,
+                operating_area: user.operating_area,
+                unit: user.unit,
             },
             process.env.ACCESS_TOKEN_SECRET as string,
-            { expiresIn: '1h' }
+            { expiresIn: '24h' }
         );
 
-        const response = NextResponse.json({ message: 'Login successful' });
-        response.cookies.set('token', token, { httpOnly: true, path: '/' });
+        return NextResponse.json({success: true, message: 'Login successful', token},
+            {
+                headers: {
+                    'Set-Cookie': `token=${token}; HttpOnly; Path=/; Max-Age=86400; SameSite=Strict;`,
+                },
+            }
+        );
 
-        return response;
     } catch (error) {
         console.error(error);
-        return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
+        return NextResponse.json({ message: 'Internal server error', success: false }, { status: 500 });
     }
 }
+
+export const verifyToken = async (req: NextRequest) => {
+    try {
+        const token = req.cookies.get('token')?.value;
+        const secret = process.env.ACCESS_TOKEN_SECRET;
+
+        if (!token) {
+            return { response: NextResponse.json({message: "Unauthorized"}, {status: 401}), isRedirect: true };
+        }
+
+        if (!secret) {
+            console.error('JWT secret not found');
+            throw new Error('JWT secret not found');
+        }
+
+        const decoded = jwt.verify(token, secret);
+
+        if (!decoded) {
+            console.error('Invalid token');
+            return { response: NextResponse.json({message: "Unauthorized"}, {status: 401}), isRedirect: true };
+        }
+        
+        const response = NextResponse.next();
+        req.headers.set('x-user', JSON.stringify(decoded));
+
+        return { response, isRedirect: false };
+    } catch (error) {
+        console.error('Error verifying token:', error);
+        return { response: NextResponse.json({message: "Unauthorized"}, {status: 401}), isRedirect: true };
+    }
+};
