@@ -13,7 +13,7 @@ export default function StartLotteryPage(): JSX.Element {
     const [participants, setParticipants] = useState<string[]>([])
     const [currentParticipants, setCurrentParticipants] = useState<string[]>([]);
     const [isShuffling, setIsShuffling] = useState(false);
-    const [speed, setSpeed] = useState(1);
+    const [speed, setSpeed] = useState(126);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
     const shuffleParticipants = (array: string[]) => {
@@ -104,7 +104,7 @@ export default function StartLotteryPage(): JSX.Element {
             <div className="space-y-4 justify-center items-center flex flex-col">
                 <h2 className="text-xl font-semibold">Speed</h2>
                     <Slider
-                        defaultValue={[speed]}
+                        defaultValue={[125]}
                         onValueChange={(value) => handleSpeedChange(251 - value[0])}
                         max={250}
                         min={1}
