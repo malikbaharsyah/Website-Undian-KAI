@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
-
+const nextConfig = {
+    images : {
+        domains: ['localhost', 'undian.likluk.live']
+    }
+};
+  
 export default nextConfig;
