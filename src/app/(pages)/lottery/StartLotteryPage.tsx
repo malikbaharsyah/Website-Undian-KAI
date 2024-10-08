@@ -4,78 +4,92 @@ import WinnerButton from './WinnerButton'
 import { useLottery } from './LotteryContext'
 import { Slider } from "@/app/components/ui/slider";
 import fetchAPI from '../../components/hooks/fetchAPI'
+import Confetti from 'react-confetti'
 
 export default function StartLotteryPage(): JSX.Element {
-    const { setStep, step, qty, setQty, selectedPrize,
-        selectedEvent,
-    } = useLottery()
+    const { setStep, step, qty, setQty, selectedPrize, selectedEvent } = useLottery()
 
     const [participants, setParticipants] = useState<string[]>([])
     const [currentParticipants, setCurrentParticipants] = useState<string[]>([]);
     const [isShuffling, setIsShuffling] = useState(false);
     const [speed, setSpeed] = useState(126);
+    const [showConfetti, setShowConfetti] = useState(false);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+    const startSoundRef = useRef<HTMLAudioElement | null>(null);
+    const stopSoundRef = useRef<HTMLAudioElement | null>(null);
 
     const shuffleParticipants = (array: string[]) => {
         const shuffled = [...array];
         for (let i = shuffled.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
         }
         return shuffled;
-      };
-      
+    };
 
-      const handleStartShuffle = () => {
+    const handleStartShuffle = () => {
         setIsShuffling(true);
-        if (!intervalRef.current) {
-          intervalRef.current = setInterval(() => {
-            setCurrentParticipants(() => {
-              const shuffledParticipants = shuffleParticipants(participants).slice(0, qty);
-              return shuffledParticipants;
-            });
-          }, speed);
+        setShowConfetti(false);
+        if (startSoundRef.current) {
+            startSoundRef.current.loop = true;
+            startSoundRef.current.play();
         }
-      };
-      
+        if (!intervalRef.current) {
+            intervalRef.current = setInterval(() => {
+                setCurrentParticipants(() => {
+                    const shuffledParticipants = shuffleParticipants(participants).slice(0, qty);
+                    return shuffledParticipants;
+                });
+            }, speed);
+        }
+    };
 
-      const handleStopShuffle = () => {
+    const handleStopShuffle = () => {
         setIsShuffling(false);
         if (intervalRef.current) {
-          clearInterval(intervalRef.current);
-          intervalRef.current = null;
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
         }
-      };
+        if (startSoundRef.current) {
+            startSoundRef.current.pause();
+            startSoundRef.current.currentTime = 0;
+        }
+        if (stopSoundRef.current) {
+            stopSoundRef.current.play();
+        }
+        setShowConfetti(true);
+    };
 
     const handleSpeedChange = (value: number) => {
-        setSpeed(value);
+        setSpeed(251 - value);
         if (isShuffling && intervalRef.current) {
-          clearInterval(intervalRef.current);
-          intervalRef.current = setInterval(() => {
-            setCurrentParticipants(() => {
-              const shuffledParticipants = shuffleParticipants(participants).slice(0, qty);
-              return shuffledParticipants;
-            });
-          }, value);
+            clearInterval(intervalRef.current);
+            intervalRef.current = setInterval(() => {
+                setCurrentParticipants(() => {
+                    const shuffledParticipants = shuffleParticipants(participants).slice(0, qty);
+                    return shuffledParticipants;
+                });
+            }, 251 - value);
         }
-      };
+    };
 
     useEffect(() => {
         fetchAPI(`/participants/${selectedEvent?.event_id}`)
-          .then((data) => {
-            setParticipants(data.data);
-            setCurrentParticipants(data.data.slice(0, qty));
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-    
+            .then((data) => {
+                setParticipants(data.data);
+                setCurrentParticipants(data.data.slice(0, qty));
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+
         return () => {
-          if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-          }
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
         };
-      }, [qty, selectedEvent?.event_id]);
+    }, [qty, selectedEvent?.event_id]);
 
     return (
         <div className="p-6 space-y-6 flex-1 flex flex-col font-poppins">
@@ -91,15 +105,12 @@ export default function StartLotteryPage(): JSX.Element {
                     />
                 </div>
             </div>
-            <div className="grid flex-1 gap-6 mb-6 w-full
-                grid-cols-1 sm:grid-cols-2 md:grid-cols-3
-                place-items-center justify-items-center"
-                >
-                    {currentParticipants.map((participant, index) => (
-                        <div key={index} className="w-full max-w-[280px]">
-                            <WinnerButton initialId={participant} isShuffling={isShuffling}/>
-                        </div>
-                    ))}
+            <div className="grid flex-1 gap-6 mb-6 w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 place-items-center justify-items-center">
+                {currentParticipants.map((participant, index) => (
+                    <div key={index} className="w-full max-w-[280px]">
+                        <WinnerButton initialId={participant} isShuffling={isShuffling} />
+                    </div>
+                ))}
             </div>
             <div className="space-y-4 justify-center items-center flex flex-col">
                 <h2 className="text-xl font-semibold">Speed</h2>
@@ -114,15 +125,18 @@ export default function StartLotteryPage(): JSX.Element {
                     <p>current Speed: {251 - speed}</p>
             </div>
             <div className="flex justify-between space-x-4">
-                <Button className='hover:bg-[#000072]/90 hover:text-white' variant="outline" onClick={() => { setStep(step - 1); setQty(0);}}>
+                <Button className='hover:bg-[#000072]/90 hover:text-white' variant="outline" onClick={() => { setStep(step - 1); setQty(0); }}>
                     Choose Prize
                 </Button>
                 <Button className="bg-[#000072] hover:bg-[#000072]/90 text-white"
-                onClick={() => {isShuffling ? handleStopShuffle() : handleStartShuffle(); setIsShuffling(!isShuffling)}}
+                    onClick={() => { isShuffling ? handleStopShuffle() : handleStartShuffle(); setIsShuffling(!isShuffling) }}
                 >
                     {isShuffling ? 'Stop' : 'Start'}
                 </Button>
             </div>
+            {showConfetti && <Confetti />}
+            <audio ref={startSoundRef} src="/sounds/tick.mp3" />
+            <audio ref={stopSoundRef} src="/sounds/celebration.mp3" />
         </div>
     )
 }
