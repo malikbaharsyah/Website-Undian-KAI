@@ -22,8 +22,10 @@ export const createEvent = async (req: NextRequest) => {
 
     try {
         const xUser = JSON.parse(req.headers.get('x-user')??'{}');
-
+        console.log("CreateEvent xUser", req.headers.get('x-user'));
         const operating_area = xUser.operating_area as string;
+
+
         const latestEvent = await prisma.event.findFirst({
             orderBy: {
                 event_id: 'desc'
@@ -35,7 +37,6 @@ export const createEvent = async (req: NextRequest) => {
         const newEvent_id = latestEvent ? latestEvent.event_id + 1 : 0;
 
         const formData = await req.formData();
-        formData.append('operating_area', operating_area);
 
         const participantsFile = formData.get('participants') as File;
         let participants: Participant[] = [];
@@ -115,36 +116,58 @@ export const createEvent = async (req: NextRequest) => {
 
     export const getEvents = async (req: NextRequest) => {
     try {
+        const xPage = req.headers.get('x-page');
         const xUser = JSON.parse(req.headers.get('x-user')??'{}');
         const operating_area = xUser.operating_area as string;
+        if (xPage === '/events') {
+            const { searchParams } = new URL(req.url);
+            const page = parseInt(searchParams.get("page") || "1", 10);
+            const limit = 7;
+            const skip = (page - 1) * limit;
+            const events = await prisma.event.findMany({
+            where: { operating_area },
+            skip,
+            take: limit,
+            select: {
+                event_id: true,
+                name: true,
+                start_date: true,
+                end_date: true,
+            },
+            });
+    
+            const totalRecords = await prisma.event.count({ where: { operating_area } });
+    
+            return NextResponse.json({
+            data: events,
+            meta: {
+                totalRecords,
+                currentPage: page,
+                totalPages: Math.ceil(totalRecords / limit),
+            },
+            });
+        } else {
+            const events = await prisma.event.findMany({
+            where: { operating_area,
+                start_date: {
+                    lte: new Date(),
+                }, end_date: {
+                    gte: new Date(),
+                }
+             },
+            select: {
+                event_id: true,
+                name: true,
+                start_date: true,
+                end_date: true,
+            },
+            });
+            return NextResponse.json(
+                {data: events, message: "Success GET events"},
+                { status: 200 }
+            )
+        }
 
-        const { searchParams } = new URL(req.url);
-        console.log("req",req.url);
-        const page = parseInt(searchParams.get("page") || "1", 10);
-        const limit = 7;
-        const skip = (page - 1) * limit;
-        const events = await prisma.event.findMany({
-        where: { operating_area },
-        skip,
-        take: limit,
-        select: {
-            event_id: true,
-            name: true,
-            start_date: true,
-            end_date: true,
-        },
-        });
-
-        const totalRecords = await prisma.event.count({ where: { operating_area } });
-
-        return NextResponse.json({
-        data: events,
-        meta: {
-            totalRecords,
-            currentPage: page,
-            totalPages: Math.ceil(totalRecords / limit),
-        },
-        });
     } catch (error) {
         return NextResponse.json(
         { error: error instanceof Error ? error.message : "Unknown error occurred" },

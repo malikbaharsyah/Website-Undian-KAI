@@ -3,6 +3,10 @@ import { verifyToken } from "@/controllers/LoginController";
 import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
+    const { response, isRedirect } = await verifyToken(req);
+    if (isRedirect) {
+        return response;
+    }
     return createEvent(req);
 }
 

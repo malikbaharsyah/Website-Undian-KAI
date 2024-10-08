@@ -16,7 +16,7 @@ interface EmployeeButtonProps {
 }
 
 export default function WinnerButton({ initialId = null, isShuffling }: EmployeeButtonProps) {
-  const [employeeId, setEmployeeId] = useState<string | null>(initialId)
+  const [employeeId, setEmployeeId] = useState<string | null>(null)
   const [isDisabled, setIsDisabled] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
 
@@ -71,7 +71,7 @@ export default function WinnerButton({ initialId = null, isShuffling }: Employee
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          {isHovered && employeeId ? (
+          {isHovered && employeeId && !isShuffling ? (
             <div className="flex w-full justify-between">
               <Button 
                 className="flex-1 rounded-none hover:text-red-500" 
