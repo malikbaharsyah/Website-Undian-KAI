@@ -22,8 +22,10 @@ export const createEvent = async (req: NextRequest) => {
 
     try {
         const xUser = JSON.parse(req.headers.get('x-user')??'{}');
-
+        console.log("CreateEvent xUser", req.headers.get('x-user'));
         const operating_area = xUser.operating_area as string;
+
+
         const latestEvent = await prisma.event.findFirst({
             orderBy: {
                 event_id: 'desc'
@@ -35,7 +37,6 @@ export const createEvent = async (req: NextRequest) => {
         const newEvent_id = latestEvent ? latestEvent.event_id + 1 : 0;
 
         const formData = await req.formData();
-        formData.append('operating_area', operating_area);
 
         const participantsFile = formData.get('participants') as File;
         let participants: Participant[] = [];

@@ -20,5 +20,9 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+    const { response, isRedirect } = await verifyToken(req);
+    if (isRedirect) {
+        return response;
+    }
     return createWinnerHistory(req);
 }
