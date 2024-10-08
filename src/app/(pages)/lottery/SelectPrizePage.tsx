@@ -2,14 +2,15 @@ import { Button } from "@/app/components/ui/button";
 import { useEffect, useState } from "react";
 import Prize from "../../components/interfaces/Prize";
 import CustomCarousel from "../../components/CustomCarousel";
-import fetchAPI from "../../components/hooks/fetchAPI";
 import { Input } from "@/app/components/ui/input";
 import { useLottery } from "./LotteryContext";
 import { Skeleton } from "@/app/components/ui/skeleton";
+import useFetchAPI from "@/app/components/hooks/fetchAPI";
 
 export default function SelectPrizePage(): JSX.Element {
   const [prizes, setPrizes] = useState<Prize[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const fetchAPI = useFetchAPI();
   const {
     setStep,
     step,

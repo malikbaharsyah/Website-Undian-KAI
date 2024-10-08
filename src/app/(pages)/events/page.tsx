@@ -29,9 +29,9 @@ import { Skeleton } from "@/app/components/ui/skeleton"
 import Sidebar from "../../components/Sidebar"
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import fetchAPI from "../../components/hooks/fetchAPI"
 import { format } from "date-fns"
 import Event from "../../components/interfaces/Event"
+import useFetchAPI from "../../components/hooks/fetchAPI"
 
 interface Detail {
   prize_id: number;
@@ -47,6 +47,7 @@ export default function Events() {
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const fetchAPI = useFetchAPI();
 
   useEffect(() => {
     setIsLoading(true);

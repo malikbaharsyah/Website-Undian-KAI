@@ -8,7 +8,7 @@ import {
 } from "@/app/components/ui/popover"
 import { CheckIcon, RefreshCwIcon } from 'lucide-react'
 import { useLottery } from './LotteryContext'
-import fetchAPI from '../../components/hooks/fetchAPI'
+import useFetchAPI from '../../components/hooks/fetchAPI'
 
 interface EmployeeButtonProps {
   initialId: string | null
@@ -19,7 +19,7 @@ export default function WinnerButton({ initialId = null, isShuffling }: Employee
   const [employeeId, setEmployeeId] = useState<string | null>(null)
   const [isDisabled, setIsDisabled] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
-
+  const fetchAPI = useFetchAPI();
   const { selectedPrize, selectedEvent } = useLottery()
 
   const handleCheck = () => {
