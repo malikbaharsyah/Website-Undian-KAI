@@ -73,8 +73,6 @@ export default function Component() {
         reader.onloadend = () => {
             if (id) {
             updateImagePrize(id, 'image', file)
-            } else {
-            setBackgroundImage(file)
             }
         }
         reader.readAsDataURL(file)
@@ -84,8 +82,6 @@ export default function Component() {
     const removeImage = (id?: number) => {
         if (id) {
         updateImagePrize(id, 'image', null)
-        } else {
-        setBackgroundImage(null)
         }
     }
 
@@ -116,7 +112,6 @@ export default function Component() {
         formData.append('name', eventName);
         formData.append('start_date', dateRange?.from?.toISOString() || "");
         formData.append('end_date', dateRange?.to?.toISOString() || "");
-        if (backgroundImage) formData.append('image', backgroundImage);
         if (participantFile) formData.append('participants', participantFile);
         formData.append('prize_length', (prizes.length + 1).toString());
         prizes.forEach((prize, index) => {
@@ -268,48 +263,6 @@ export default function Component() {
                 {step === 2 && (
                 <Card className="mb-4">
                     <CardHeader className="pt-4 pl-6">
-                    <CardTitle>Background Picture</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                    <Card className="border shadow-sm">
-                        <CardContent className="pt-3 space-y-4 relative">
-                        {backgroundImage ? (
-                            <div className="relative h-40 w-full">
-                            <img
-                                src={renderImagePreview(backgroundImage)}
-                                alt="Background"
-                                className="h-full w-auto max-w-full object-contain mx-auto"
-                            />
-                            <Button
-                                variant="destructive"
-                                size="icon"
-                                className="absolute top-2 right-2"
-                                onClick={() => removeImage()}
-                            >
-                                <XIcon className="h-4 w-4" />
-                            </Button>
-                            </div>
-                        ) : (
-                            <Button
-                            variant="outline"
-                            className="w-full h-40 border-dashed mt-2"
-                            onClick={() => fileInputRef.current?.click()}
-                            >
-                            <UploadIcon className="mr-2 h-4 w-4" />
-                            Upload
-                            </Button>
-                        )}
-                        <input
-                            type="file"
-                            ref={fileInputRef}
-                            className="hidden"
-                            accept="image/jpeg,image/png,image/jpg"
-                            onChange={handleImageUpload}
-                        />
-                        </CardContent>
-                    </Card>
-                    </CardContent>
-                    <CardHeader className="pt-0 pl-6">
                     <CardTitle>Event Details</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-6">
