@@ -1,5 +1,4 @@
 # Undian KAI Web App
-<!-- add image here -->
 <div align="center">
   <img src="./public/images/logo-readme.svg" alt="Undian KAI Logo" width="200">
 </div>
