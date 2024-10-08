@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 import { Button } from "@/app/components/ui/button"
 import Prize from "../components/interfaces/Prize"
+import Image from "next/image"
 
 interface CustomCarouselProps {
   prizes: Prize[]
@@ -56,7 +57,7 @@ export default function CustomCarousel({ prizes, setSelectedPrize }: CustomCarou
       }}
     >
       <div className="bg-white rounded-lg shadow-lg overflow-hidden h-full">
-        <img
+        <Image
           src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${prize.image}`}
           alt={prize.name}
           className="w-full h-48 object-cover"

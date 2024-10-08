@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { verifyToken } from "@/controllers/LoginController";
 import { getDetailWinnerHistory } from "@/controllers/WinnerHistoryController";
 import { NextRequest, NextResponse } from "next/server";

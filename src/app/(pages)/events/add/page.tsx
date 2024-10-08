@@ -9,9 +9,10 @@ import { PencilIcon, UploadIcon, XIcon, FileSpreadsheet } from "lucide-react"
 import Sidebar from "@/app/components/Sidebar"
 import { DatePicker } from "@/app/components/ui/date-picker"
 import { DateRange } from "react-day-picker"
-import fetchAPI from "@/app/components/hooks/fetchAPI"
 import useAlert from "@/app/components/hooks/useAlert"
 import { useRouter } from 'next/navigation';
+import Image from "next/image"
+import useFetchAPI from "@/app/components/hooks/fetchAPI"
 
 interface Prize {
     id: number
@@ -25,11 +26,10 @@ export default function Component() {
     const [eventName, setEventName] = useState("Untitled Event")
     const [isEditing, setIsEditing] = useState(false)
     const [prizes, setPrizes] = useState<Prize[]>([{id: 1, name: "", quantity: "", image: null}])
-    const [backgroundImage, setBackgroundImage] = useState<File | null>(null)
     const [dateRange, setDateRange] = useState<DateRange | undefined>()
     const [participantFile, setParticipantFile] = useState<File | null>(null)
-    const fileInputRef = useRef<HTMLInputElement>(null)
     const participantFileInputRef = useRef<HTMLInputElement>(null)
+    const fetchAPI = useFetchAPI();
 
     const {showAlert, AlertComponent} = useAlert()
     const router = useRouter()
@@ -213,7 +213,7 @@ export default function Component() {
                             <Label htmlFor={`prize-picture-${prize.id}`}>Picture</Label>
                             {prize.image ? (
                                 <div className="relative h-40 w-full">
-                                <img
+                                <Image
                                     src={renderImagePreview(prize.image)}
                                     alt={`Prize ${prize.name}`}
                                     className="h-full w-auto max-w-full object-contain mx-auto"

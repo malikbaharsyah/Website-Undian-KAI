@@ -1,10 +1,11 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import fetchAPI from "../../components/hooks/fetchAPI";
+import useFetchAPI from "../../components/hooks/fetchAPI";
 
 export default function LogoutPage() {
     const router = useRouter();
+    const fetchAPI = useFetchAPI();
 
     useEffect(() => {
         fetchAPI("/logout", {
@@ -18,7 +19,7 @@ export default function LogoutPage() {
             .catch((error) => {
                 console.error("Logout failed:", error);
             });
-    }, []);
+    }, [router]);
 
     return (
         <div className="flex items-center justify-center h-screen w-screen font-poppins">

@@ -3,8 +3,9 @@ import { Button } from "@/app/components/ui/button"
 import WinnerButton from './WinnerButton'
 import { useLottery } from './LotteryContext'
 import { Slider } from "@/app/components/ui/slider";
-import fetchAPI from '../../components/hooks/fetchAPI'
 import Confetti from 'react-confetti'
+import Image from 'next/image';
+import useFetchAPI from '@/app/components/hooks/fetchAPI';
 
 export default function StartLotteryPage(): JSX.Element {
     const { setStep, step, qty, setQty, selectedPrize, selectedEvent } = useLottery()
@@ -15,7 +16,7 @@ export default function StartLotteryPage(): JSX.Element {
     const [speed, setSpeed] = useState(126);
     const [showConfetti, setShowConfetti] = useState(false);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
-
+    const fetchAPI = useFetchAPI();
     const startSoundRef = useRef<HTMLAudioElement | null>(null);
     const stopSoundRef = useRef<HTMLAudioElement | null>(null);
 
@@ -100,7 +101,7 @@ export default function StartLotteryPage(): JSX.Element {
                 <h2 className="text-4xl font-bold text-center mb-4 mt-8">{selectedPrize?.name}</h2>
                 <div className="relative w-full max-w-2xl flex justify-center">
                     <div className="absolute inset-0 bg-blue-300 rounded-full filter blur-3xl opacity-50"></div>
-                    <img
+                    <Image
                         src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${selectedPrize?.image}`}
                         alt="Prize"
                         className="relative rounded-lg max-w-[300px] max-h-[300px]"

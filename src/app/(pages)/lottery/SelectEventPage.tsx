@@ -2,13 +2,14 @@ import ComboBox from "../../components/ComboBox";
 import { Button } from "@/app/components/ui/button";
 import Event from "../../components/interfaces/Event";
 import { useEffect, useState } from "react";
-import fetchAPI from "../../components/hooks/fetchAPI";
 import { useLottery } from "./LotteryContext";
+import useFetchAPI from "@/app/components/hooks/fetchAPI";
 
 export default function SelectEventPage(): JSX.Element {
     const [events, setEvents] = useState<Event[]>([]);
     const [eventOptions, setEventOptions] = useState([]);
     const { setStep, step, selectedEvent, setSelectedEvent } = useLottery();
+    const fetchAPI = useFetchAPI();
 
     useEffect(() => {
         fetchAPI("/events")
