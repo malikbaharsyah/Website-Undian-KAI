@@ -50,7 +50,11 @@ export default function Events() {
 
   useEffect(() => {
     setIsLoading(true);
-    fetchAPI(`/events?page=${currentPage}`)
+    fetchAPI(`/events?page=${currentPage}`, {
+      headers: {
+        'x-page': '/events'
+      }
+    })
       .then((data) => {
         setEvents(data.data);
         setTotalPages(data.meta.totalPages);
