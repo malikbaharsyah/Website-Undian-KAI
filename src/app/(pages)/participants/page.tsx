@@ -96,7 +96,6 @@ return (
         <div className="flex justify-between items-center">
             <h1 className="text-3xl font-bold text-[#000072]">Participants</h1>
         </div>
-        <p className="text-muted-foreground">Lorem ipsum dolor sit amet</p>
         <div className="flex justify-end">
             {events.length > 0 ? (
             <ComboBox

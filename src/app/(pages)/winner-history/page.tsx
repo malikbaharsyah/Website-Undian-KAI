@@ -112,7 +112,6 @@ export default function WinnerHistory() {
                     <div className="flex justify-between items-center">
                         <h1 className="text-3xl font-bold text-[#000072]">Winner History</h1>
                     </div>
-                    <p className="text-muted-foreground">Event winner histories</p>
                     <Table>
                         <TableHeader>
                             <TableRow>
