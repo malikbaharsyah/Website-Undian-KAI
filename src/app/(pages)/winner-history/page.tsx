@@ -112,7 +112,6 @@ export default function WinnerHistory() {
                     <div className="flex justify-between items-center">
                         <h1 className="text-3xl font-bold text-[#000072]">Winner History</h1>
                     </div>
-                    <p className="text-muted-foreground">Event winner histories</p>
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -204,6 +203,7 @@ export default function WinnerHistory() {
                             <PaginationItem>
                             <PaginationPrevious
                                 onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                                className="cursor-pointer"
                             />
                             </PaginationItem>
                             {[...Array(totalPages)].map((_, index) => {
@@ -216,7 +216,7 @@ export default function WinnerHistory() {
                                     pageNumber === page
                                         ? "text-[#000072] bg-[#e0e0f7]"
                                         : "text-[#6666A3] bg-white"
-                                    } hover:bg-[#e0e0f7]`}
+                                    } hover:bg-[#e0e0f7] cursor-pointer`}
                                     onClick={() => setPage(pageNumber)}
                                 >
                                     {pageNumber}
@@ -227,6 +227,7 @@ export default function WinnerHistory() {
                             <PaginationItem>
                             <PaginationNext
                                 onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+                                className="cursor-pointer"
                             />
                             </PaginationItem>
                         </PaginationContent>

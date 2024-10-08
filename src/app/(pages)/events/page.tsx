@@ -185,12 +185,19 @@ export default function Events() {
           <Pagination>
             <PaginationContent>
               <PaginationItem>
-                <PaginationPrevious onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} />
+                <PaginationPrevious
+                  className="cursor-pointer"
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                />
               </PaginationItem>
               {Array.from({ length: totalPages }).map((_, index) => (
                 <PaginationItem key={index}>
                   <PaginationLink
-                    className={`${index + 1 === currentPage ? "text-[#000072] bg-[#e0e0f7]" : "text-[#6666A3] bg-white"} hover:bg-[#e0e0f7]`}
+                    className={`${
+                      index + 1 === currentPage
+                        ? "text-[#000072] bg-[#e0e0f7]"
+                        : "text-[#6666A3] bg-white"
+                    } hover:bg-[#e0e0f7] cursor-pointer`}
                     onClick={() => handlePageChange(index + 1)}
                   >
                     {index + 1}
@@ -198,7 +205,10 @@ export default function Events() {
                 </PaginationItem>
               ))}
               <PaginationItem>
-                <PaginationNext onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))} />
+                <PaginationNext
+                  className="cursor-pointer"
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                />
               </PaginationItem>
             </PaginationContent>
           </Pagination>

@@ -96,7 +96,6 @@ return (
         <div className="flex justify-between items-center">
             <h1 className="text-3xl font-bold text-[#000072]">Participants</h1>
         </div>
-        <p className="text-muted-foreground">Lorem ipsum dolor sit amet</p>
         <div className="flex justify-end">
             {events.length > 0 ? (
             <ComboBox
@@ -160,6 +159,7 @@ return (
             <PaginationPrevious
                 href="#"
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                className="cursor-pointer"
             />
             </PaginationItem>
             {Array.from({ length: 3 }).map((_, index) => {
@@ -175,7 +175,7 @@ return (
                     pageNumber === currentPage
                         ? "text-[#000072] bg-[#e0e0f7]"
                         : "text-[#6666A3] bg-white"
-                    } hover:bg-[#e0e0f7]`}
+                    } hover:bg-[#e0e0f7] cursor-pointer`}
                     onClick={() => setCurrentPage(pageNumber)}
                 >
                     {pageNumber}
@@ -186,6 +186,7 @@ return (
             <PaginationItem>
             <PaginationNext
                 onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                className="cursor-pointer"
             />
             </PaginationItem>
         </PaginationContent>
