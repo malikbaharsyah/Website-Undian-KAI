@@ -102,8 +102,11 @@ export default function StartLotteryPage(): JSX.Element {
                 <div className="relative w-full max-w-2xl flex justify-center">
                     <div className="absolute inset-0 bg-blue-300 rounded-full filter blur-3xl opacity-50"></div>
                     <Image
+                        loader={({ src }) => src}
                         src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${selectedPrize?.image}`}
                         alt="Prize"
+                        width={320}
+                        height={240}
                         className="relative rounded-lg max-w-[300px] max-h-[300px]"
                     />
                 </div>

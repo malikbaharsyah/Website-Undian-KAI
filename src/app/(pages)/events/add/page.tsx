@@ -216,6 +216,8 @@ export default function Component() {
                                 <Image
                                     src={renderImagePreview(prize.image)}
                                     alt={`Prize ${prize.name}`}
+                                    width={60}
+                                    height={40}
                                     className="h-full w-auto max-w-full object-contain mx-auto"
                                 />
                                 <Button
