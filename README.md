@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Undian KAI Web App
+<div align="center">
+  <img src="./public/images/logo-readme.svg" alt="Undian KAI Logo" width="200">
+</div>
 
-## Getting Started
+Undian KAI Web App developed using Next.js to manage lottery and winner history for PT KAI. You can view the deployed app [here](https://undian.likluk.live).
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+NIPP: 13510
+Password: adminpusat
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Table of Contents
+* [Preview Video On YouTube](#preview-video-on-youtube)
+* [Technologies Used](#technologies-used)
+* [Features](#features)
+* [Setup](#setup)
+* [Project Status](#project-status)
+* [Authors](#authors)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Preview Video On YouTube
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=D-iCArJ_FA8/">
+    <img src="./public/images/youtube.png" alt="Preview yt" width="600">
+  </a>
+</div>
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Technologies Used
+- ![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white) 
+- ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB) 
+- ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+- ![Figma](https://img.shields.io/badge/figma-%23F24E1E.svg?style=for-the-badge&logo=figma&logoColor=white) 
+- ![Oracle](https://img.shields.io/badge/Oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white) 
+- ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white) 
+- ![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white) 
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+## Features
+- Add events includes prize and date
+- Lottery draw
+- View winners history
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Setup Locally
+1. Clone this repository
+2. Install dependencies using `npm install`
+3. Set up the environment variables for database and JWT authentication in `.env`. Use `.env.example` as a reference.
+4. Initialize the Prisma database: `npx prisma migrate dev`
+5. Add username and password to the database: `npx prisma studio`
+6. Run the project locally: `npm run dev`
+7. Open `http://localhost:3000` to view it in the browser.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Status
+The project is under active development. You can contribute to this project by creating a pull request.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Authors
+- [Muhamad Salman Hakim Alfarisi](https://github.com/archmans)
+- [M. Malik I. Baharsyah](https://github.com/malikbaharsyah)
