@@ -5,6 +5,10 @@ import { verifyToken } from "@/controllers/LoginController";
 const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
+    const { response, isRedirect } = await verifyToken(req);
+    if (isRedirect) {
+        return response;
+    }
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1", 10);
     const limit = 8;
