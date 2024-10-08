@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/components/ui/button";
 import {
     Table,
     TableBody,
@@ -9,7 +9,7 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table";
+} from "@/app/components/ui/table";
 import {
     Pagination,
     PaginationContent,
@@ -17,17 +17,17 @@ import {
     PaginationLink,
     PaginationNext,
     PaginationPrevious,
-} from "@/components/ui/pagination";
+} from "@/app/components/ui/pagination";
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
-import Sidebar from "../components/Sidebar";
+} from "@/app/components/ui/dialog";
+import { ScrollArea } from "@/app/components/ui/scroll-area";
+import { Skeleton } from "@/app/components/ui/skeleton";
+import Sidebar from "../../components/Sidebar";
 
 interface Event {
     event_id: number;

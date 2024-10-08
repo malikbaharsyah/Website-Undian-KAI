@@ -1,6 +1,6 @@
 "use client"
 
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../../components/Sidebar";
 import SelectEventPage from "./SelectEventPage";
 import SelectPrizePage from "./SelectPrizePage";
 import StartLotteryPage from "./StartLotteryPage";

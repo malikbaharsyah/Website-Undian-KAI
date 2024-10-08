@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { Avatar } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Avatar } from "@/app/components/ui/avatar";
+import { Button } from "@/app/components/ui/button";
 import Link from "next/link";
 import { CircleUser } from "lucide-react";
 import {

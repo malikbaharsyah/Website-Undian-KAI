@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { Button } from "@/components/ui/button"
+import { Button } from "@/app/components/ui/button"
 import WinnerButton from './WinnerButton'
 import { useLottery } from './LotteryContext'
-import { Slider } from "@/components/ui/slider";
-import fetchAPI from '../components/hooks/fetchAPI'
+import { Slider } from "@/app/components/ui/slider";
+import fetchAPI from '../../components/hooks/fetchAPI'
 
 export default function StartLotteryPage(): JSX.Element {
     const { setStep, step, qty, setQty, selectedPrize,

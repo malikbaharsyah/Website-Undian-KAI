@@ -1,13 +1,13 @@
 "use client"
 
 import { useState, useRef } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/app/components/ui/button"
+import { Input } from "@/app/components/ui/input"
+import { Label } from "@/app/components/ui/label"
+import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/card"
 import { PencilIcon, UploadIcon, XIcon, FileSpreadsheet } from "lucide-react"
 import Sidebar from "@/app/components/Sidebar"
-import { DatePicker } from "@/components/ui/date-picker"
+import { DatePicker } from "@/app/components/ui/date-picker"
 import { DateRange } from "react-day-picker"
 import fetchAPI from "@/app/components/hooks/fetchAPI"
 import useAlert from "@/app/components/hooks/useAlert"
@@ -178,7 +178,7 @@ export default function Component() {
                     <CardHeader className="pt-4 pl-6">
                     <CardTitle>Prizes</CardTitle>
                     </CardHeader>
-                    <CardContent className="sce-y-6">
+                    <CardContent className="space-y-4">
                     {prizes.map((prize, index) => (
                         <Card key={prize.id} className="border shadow-sm">
                         <CardContent className="pt-6 space-y-4 relative">

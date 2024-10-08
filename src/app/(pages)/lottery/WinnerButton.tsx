@@ -1,14 +1,14 @@
 "use client"
 
 import { useEffect, useState } from 'react'
-import { Button } from "@/components/ui/button"
+import { Button } from "@/app/components/ui/button"
 import {
   Popover,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/app/components/ui/popover"
 import { CheckIcon, RefreshCwIcon } from 'lucide-react'
 import { useLottery } from './LotteryContext'
-import fetchAPI from '../components/hooks/fetchAPI'
+import fetchAPI from '../../components/hooks/fetchAPI'
 
 interface EmployeeButtonProps {
   initialId: string | null

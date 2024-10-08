@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/app/components/ui/button"
 import { useEffect, useState } from "react"
-import Prize from "../components/interfaces/Prize"
-import CustomCarousel from "../components/CustomCarousel"
-import fetchAPI from "../components/hooks/fetchAPI"
-import { Input } from "@/components/ui/input"
+import Prize from "../../components/interfaces/Prize"
+import CustomCarousel from "../../components/CustomCarousel"
+import fetchAPI from "../../components/hooks/fetchAPI"
+import { Input } from "@/app/components/ui/input"
 import { useLottery } from "./LotteryContext"
 
 export default function SelectPrizePage(): JSX.Element {

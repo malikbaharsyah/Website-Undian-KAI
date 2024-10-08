@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from "react"
 import { AlertCircle, Loader2 } from "lucide-react"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Alert, AlertDescription, AlertTitle } from "@/app/components/ui/alert"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription
-} from "@/components/ui/dialog"
+} from "@/app/components/ui/dialog"
 import { motion, AnimatePresence } from "framer-motion"
 
 type AlertType = 'loading' | 'error' | 'success' | null;
