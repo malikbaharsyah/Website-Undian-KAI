@@ -92,6 +92,8 @@ export default function StartLotteryPage(): JSX.Element {
     }, [qty, selectedEvent?.event_id]);
 
     return (
+      <>
+      {showConfetti && <Confetti />}
         <div className="p-6 space-y-6 flex-1 flex flex-col font-poppins">
             <h1 className="text-3xl font-bold text-[#000072]">{selectedEvent?.name}</h1>
             <div className="mb-6 flex flex-col items-center justify-center">
@@ -116,7 +118,7 @@ export default function StartLotteryPage(): JSX.Element {
                 <h2 className="text-xl font-semibold">Speed</h2>
                     <Slider
                         defaultValue={[125]}
-                        onValueChange={(value) => handleSpeedChange(251 - value[0])}
+                        onValueChange={(value) => handleSpeedChange(value[0])}
                         max={250}
                         min={1}
                         step={1}
@@ -134,9 +136,9 @@ export default function StartLotteryPage(): JSX.Element {
                     {isShuffling ? 'Stop' : 'Start'}
                 </Button>
             </div>
-            {showConfetti && <Confetti />}
             <audio ref={startSoundRef} src="/sounds/tick.mp3" />
             <audio ref={stopSoundRef} src="/sounds/celebration.mp3" />
         </div>
+      </>
     )
 }
