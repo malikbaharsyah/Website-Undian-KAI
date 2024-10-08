@@ -12,7 +12,7 @@ export default function StartLotteryPage(): JSX.Element {
     const [participants, setParticipants] = useState<string[]>([])
     const [currentParticipants, setCurrentParticipants] = useState<string[]>([]);
     const [isShuffling, setIsShuffling] = useState(false);
-    const [speed, setSpeed] = useState(1);
+    const [speed, setSpeed] = useState(126);
     const [showConfetti, setShowConfetti] = useState(false);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -114,15 +114,15 @@ export default function StartLotteryPage(): JSX.Element {
             </div>
             <div className="space-y-4 justify-center items-center flex flex-col">
                 <h2 className="text-xl font-semibold">Speed</h2>
-                <Slider
-                    defaultValue={[251 - speed]}
-                    onValueChange={(value) => handleSpeedChange(value[0])}
-                    max={250}
-                    min={1}
-                    step={1}
-                    className='w-60'
-                />
-                <p>Current Speed: {speed} ms</p>
+                    <Slider
+                        defaultValue={[125]}
+                        onValueChange={(value) => handleSpeedChange(251 - value[0])}
+                        max={250}
+                        min={1}
+                        step={1}
+                        className='w-60'
+                        />
+                    <p>current Speed: {251 - speed}</p>
             </div>
             <div className="flex justify-between space-x-4">
                 <Button className='hover:bg-[#000072]/90 hover:text-white' variant="outline" onClick={() => { setStep(step - 1); setQty(0); }}>

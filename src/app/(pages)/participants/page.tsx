@@ -80,12 +80,12 @@ const fetchParticipants = async (page: number, eventId: string | null) => {
 
 useEffect(() => {
     fetchEvents();
-    fetchParticipants(currentPage, selectedEventId);
 }, [currentPage, selectedEventId]);
 
 const handleEventChange = (value: number | null) => {
     setSelectedEventId(value ? value.toString() : null);
     setCurrentPage(1);
+    fetchParticipants(currentPage, selectedEventId);
 };
 
 return (
@@ -110,6 +110,7 @@ return (
             <Skeleton className="h-8 w-[150px]" />
             )}
         </div>
+        { !isLoading && 
         <Table>
             <TableHeader>
             <TableRow>
@@ -150,6 +151,7 @@ return (
             )}
             </TableBody>
         </Table>
+        }
         <p className="text-sm text-muted-foreground text-center">
             Showing {currentPage} of {totalPages} pages
         </p>
