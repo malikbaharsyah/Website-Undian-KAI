@@ -22,7 +22,6 @@ export const createEvent = async (req: NextRequest) => {
 
     try {
         const xUser = JSON.parse(req.headers.get('x-user')??'{}');
-        console.log("CreateEvent xUser", req.headers.get('x-user'));
         const operating_area = xUser.operating_area as string;
 
 
