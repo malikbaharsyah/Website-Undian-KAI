@@ -107,11 +107,12 @@ export default function WinnerHistory() {
     return (
         <div className="flex font-poppins bg-white text-black">
             <Sidebar />
-            <main className="flex-1">
-                <div className="p-6 space-y-6">
+            <main className="flex flex-1 flex-col">
+                <div className="p-6 space-y-6 flex flex-1 flex-col">
                     <div className="flex justify-between items-center">
                         <h1 className="text-3xl font-bold text-[#000072]">Winner History</h1>
                     </div>
+                    <div className="flex-1">
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -195,8 +196,10 @@ export default function WinnerHistory() {
                             )}
                         </TableBody>
                     </Table>
-                    <p className="text-sm text-muted-foreground text-center">
-                        Showing page {page} of {totalPages}
+                    </div>
+                    <div className="flex flex-col justify-end">
+                    <p className="text-sm text-muted-foreground text-center mb-4">
+                        Showing {page} of {totalPages} pages
                     </p>
                     <Pagination>
                         <PaginationContent>
@@ -232,6 +235,7 @@ export default function WinnerHistory() {
                             </PaginationItem>
                         </PaginationContent>
                         </Pagination>
+                    </div>
                 </div>
             </main>
         </div>

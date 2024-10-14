@@ -183,7 +183,7 @@ export default function Events() {
             </Table>
           </div>
         </div>
-        <div className="flex flex-col justify-end p-6">
+        <div className="flex flex-col justify-end pb-6">
           <p className="text-sm text-muted-foreground text-center mb-4">
             Showing {currentPage} of {totalPages} pages
           </p>

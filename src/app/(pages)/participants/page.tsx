@@ -154,7 +154,8 @@ return (
         </Table>
         }
         </div>
-        <p className="text-sm text-muted-foreground text-center">
+        <div className="flex flex-col justify-end">
+        <p className="text-sm text-muted-foreground text-center mb-4">
             Showing {currentPage} of {totalPages} pages
         </p>
         <Pagination>
@@ -195,6 +196,7 @@ return (
             </PaginationItem>
         </PaginationContent>
         </Pagination>
+        </div>
         </div>
     </main>
     </div>
