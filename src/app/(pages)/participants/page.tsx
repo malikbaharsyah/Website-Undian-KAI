@@ -60,6 +60,11 @@ const fetchEvents = async () => {
 };
 
 const fetchParticipants = async (page: number, eventId: string | null) => {
+    if (!eventId) {
+        setParticipants([]);
+        setTotalPages(1);
+        return;
+      }
     setIsLoading(true);
     try {
     const res = await fetch(`/api/participants?page=${page}&event_id=${eventId || ""}`);
@@ -80,12 +85,15 @@ const fetchParticipants = async (page: number, eventId: string | null) => {
 
 useEffect(() => {
     fetchEvents();
-}, [currentPage, selectedEventId]);
+  }, []);
+
+  useEffect(() => {
+    fetchParticipants(currentPage, selectedEventId);
+  }, [currentPage, selectedEventId]);
 
 const handleEventChange = (value: number | null) => {
     setSelectedEventId(value ? value.toString() : null);
     setCurrentPage(1);
-    fetchParticipants(currentPage, selectedEventId);
 };
 
 return (
