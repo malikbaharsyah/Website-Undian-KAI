@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { Avatar } from "@/app/components/ui/avatar";
 import { Button } from "@/app/components/ui/button";
@@ -20,13 +20,15 @@ export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
   const [username, setUsername] = useState("");
   const pathname = usePathname();
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 768) {
         setIsOpen(false);
       } else {
-        setIsOpen(true);
+        const storedSidebarState = localStorage.getItem("isSidebarOpen");
+        setIsOpen(storedSidebarState === "true");
       }
     };
 
@@ -35,7 +37,7 @@ export default function Sidebar() {
 
     const storedUsername = localStorage.getItem("username");
     if (storedUsername) {
-        setUsername(storedUsername);
+      setUsername(storedUsername);
     }
 
     return () => {
@@ -43,17 +45,26 @@ export default function Sidebar() {
     };
   }, []);
 
+  const toggleSidebar = () => {
+    const newState = !isOpen;
+    setIsOpen(newState);
+    localStorage.setItem("isSidebarOpen", newState.toString());
+  };
+
+  const sidebarClassName = `${
+    isOpen ? "w-64" : "w-20"
+  } font-poppins min-h-screen bg-[#F3F3F3] border-r border-gray-200 flex flex-col transition-all duration-500 ease-in-out relative`;
+
   return (
-    <div
-      className={`${
-        isOpen ? "w-64" : "w-20"
-      } font-poppins min-h-screen bg-[#F3F3F3] border-r border-gray-200 flex flex-col transition-all duration-500 ease-in-out relative`}
-    >
+    <div className={isFirstRender.current ? "font-poppins min-h-screen bg-[#F3F3F3] border-r border-gray-200 flex flex-col relative" : sidebarClassName}>
       <Button
         variant="ghost"
         size="icon"
         className="absolute -right-3 top-4 bg-white border border-gray-200 rounded-full transition-all duration-500"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          isFirstRender.current = false;
+          toggleSidebar();
+        }}
       >
         {isOpen ? (
           <ChevronLeftIcon className="h-4 w-4 transition-transform duration-500" />
