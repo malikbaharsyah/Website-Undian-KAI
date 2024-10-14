@@ -91,8 +91,8 @@ const handleEventChange = (value: number | null) => {
 return (
     <div className="flex font-poppins bg-white text-black">
     <Sidebar />
-    <main className="flex-1">
-        <div className="p-6 space-y-6">
+    <main className="flex flex-1 flex-col">
+        <div className="p-6 space-y-6 flex flex-1 flex-col">
         <div className="flex justify-between items-center">
             <h1 className="text-3xl font-bold text-[#000072]">Participants</h1>
         </div>
@@ -110,7 +110,8 @@ return (
             <Skeleton className="h-8 w-[150px]" />
             )}
         </div>
-        { !isLoading && 
+        <div className="flex-1">
+        { !isLoading &&
         <Table>
             <TableHeader>
             <TableRow>
@@ -152,6 +153,7 @@ return (
             </TableBody>
         </Table>
         }
+        </div>
         <p className="text-sm text-muted-foreground text-center">
             Showing {currentPage} of {totalPages} pages
         </p>
