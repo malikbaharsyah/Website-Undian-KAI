@@ -60,6 +60,11 @@ const fetchEvents = async () => {
 };
 
 const fetchParticipants = async (page: number, eventId: string | null) => {
+    if (!eventId) {
+        setParticipants([]);
+        setTotalPages(1);
+        return;
+      }
     setIsLoading(true);
     try {
     const res = await fetch(`/api/participants?page=${page}&event_id=${eventId || ""}`);
@@ -80,19 +85,22 @@ const fetchParticipants = async (page: number, eventId: string | null) => {
 
 useEffect(() => {
     fetchEvents();
-}, [currentPage, selectedEventId]);
+  }, []);
+
+  useEffect(() => {
+    fetchParticipants(currentPage, selectedEventId);
+  }, [currentPage, selectedEventId]);
 
 const handleEventChange = (value: number | null) => {
     setSelectedEventId(value ? value.toString() : null);
     setCurrentPage(1);
-    fetchParticipants(currentPage, selectedEventId);
 };
 
 return (
     <div className="flex font-poppins bg-white text-black">
     <Sidebar />
-    <main className="flex-1">
-        <div className="p-6 space-y-6">
+    <main className="flex flex-1 flex-col">
+        <div className="p-6 space-y-6 flex flex-1 flex-col">
         <div className="flex justify-between items-center">
             <h1 className="text-3xl font-bold text-[#000072]">Participants</h1>
         </div>
@@ -110,7 +118,8 @@ return (
             <Skeleton className="h-8 w-[150px]" />
             )}
         </div>
-        { !isLoading && 
+        <div className="flex-1">
+        { !isLoading &&
         <Table>
             <TableHeader>
             <TableRow>
@@ -152,7 +161,9 @@ return (
             </TableBody>
         </Table>
         }
-        <p className="text-sm text-muted-foreground text-center">
+        </div>
+        <div className="flex flex-col justify-end">
+        <p className="text-sm text-muted-foreground text-center mb-4">
             Showing {currentPage} of {totalPages} pages
         </p>
         <Pagination>
@@ -193,6 +204,7 @@ return (
             </PaginationItem>
         </PaginationContent>
         </Pagination>
+        </div>
         </div>
     </main>
     </div>
