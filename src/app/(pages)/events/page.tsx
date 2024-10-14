@@ -108,81 +108,85 @@ export default function Events() {
   );
 
   return (
-    <div className="flex font-poppins bg-white text-black">
+    <div className="flex font-poppins bg-white text-black h-screen">
       <Sidebar />
-      <main className="flex-1">
-        <div className="p-6 space-y-6">
+      <main className="flex-1 flex flex-col">
+        <div className="p-6 space-y-6 flex-1 flex flex-col">
           <div className="flex justify-between items-center">
             <h1 className="text-3xl font-bold text-[#000072]">Events</h1>
             <Button className="bg-[#000072] hover:bg-[#000072]/90 text-white">
               <Link href="/events/add">Add Event</Link>
             </Button>
           </div>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Event</TableHead>
-                <TableHead>Start Date</TableHead>
-                <TableHead>End Date</TableHead>
-                <TableHead className="text-right">Action</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading
-                ? [...Array(6)].map((_, index) => <TableRowSkeleton key={index} />)
-                : events.map((event) => (
-                    <TableRow key={event.event_id}>
-                      <TableCell>{event.name}</TableCell>
-                      <TableCell>{format(new Date(event.start_date), "MMMM dd, yyyy")}</TableCell>
-                      <TableCell>{format(new Date(event.end_date), "MMMM dd, yyyy")}</TableCell>
-                      <TableCell className="text-right">
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              className="border-[#000072] text-[#000072] hover:bg-[#000072] hover:text-white"
-                              onClick={() => handleShowDetails(event)}
-                            >
-                              Details
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent className="sm:max-w-[700px] bg-white text-black">
-                            <DialogHeader>
-                              <DialogTitle>{selectedEvent?.name}</DialogTitle>
-                            </DialogHeader>
-                            {isLoadingDetails ? (
-                              <DialogContentSkeleton />
-                            ) : (
-                              <Table>
-                                <ScrollArea className="h-[475px] w-full rounded-md border p-4">
-                                  <TableHeader>
-                                    <TableRow>
-                                      <TableHead>Prize</TableHead>
-                                      <TableHead className="text-right">Quantity</TableHead>
-                                    </TableRow>
-                                  </TableHeader>
-                                  <TableBody>
-                                    {details.map((detail) => (
-                                      <TableRow key={detail.prize_id}>
-                                        <TableCell>{detail.name}</TableCell>
-                                        <TableCell className="text-right">{detail.quantity}</TableCell>
+          <div className="flex-1">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Event</TableHead>
+                  <TableHead>Start Date</TableHead>
+                  <TableHead>End Date</TableHead>
+                  <TableHead className="text-right">Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {isLoading
+                  ? [...Array(6)].map((_, index) => <TableRowSkeleton key={index} />)
+                  : events.map((event) => (
+                      <TableRow key={event.event_id}>
+                        <TableCell>{event.name}</TableCell>
+                        <TableCell>{format(new Date(event.start_date), "MMMM dd, yyyy")}</TableCell>
+                        <TableCell>{format(new Date(event.end_date), "MMMM dd, yyyy")}</TableCell>
+                        <TableCell className="text-right">
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                className="border-[#000072] text-[#000072] hover:bg-[#000072] hover:text-white"
+                                onClick={() => handleShowDetails(event)}
+                              >
+                                Details
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-[700px] bg-white text-black">
+                              <DialogHeader>
+                                <DialogTitle>{selectedEvent?.name}</DialogTitle>
+                              </DialogHeader>
+                              {isLoadingDetails ? (
+                                <DialogContentSkeleton />
+                              ) : (
+                                <Table>
+                                  <ScrollArea className="h-[475px] w-full rounded-md border p-4">
+                                    <TableHeader>
+                                      <TableRow>
+                                        <TableHead>Prize</TableHead>
+                                        <TableHead className="text-right">Quantity</TableHead>
                                       </TableRow>
-                                    ))}
-                                  </TableBody>
-                                </ScrollArea>
-                              </Table>
-                            )}
-                          </DialogContent>
-                        </Dialog>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-            </TableBody>
-          </Table>
-          <p className="text-sm text-muted-foreground text-center">
+                                    </TableHeader>
+                                    <TableBody>
+                                      {details.map((detail) => (
+                                        <TableRow key={detail.prize_id}>
+                                          <TableCell>{detail.name}</TableCell>
+                                          <TableCell className="text-right">{detail.quantity}</TableCell>
+                                        </TableRow>
+                                      ))}
+                                    </TableBody>
+                                  </ScrollArea>
+                                </Table>
+                              )}
+                            </DialogContent>
+                          </Dialog>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+        <div className="flex flex-col justify-end p-6">
+          <p className="text-sm text-muted-foreground text-center mb-4">
             Showing {currentPage} of {totalPages} pages
-        </p>
+          </p>
           <Pagination>
             <PaginationContent>
               <PaginationItem>
