@@ -16,7 +16,7 @@ export function middleware(req: NextRequest) {
 
 export const config = {
     matcher: [
-        '/lottery/:path*',
+        '/undian/:path*',
         '/participants/:path*',
         '/events/:path*',
         '/winner-history/:path*',

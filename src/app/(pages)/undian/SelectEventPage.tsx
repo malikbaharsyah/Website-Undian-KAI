@@ -35,7 +35,7 @@ export default function SelectEventPage(): JSX.Element {
 
     return (
         <div className="p-6 space-y-6 flex-1 flex flex-col">
-            <h1 className="text-3xl font-bold text-[#000072]">Lottery</h1>
+            <h1 className="text-3xl font-bold text-[#000072]">Undian</h1>
             <p className="text-muted-foreground">
                 Make sure the events and participants already exist.
             </p>
