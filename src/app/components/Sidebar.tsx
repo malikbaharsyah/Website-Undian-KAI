@@ -93,11 +93,11 @@ export default function Sidebar() {
       <nav className="flex-1 p-4">
         <ul className="space-y-2">
           <NavItem
-            href="/lottery"
+            href="/undian"
             icon={<HomeIcon className="h-5 w-5" />}
-            text="Lottery"
+            text="Undian"
             isOpen={isOpen}
-            isActive={pathname === "/lottery"}
+            isActive={pathname === "/undian"}
           />
           <NavItem
             href="/events"

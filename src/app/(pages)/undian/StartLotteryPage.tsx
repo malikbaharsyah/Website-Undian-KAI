@@ -20,7 +20,16 @@ export default function StartLotteryPage(): JSX.Element {
     const fetchAPI = useFetchAPI();
     const startSoundRef = useRef<HTMLAudioElement | null>(null);
     const stopSoundRef = useRef<HTMLAudioElement | null>(null);
+    const [buttonStatuses, setButtonStatuses] = useState<boolean[]>([]);
     const { width, height } = useWindowSize();
+
+    const updateButtonHandledStatus = (index: number, isHandled: boolean) => {
+        setButtonStatuses((prevStatuses) => {
+            const newStatuses = [...prevStatuses];
+            newStatuses[index] = isHandled;
+            return newStatuses;
+        });
+    };
 
     const shuffleParticipants = (array: string[]) => {
         const shuffled = [...array];
@@ -61,6 +70,7 @@ export default function StartLotteryPage(): JSX.Element {
         if (stopSoundRef.current) {
             stopSoundRef.current.play();
         }
+        setButtonStatuses(Array(currentParticipants.length).fill(false));
         setShowConfetti(true);
     };
 
@@ -114,16 +124,46 @@ export default function StartLotteryPage(): JSX.Element {
                         />
                     </div>
                 </div>
-                <div className="grid gap-6 mb-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 place-items-center justify-items-center">
-                    {currentParticipants.map((participant, index) => (
-                        <div key={index} className="w-full max-w-[280px]">
-                            <WinnerButton initialId={participant} isShuffling={isShuffling} />
-                        </div>
-                    ))}
+                <div className="flex justify-center w-full">
+                    <div className="grid gap-6 mb-6 w-full max-w-[900px]">
+                        {Array.from({ length: Math.ceil(currentParticipants.length / 3) }).map((_, rowIndex) => {
+                            const startIndex = rowIndex * 3;
+                            const isLastRow = rowIndex === Math.ceil(currentParticipants.length / 3) - 1;
+                            const remainder = currentParticipants.length % 3;
+                            const columns = isLastRow && remainder > 0 ? remainder : 3;
+                            return (
+                            <>
+                                <div className="flex justify-center w-full">
+                                    <div
+                                        key={rowIndex}
+                                        className={`grid grid-cols-${columns} gap-6 justify-center`}
+                                    >
+                                        {currentParticipants
+    .slice(startIndex, startIndex + 3)
+    .map((participant, colIndex) => (
+        <div key={colIndex} className="w-full max-w-[280px]">
+            <WinnerButton 
+                initialId={participant} 
+                isShuffling={isShuffling} 
+                updateHandledStatus={(isHandled) => updateButtonHandledStatus(startIndex + colIndex, isHandled)}
+            />
+        </div>
+    ))}
+                                    </div>
+                                </div>
+                            </>
+                            );
+                        })}
+                    </div>
                 </div>
             </div>
             <div className="flex justify-between space-x-4 items-end">
-                <Button className="hover:bg-[#000072]/90 hover:text-white" variant="outline" onClick={() => { setStep(step - 1); setQty(0); }}>
+                <Button
+                className="hover:bg-[#000072]/90 hover:text-white"
+                variant="outline"
+                onClick={() => { setStep(step - 1); setQty(0); }}
+                disabled={isShuffling}
+                >
                     Choose Prize
                 </Button>
             <div className="space-y-3 justify-center items-center flex flex-col">
@@ -137,11 +177,14 @@ export default function StartLotteryPage(): JSX.Element {
                 />
                 <p>Current Speed: {251 - speed}</p>
             </div>
-                <Button className="bg-[#000072] hover:bg-[#000072]/90 text-white"
-                    onClick={() => { isShuffling ? handleStopShuffle() : handleStartShuffle(); setIsShuffling(!isShuffling) }}
-                >
-                    {isShuffling ? 'Stop' : 'Start'}
-                </Button>
+            <Button
+    className="bg-[#000072] hover:bg-[#000072]/90 text-white"
+    onClick={() => { isShuffling ? handleStopShuffle() : handleStartShuffle(); setIsShuffling(!isShuffling) }}
+    disabled={buttonStatuses.some((status) => !status)}
+>
+    {isShuffling ? 'Stop' : 'Start'}
+</Button>
+
             </div>
             <audio ref={startSoundRef} src="/sounds/tick.mp3" />
             <audio ref={stopSoundRef} src="/sounds/celebration.mp3" />

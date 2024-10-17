@@ -13,12 +13,14 @@ import useFetchAPI from '../../components/hooks/fetchAPI'
 interface EmployeeButtonProps {
   initialId: string | null
   isShuffling: boolean
+  updateHandledStatus: (isHandled: boolean) => void
 }
 
-export default function WinnerButton({ initialId = null, isShuffling }: EmployeeButtonProps) {
+export default function WinnerButton({ initialId = null, isShuffling, updateHandledStatus }: EmployeeButtonProps) {
   const [employeeId, setEmployeeId] = useState<string | null>(null)
   const [isDisabled, setIsDisabled] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
+  const [isHandled, setIsHandled] = useState(true)
   const fetchAPI = useFetchAPI();
   const { selectedPrize, selectedEvent } = useLottery()
 
@@ -36,6 +38,8 @@ export default function WinnerButton({ initialId = null, isShuffling }: Employee
       )
       setIsDisabled(true)
       setIsHovered(false)
+      setIsHandled(true)
+      updateHandledStatus(true)
     } catch (error) {
       console.error(error)
     }
@@ -45,6 +49,8 @@ export default function WinnerButton({ initialId = null, isShuffling }: Employee
     setEmployeeId(null)
     setIsDisabled(false)
     setIsHovered(false)
+    setIsHandled(true)
+    updateHandledStatus(true)
   }
 
   const handleMouseEnter = () => {
@@ -59,7 +65,7 @@ export default function WinnerButton({ initialId = null, isShuffling }: Employee
     if (!isDisabled && isShuffling) {
       setEmployeeId(initialId)
     }
-  }, [initialId, isShuffling, isDisabled])
+  }, [initialId, isShuffling, isDisabled, isHandled])
 
   return (
     <Popover>
