@@ -60,7 +60,7 @@ export default function Sidebar() {
       <Button
         variant="ghost"
         size="icon"
-        className="absolute -right-3 top-4 bg-white border border-gray-200 rounded-full transition-all duration-500"
+        className="absolute -right-5 top-4 bg-white border border-gray-200 rounded-full transition-all duration-500 h-9 w-9 mt-1"
         onClick={() => {
           isFirstRender.current = false;
           toggleSidebar();
@@ -93,11 +93,11 @@ export default function Sidebar() {
       <nav className="flex-1 p-4">
         <ul className="space-y-2">
           <NavItem
-            href="/lottery"
+            href="/undian"
             icon={<HomeIcon className="h-5 w-5" />}
-            text="Lottery"
+            text="Undian"
             isOpen={isOpen}
-            isActive={pathname === "/lottery"}
+            isActive={pathname === "/undian"}
           />
           <NavItem
             href="/events"
@@ -154,12 +154,16 @@ function NavItem({
         isOpen ? "space-x-3" : "justify-center"
       } ${
         isActive
-          ? "text-[#000072] font-bold"
-          : "text-[#333333]/[0.6] hover:text-[#333333] hover:font-bold"
+          ? "text-[#000072] font-medium"
+          : "text-[#333333]/[0.6] hover:text-[#333333] hover:font-medium"
       } rounded-lg p-2 transition-colors duration-300`}
     >
       {icon}
-      {isOpen && <span>{text}</span>}
+      {isOpen && (
+        <span className="w-36 overflow-hidden text-ellipsis whitespace-nowrap">
+          {text}
+        </span>
+      )}
     </Link>
   );
 }
