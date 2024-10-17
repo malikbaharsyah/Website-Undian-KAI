@@ -34,7 +34,7 @@ export default function LoginForm() {
             if (data.success) {
                 showAlert("success", "Login successful.");
                 localStorage.setItem('username', username);
-                router.push('/lottery');
+                router.push('/undian');
             } else {
                 setError(data.message || 'Login failed.');
                 showAlert("error", data.message || 'Login failed.');
