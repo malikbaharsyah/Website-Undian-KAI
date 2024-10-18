@@ -20,7 +20,7 @@ export default function WinnerButton({ initialId = null, isShuffling, updateHand
   const [employeeId, setEmployeeId] = useState<string | null>(null)
   const [isDisabled, setIsDisabled] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
-  const [isHandled, setIsHandled] = useState(true)
+  const [isHandled, setIsHandled] = useState(false)
   const fetchAPI = useFetchAPI();
   const { selectedPrize, selectedEvent } = useLottery()
 

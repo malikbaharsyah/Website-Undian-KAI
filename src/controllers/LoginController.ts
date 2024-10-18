@@ -21,7 +21,7 @@ export const login = async (req: NextRequest) => {
         });
 
         if (!user) {
-            return NextResponse.json({ message: 'Invalid credentials', success: false }, { status: 401 });
+            return NextResponse.json({ message: 'Invalid credentials', success: false }, { status: 400 });
         }
 
         const token = jwt.sign(

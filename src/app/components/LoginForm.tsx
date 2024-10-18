@@ -31,13 +31,14 @@ export default function LoginForm() {
             });
 
             const data = response;
+            console.log(data.success)
             if (data.success) {
                 showAlert("success", "Login successful.");
                 localStorage.setItem('username', username);
-                router.push('/undian');
+                window.location.href = "/undian";
             } else {
                 setError(data.message || 'Login failed.');
-                showAlert("error", data.message || 'Login failed.');
+                showAlert("error", "Invalid Credentials");
             }
         } catch (err) {
             setError('Something went wrong. Please try again.');

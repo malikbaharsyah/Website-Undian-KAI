@@ -139,16 +139,16 @@ export default function StartLotteryPage(): JSX.Element {
                                         className={`grid grid-cols-${columns} gap-6 justify-center`}
                                     >
                                         {currentParticipants
-    .slice(startIndex, startIndex + 3)
-    .map((participant, colIndex) => (
-        <div key={colIndex} className="w-full max-w-[280px]">
-            <WinnerButton 
-                initialId={participant} 
-                isShuffling={isShuffling} 
-                updateHandledStatus={(isHandled) => updateButtonHandledStatus(startIndex + colIndex, isHandled)}
-            />
-        </div>
-    ))}
+                                        .slice(startIndex, startIndex + 3)
+                                        .map((participant, colIndex) => (
+                                            <div key={colIndex} className="w-full max-w-[280px]">
+                                                <WinnerButton 
+                                                    initialId={participant} 
+                                                    isShuffling={isShuffling} 
+                                                    updateHandledStatus={(isHandled) => updateButtonHandledStatus(startIndex + colIndex, isHandled)}
+                                                />
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             </>
