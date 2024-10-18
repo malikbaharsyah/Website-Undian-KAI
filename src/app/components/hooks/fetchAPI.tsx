@@ -13,6 +13,8 @@ const useFetchAPI = () => {
       ...options.headers,
     };
 
+    options.credentials = 'include';
+
     const url = `${baseURL}${endpoint}`;
 
     const response = await fetch(url, options);
