@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { Avatar } from "@/app/components/ui/avatar";
 import { Button } from "@/app/components/ui/button";
 import Link from "next/link";
+import Image from "next/image";
+import { Avatar } from "@/app/components/ui/avatar";
 import { CircleUser } from "lucide-react";
 import {
   HomeIcon,
@@ -78,16 +79,13 @@ export default function Sidebar() {
             isOpen ? "space-x-3" : "justify-center"
           }`}
         >
-          <Avatar className="">
-            <CircleUser
-              strokeWidth={2}
-              size={42}
-              color="#000072"
-            />
-          </Avatar>
-          {isOpen && (
-            <span className="text-lg text-[#000072] font-bold">{username}</span>
-          )}
+          <Image
+            src="/images/logo.svg"
+            alt="logo"
+            width={120}
+            height={50}            
+            className="p-2"
+          />
         </div>
       </div>
       <nav className="flex-1 p-4">
@@ -123,7 +121,19 @@ export default function Sidebar() {
         </ul>
       </nav>
       <div className={`p-4 ${isOpen ? "" : "flex justify-center"}`}>
-        <Button
+        <div className="flex items-center content-center">
+          <Avatar className="items-center justify-center">
+            <CircleUser
+              strokeWidth={1.2}
+              size={32}
+              color="#374151"
+            />
+          </Avatar>
+          {isOpen && (
+            <span className="text-lg text-gray-700 font-medium pl-2">{username}</span>
+          )}
+        </div>
+        {/* <Button
           variant="ghost"
           className={`${
             isOpen ? "w-full justify-start" : "w-auto p-2"
@@ -134,7 +144,7 @@ export default function Sidebar() {
             <LogOutIcon className="h-5 w-5" />
             {isOpen && <span>Logout</span>}
           </Link>
-        </Button>
+        </Button> */}
       </div>
     </div>
   );
