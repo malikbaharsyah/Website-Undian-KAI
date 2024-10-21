@@ -37,7 +37,7 @@ Password: adminpusat
 
 ## Features
 - Add events includes prize and date
-- Lottery draw
+- Undian draw
 - View winners history
 
 ## Setup Locally

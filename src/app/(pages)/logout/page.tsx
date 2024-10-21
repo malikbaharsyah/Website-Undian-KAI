@@ -12,9 +12,9 @@ export default function LogoutPage() {
             method: "GET",
             credentials: "include",
         })
-            .then(() => {
+            .then(async () => {
                 localStorage.removeItem("username");
-                router.push("/login");
+                window.location.href = "/";
             })
             .catch((error) => {
                 console.error("Logout failed:", error);

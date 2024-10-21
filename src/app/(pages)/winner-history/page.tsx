@@ -28,6 +28,7 @@ import {
 import { ScrollArea } from "@/app/components/ui/scroll-area";
 import { Skeleton } from "@/app/components/ui/skeleton";
 import Sidebar from "../../components/Sidebar";
+import * as XLSX from "xlsx";
 
 interface Event {
     event_id: number;
@@ -98,6 +99,13 @@ export default function WinnerHistory() {
         } finally {
             setIsDialogLoading(false);
         }
+    };
+
+    const exportToExcel = () => {
+        const worksheet = XLSX.utils.json_to_sheet(show);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Winners");
+        XLSX.writeFile(workbook, `${selectedHistory?.name || "Winners"}.xlsx`);
     };
 
     useEffect(() => {
@@ -182,6 +190,13 @@ export default function WinnerHistory() {
                                                             </TableBody>
                                                         </ScrollArea>
                                                     </Table>
+                                                    <Button
+                                                        className="hover:bg-[#000072]"
+                                                        disabled={!show.length}
+                                                        onClick={exportToExcel}
+                                                    >
+                                                        Export to Excel
+                                                    </Button>
                                                 </DialogContent>
                                             </Dialog>
                                         </TableCell>
