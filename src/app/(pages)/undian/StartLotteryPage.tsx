@@ -20,6 +20,7 @@ export default function StartLotteryPage(): JSX.Element {
     const fetchAPI = useFetchAPI();
     const startSoundRef = useRef<HTMLAudioElement | null>(null);
     const stopSoundRef = useRef<HTMLAudioElement | null>(null);
+
     const [buttonStatuses, setButtonStatuses] = useState<boolean[]>([]);
     const { width, height } = useWindowSize();
 
@@ -70,6 +71,7 @@ export default function StartLotteryPage(): JSX.Element {
         if (stopSoundRef.current) {
             stopSoundRef.current.play();
         }
+
         setButtonStatuses(Array(currentParticipants.length).fill(false));
         setShowConfetti(true);
     };
@@ -184,7 +186,6 @@ export default function StartLotteryPage(): JSX.Element {
 >
     {isShuffling ? 'Stop' : 'Start'}
 </Button>
-
             </div>
             <audio ref={startSoundRef} src="/sounds/tick.mp3" />
             <audio ref={stopSoundRef} src="/sounds/celebration.mp3" />
