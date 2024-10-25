@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { Avatar } from "@/app/components/ui/avatar";
 import { Button } from "@/app/components/ui/button";
 import Link from "next/link";
+import Image from "next/image";
+import { Avatar } from "@/app/components/ui/avatar";
 import { CircleUser } from "lucide-react";
 import {
   HomeIcon,
@@ -14,7 +15,9 @@ import {
   LogOutIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  ChevronUpIcon
 } from "lucide-react";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/app/components/ui/dropdown-menu";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
@@ -51,9 +54,7 @@ export default function Sidebar() {
     localStorage.setItem("isSidebarOpen", newState.toString());
   };
 
-  const sidebarClassName = `${
-    isOpen ? "w-64" : "w-20"
-  } font-poppins min-h-screen bg-[#F3F3F3] border-r border-gray-200 flex flex-col transition-all duration-500 ease-in-out relative`;
+  const sidebarClassName = `${isOpen ? "w-64" : "w-20"} font-poppins min-h-screen bg-[#F3F3F3] border-r border-gray-200 flex flex-col transition-all duration-500 ease-in-out relative`;
 
   return (
     <div className={isFirstRender.current ? "font-poppins min-h-screen bg-[#F3F3F3] border-r border-gray-200 flex flex-col relative" : sidebarClassName}>
@@ -73,21 +74,14 @@ export default function Sidebar() {
         )}
       </Button>
       <div className={`p-4 ${isOpen ? "" : "justify-center"}`}>
-        <div
-          className={`flex items-center ${
-            isOpen ? "space-x-3" : "justify-center"
-          }`}
-        >
-          <Avatar className="">
-            <CircleUser
-              strokeWidth={2}
-              size={42}
-              color="#000072"
-            />
-          </Avatar>
-          {isOpen && (
-            <span className="text-lg text-[#000072] font-bold">{username}</span>
-          )}
+        <div className={`flex items-center ${isOpen ? "space-x-3" : "justify-center"}`}>
+          <Image
+            src="/images/logo.svg"
+            alt="logo"
+            width={isOpen ? 120 : 40}
+            height={isOpen ? 50 : 20}
+            className="p-2"
+          />
         </div>
       </div>
       <nav className="flex-1 p-4">
@@ -123,46 +117,44 @@ export default function Sidebar() {
         </ul>
       </nav>
       <div className={`p-4 ${isOpen ? "" : "flex justify-center"}`}>
-        <Button
-          variant="ghost"
-          className={`${
-            isOpen ? "w-full justify-start" : "w-auto p-2"
-          } text-gray-700 hover:bg-gray-100`}
-          asChild
-        >
-          <Link href="/logout" className="flex items-center space-x-3">
-            <LogOutIcon className="h-5 w-5" />
-            {isOpen && <span>Logout</span>}
-          </Link>
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <div className="flex items-center cursor-pointer hover:bg-gray-200 p-2 rounded-md">
+              <Avatar className="items-center justify-center">
+                <CircleUser strokeWidth={1.2} size={32} color="#374151" />
+              </Avatar>
+              {isOpen && (
+                <span className="text-lg text-gray-700 font-medium pl-2">{username}</span>
+              )}
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="bg-white border rounded-md p-1 shadow-lg">
+            <DropdownMenuItem asChild>
+              <Link href="/logout" className="flex items-centerp-2 rounded-md">
+                <LogOutIcon className="h-5 w-5"
+                color="#ef4444"
+                />
+                <span className="pl-2 text-red-600">Logout</span>
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
 }
 
-function NavItem({
-  href,
-  icon,
-  text,
-  isOpen,
-  isActive = false,
-}: NavItemProps) {
+function NavItem({ href, icon, text, isOpen, isActive = false }: NavItemProps) {
   return (
     <Link
       href={href}
-      className={`flex items-center ${
-        isOpen ? "space-x-3" : "justify-center"
-      } ${
-        isActive
-          ? "text-[#000072] font-medium"
-          : "text-[#333333]/[0.6] hover:text-[#333333] hover:font-medium"
+      className={`flex items-center ${isOpen ? "space-x-3" : "justify-center"} ${
+        isActive ? "text-[#000072] font-medium" : "text-[#333333]/[0.6] hover:text-[#333333] hover:font-medium"
       } rounded-lg p-2 transition-colors duration-300`}
     >
       {icon}
       {isOpen && (
-        <span className="w-36 overflow-hidden text-ellipsis whitespace-nowrap">
-          {text}
-        </span>
+        <span className="w-36 overflow-hidden text-ellipsis whitespace-nowrap">{text}</span>
       )}
     </Link>
   );
