@@ -74,14 +74,12 @@ export default function Sidebar() {
         )}
       </Button>
       <div className={`p-4 ${isOpen ? "" : "justify-center"}`}>
-        <div
-          className={`flex items-center ${isOpen ? "space-x-3" : "justify-center"}`}
-        >
+        <div className={`flex items-center ${isOpen ? "space-x-3" : "justify-center"}`}>
           <Image
             src="/images/logo.svg"
             alt="logo"
-            width={120}
-            height={50}
+            width={isOpen ? 120 : 40}
+            height={isOpen ? 50 : 20}
             className="p-2"
           />
         </div>
