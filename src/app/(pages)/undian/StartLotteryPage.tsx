@@ -128,34 +128,22 @@ export default function StartLotteryPage(): JSX.Element {
                 </div>
                 <div className="flex justify-center w-full">
                     <div className="grid gap-6 mb-6 w-full max-w-[900px]">
-                        {Array.from({ length: Math.ceil(currentParticipants.length / 3) }).map((_, rowIndex) => {
-                            const startIndex = rowIndex * 3;
-                            const isLastRow = rowIndex === Math.ceil(currentParticipants.length / 3) - 1;
-                            const remainder = currentParticipants.length % 3;
-                            const columns = isLastRow && remainder > 0 ? remainder : 3;
-                            return (
-                            <>
-                                <div className="flex justify-center w-full">
-                                    <div
-                                        key={rowIndex}
-                                        className={`grid grid-cols-${columns} gap-6 justify-center`}
-                                    >
-                                        {currentParticipants
-                                        .slice(startIndex, startIndex + 3)
-                                        .map((participant, colIndex) => (
-                                            <div key={colIndex} className="w-full max-w-[280px]">
-                                                <WinnerButton 
-                                                    initialId={participant} 
-                                                    isShuffling={isShuffling} 
-                                                    updateHandledStatus={(isHandled) => updateButtonHandledStatus(startIndex + colIndex, isHandled)}
-                                                />
-                                            </div>
-                                        ))}
-                                    </div>
+                            <div className="flex justify-center w-full">
+                                <div
+                                    className={`grid grid-cols-1 gap-6 justify-center`}
+                                >
+                                    {currentParticipants
+                                    .map((participant, colIndex) => (
+                                        <div key={colIndex} className="w-full max-w-[280px]">
+                                            <WinnerButton 
+                                                initialId={participant} 
+                                                isShuffling={isShuffling} 
+                                                updateHandledStatus={(isHandled) => updateButtonHandledStatus(colIndex, isHandled)}
+                                            />
+                                        </div>
+                                    ))}
                                 </div>
-                            </>
-                            );
-                        })}
+                            </div>
                     </div>
                 </div>
             </div>
@@ -180,16 +168,16 @@ export default function StartLotteryPage(): JSX.Element {
                 <p>Current Speed: {251 - speed}</p>
             </div>
             <Button
-    className="bg-[#000072] hover:bg-[#000072]/90 text-white"
-    onClick={() => { isShuffling ? handleStopShuffle() : handleStartShuffle(); setIsShuffling(!isShuffling) }}
-    disabled={buttonStatuses.some((status) => !status)}
->
-    {isShuffling ? 'Stop' : 'Start'}
-</Button>
+                className="bg-[#000072] hover:bg-[#000072]/90 text-white"
+                onClick={() => { isShuffling ? handleStopShuffle() : handleStartShuffle(); setIsShuffling(!isShuffling) }}
+                disabled={buttonStatuses.some((status) => !status)}
+            >
+                {isShuffling ? 'Stop' : 'Start'}
+            </Button>
             </div>
             <audio ref={startSoundRef} src="/sounds/tick.mp3" />
             <audio ref={stopSoundRef} src="/sounds/celebration.mp3" />
         </div>
-      </>
+    </>
     )
 }
