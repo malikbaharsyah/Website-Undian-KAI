@@ -6,8 +6,9 @@ import { Button } from "@/app/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
 import { Avatar } from "@/app/components/ui/avatar";
-import { CircleUser } from "lucide-react";
 import {
+  CircleUser,
+  UserCog,
   HomeIcon,
   CalendarIcon,
   UsersIcon,
@@ -15,7 +16,6 @@ import {
   LogOutIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  ChevronUpIcon
 } from "lucide-react";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/app/components/ui/dropdown-menu";
 
@@ -113,6 +113,13 @@ export default function Sidebar() {
             text="Winner History"
             isOpen={isOpen}
             isActive={pathname === "/winner-history"}
+          />
+          <NavItem
+            href="/superadmin"
+            icon={<UserCog className="h-5 w-5" />}
+            text="Super Admin"
+            isOpen={isOpen}
+            isActive={pathname === "/superadmin"}
           />
         </ul>
       </nav>
