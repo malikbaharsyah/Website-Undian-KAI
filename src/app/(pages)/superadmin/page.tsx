@@ -83,6 +83,8 @@ export default function SuperadminPage() {
     { id: "5", nipp: "13510", name: "Hakim", email: "Hakim@kai.id" , password: "123456", role: "User"},
     { id: "6", nipp: "13510", name: "Hakim", email: "Hakim@kai.id" , password: "123456", role: "User"},
     { id: "7", nipp: "13510", name: "Hakim", email: "Hakim@kai.id" , password: "123456", role: "User"},
+    { id: "7", nipp: "13510", name: "Hakim", email: "Hakim@kai.id" , password: "123456", role: "User"},
+    { id: "7", nipp: "13510", name: "Hakim", email: "Hakim@kai.id" , password: "123456", role: "User"},
     ])
     const [searchQuery, setSearchQuery] = useState("")
     const [showAddModal, setShowAddModal] = useState(false)
@@ -92,7 +94,7 @@ export default function SuperadminPage() {
     const [showPassword, setShowPassword] = useState(false)
     const [showDeleteDialog, setShowDeleteDialog] = useState(false)
     const [userToDelete, setUserToDelete] = useState<string | null>(null)
-    const itemsPerPage = 8
+    const itemsPerPage = 9
 
     const form = useForm<UserFormValues>({
     resolver: zodResolver(userFormSchema),
