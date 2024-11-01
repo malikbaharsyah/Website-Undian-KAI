@@ -32,6 +32,8 @@ import Link from "next/link"
 import { format } from "date-fns"
 import Event from "../../components/interfaces/Event"
 import useFetchAPI from "../../components/hooks/fetchAPI"
+import EditEventDialog from "./EditEvent"
+import useAlert from "@/app/components/hooks/useAlert"
 
 interface Detail {
   prize_id: number;
@@ -48,6 +50,8 @@ export default function Events() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const fetchAPI = useFetchAPI();
+
+  const { showAlert, AlertComponent } = useAlert();
 
   useEffect(() => {
     setIsLoading(true);
@@ -72,7 +76,7 @@ export default function Events() {
     setIsLoadingDetails(true);
     try {
       const data = await fetchAPI(`/events/${event.event_id}`);
-      setDetails(data.data);
+      setDetails(data.data.prizes);
     } catch (error) {
       console.error(error);
     } finally {
@@ -88,10 +92,24 @@ export default function Events() {
     <TableRow>
       <TableCell><Skeleton className="h-4 w-[250px]" /></TableCell>
       <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
-      <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
       <TableCell className="text-right"><Skeleton className="h-8 w-[100px]" /></TableCell>
     </TableRow>
   );
+
+  const handleDeleteEvent = async (eventId: number) => {
+    if (confirm('Are you sure you want to delete this event?')) {
+      try {
+        await fetchAPI(`/events/${eventId}`, {
+          method: 'DELETE',
+        });
+        showAlert('success', 'Event deleted successfully');
+        setEvents((prev) => prev.filter((event) => event.event_id !== eventId));
+      } catch (error) {
+        console.error(error);
+        showAlert('error', 'Event failed to delete');
+      }
+    }
+  };
 
   const DialogContentSkeleton = () => (
     <div className="space-y-4">
@@ -111,6 +129,7 @@ export default function Events() {
     <div className="flex font-poppins bg-white text-black h-screen">
       <Sidebar />
       <main className="flex-1 flex flex-col">
+      <AlertComponent />
         <div className="p-6 space-y-6 flex-1 flex flex-col">
           <div className="flex justify-between items-center">
             <h1 className="text-3xl font-bold text-[#000072]">Events</h1>
@@ -131,12 +150,12 @@ export default function Events() {
               <TableBody>
                 {isLoading
                   ? [...Array(6)].map((_, index) => <TableRowSkeleton key={index} />)
-                  : events.map((event) => (
+                  : events?.map((event) => (
                       <TableRow key={event.event_id}>
                         <TableCell>{event.name}</TableCell>
                         <TableCell>{format(new Date(event.start_date), "MMMM dd, yyyy")}</TableCell>
                         <TableCell>{format(new Date(event.end_date), "MMMM dd, yyyy")}</TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className="text-right space-x-2">
                           <Dialog>
                             <DialogTrigger asChild>
                               <Button 
@@ -176,6 +195,28 @@ export default function Events() {
                               )}
                             </DialogContent>
                           </Dialog>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                className="border-[#000072] text-[#000072] hover:bg-[#000072] hover:text-white"
+                              >
+                                Edit
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-7xl bg-white text-black">
+                              <EditEventDialog event={event} />
+                            </DialogContent>
+                          </Dialog>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            className="border-[#e3342f] text-[#e3342f] hover:bg-[#e3342f] hover:text-white"
+                            onClick={() => handleDeleteEvent(event.event_id)}
+                          >
+                            Delete
+                          </Button>
                         </TableCell>
                       </TableRow>
                     ))}

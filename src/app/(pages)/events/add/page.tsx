@@ -122,12 +122,15 @@ export default function Component() {
         });
         showAlert("loading", null)
         try {
-            await fetchAPI('/events', {
+            fetchAPI('/events', {
                 method: 'POST',
                 body: formData,
-            })
+            }).then(() => {
             showAlert("success", "Event created successfully")
             router.push('/events')
+            }).catch((error) => {
+                throw error
+            })
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "An error occurred while saving the event.";
             showAlert("error", errorMessage);

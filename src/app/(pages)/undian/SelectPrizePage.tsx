@@ -32,7 +32,7 @@ export default function SelectPrizePage(): JSX.Element {
           acc[curr.prize.prize_id] = (acc[curr.prize.prize_id] || 0) + 1;
           return acc;
         }, {});
-        const availablePrizes = prizesRes.data
+        const availablePrizes = prizesRes.data.prizes
           .map((prize: Prize) => {
             prize.quantity = prize.quantity - (prizeCount[prize.prize_id] || 0);
             return prize;
