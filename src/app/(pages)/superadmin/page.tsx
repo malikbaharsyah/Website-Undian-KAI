@@ -171,7 +171,7 @@ export default function SuperadminPage() {
                 onClick={() => setShowAddModal(true)}
                 className="bg-[#000072] hover:bg-[#000072]/90 text-white"
             >
-            <UserPlusIcon className="h-5 w-5" />
+                <UserPlusIcon className="h-5 w-5" />
             </Button>
             </div>
     
@@ -185,80 +185,83 @@ export default function SuperadminPage() {
             />
             </div>
     
-            <div className="flex-1 flex flex-col">
-            <div className="border rounded-lg overflow-x-auto flex-1">
-                <Table className="min-w-full">
-                <TableHeader>
+            <div className="flex-1 flex flex-col min-h-0">
+            <div className="border rounded-lg overflow-hidden">
+                <div className="overflow-x-auto">
+                <Table>
+                    <TableHeader>
                     <TableRow>
-                    <TableHead className="w-1/4">NIPP</TableHead>
-                    <TableHead className="w-1/4">Name</TableHead>
-                    <TableHead className="w-1/4">Email</TableHead>
-                    <TableHead className="w-1/4">Action</TableHead>
+                        <TableHead className="w-1/4">NIPP</TableHead>
+                        <TableHead className="w-1/4">Name</TableHead>
+                        <TableHead className="w-1/4">Email</TableHead>
+                        <TableHead className="w-1/4">Action</TableHead>
                     </TableRow>
-                </TableHeader>
-                <TableBody>
+                    </TableHeader>
+                    <TableBody>
                     {currentUsers.map((user) => (
-                    <TableRow key={user.id}>
-                        <TableCell className="py-2.5">{user.nipp}</TableCell>
-                        <TableCell className="py-2.5">{user.name}</TableCell>
-                        <TableCell className="py-2.5">{user.email}</TableCell>
-                        <TableCell className="py-2.5">
-                        <div className="flex gap-2">
+                        <TableRow key={user.id} className="h-12">
+                        <TableCell className="py-2">{user.nipp}</TableCell>
+                        <TableCell className="py-2">{user.name}</TableCell>
+                        <TableCell className="py-2">{user.email}</TableCell>
+                        <TableCell className="py-2">
+                            <div className="flex gap-2">
                             <Button
-                            variant="ghost"
-                            className="text-blue-600 hover:text-blue-800"
-                            onClick={() => handleEdit(user)}
+                                variant="ghost"
+                                className="text-blue-600 hover:text-blue-800 h-8 w-8 p-0"
+                                onClick={() => handleEdit(user)}
                             >
-                            <UserPenIcon className="h-5 w-5" />
+                                <UserPenIcon className="h-4 w-4" />
                             </Button>
                             <Button
-                            variant="ghost"
-                            className="text-red-600 hover:text-red-800"
-                            onClick={() => handleDeleteClick(user.id)}
+                                variant="ghost"
+                                className="text-red-600 hover:text-red-800 h-8 w-8 p-0"
+                                onClick={() => handleDeleteClick(user.id)}
                             >
-                            <TrashIcon className="h-5 w-5" />
+                                <TrashIcon className="h-4 w-4" />
                             </Button>
-                        </div>
+                            </div>
                         </TableCell>
-                    </TableRow>
+                        </TableRow>
                     ))}
-                </TableBody>
+                    </TableBody>
                 </Table>
-            </div>
-    
-            <div className="mt-auto pt-6">
-                <p className="text-sm text-muted-foreground text-center mb-4">
-                Showing {currentPage} of {totalPages} pages
+                </div>
+            </div> 
+            <div className="mt-auto py-2">
+                <p className="text-xs text-muted-foreground text-center mb-2">
+                    Showing {currentPage} of {totalPages} pages
                 </p>
                 <Pagination>
-                <PaginationContent>
-                    <PaginationItem>
-                    <PaginationPrevious
-                        className="cursor-pointer"
-                        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                    />
-                    </PaginationItem>
-                    {Array.from({ length: totalPages }).map((_, index) => (
-                    <PaginationItem key={index}>
-                        <PaginationLink
-                        className={`${
-                            index + 1 === currentPage
-                            ? "text-[#000072] bg-[#e0e0f7]"
-                            : "text-[#6666A3] bg-white"
-                        } hover:bg-[#e0e0f7] cursor-pointer`}
-                        onClick={() => handlePageChange(index + 1)}
-                        >
-                        {index + 1}
-                        </PaginationLink>
-                    </PaginationItem>
-                    ))}
-                    <PaginationItem>
-                    <PaginationNext
-                        className="cursor-pointer"
-                        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                    />
-                    </PaginationItem>
-                </PaginationContent>
+                    <PaginationContent className="flex items-center justify-center gap-1">
+                        <PaginationItem>
+                            <PaginationPrevious
+                                className="cursor-pointer px-2 py-1 text-xs rounded-md"
+                                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                            >
+                            </PaginationPrevious>
+                        </PaginationItem>
+                        {Array.from({ length: totalPages }).map((_, index) => (
+                            <PaginationItem key={index}>
+                                <PaginationLink
+                                    className={`${
+                                        index + 1 === currentPage
+                                            ? "text-[#000072] bg-[#e0e0f7]"
+                                            : "text-[#6666A3] bg-white"
+                                    } hover:bg-[#e0e0f7] cursor-pointer px-2 py-1 text-xs rounded-md`}
+                                    onClick={() => handlePageChange(index + 1)}
+                                >
+                                    {index + 1}
+                                </PaginationLink>
+                            </PaginationItem>
+                        ))}
+                        <PaginationItem>
+                            <PaginationNext
+                                className="cursor-pointer px-2 py-1 text-xs rounded-md"
+                                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                            >
+                            </PaginationNext>
+                        </PaginationItem>
+                    </PaginationContent>
                 </Pagination>
             </div>
             </div>
