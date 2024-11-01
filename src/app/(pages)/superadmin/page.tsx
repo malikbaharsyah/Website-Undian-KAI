@@ -24,6 +24,8 @@ Dialog,
 DialogContent,
 DialogHeader,
 DialogTitle,
+DialogDescription,
+DialogFooter,
 } from "@/app/components/ui/dialog"
 import {
 Form,
@@ -88,6 +90,8 @@ export default function SuperadminPage() {
     const [selectedUser, setSelectedUser] = useState<User | null>(null)
     const [currentPage, setCurrentPage] = useState(1)
     const [showPassword, setShowPassword] = useState(false)
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+    const [userToDelete, setUserToDelete] = useState<string | null>(null)
     const itemsPerPage = 8
 
     const form = useForm<UserFormValues>({
@@ -136,10 +140,6 @@ export default function SuperadminPage() {
     setShowEditModal(true)
     }
 
-    const handleDelete = (userId: string) => {
-    console.log("Deleting user:", userId)
-    }
-
     const handlePageChange = (page: number) => {
     setCurrentPage(page);
     };
@@ -147,6 +147,19 @@ export default function SuperadminPage() {
     const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
     };
+
+    const handleDeleteClick = (userId: string) => {
+        setUserToDelete(userId)
+        setShowDeleteDialog(true)
+    }
+    
+    const handleConfirmDelete = () => {
+        if (userToDelete) {
+        console.log("Deleting user:", userToDelete)
+        setShowDeleteDialog(false)
+        setUserToDelete(null)
+        }
+    }
 
     return (
         <div className="flex h-screen font-poppins bg-white text-black">
@@ -201,7 +214,7 @@ export default function SuperadminPage() {
                             <Button
                             variant="ghost"
                             className="text-red-600 hover:text-red-800"
-                            onClick={() => handleDelete(user.id)}
+                            onClick={() => handleDeleteClick(user.id)}
                             >
                             <TrashIcon className="h-5 w-5" />
                             </Button>
@@ -364,7 +377,6 @@ export default function SuperadminPage() {
             </Form>
             </DialogContent>
         </Dialog>
-
         <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
             <DialogContent className="sm:max-w-[425px] bg-white text-black">
             <DialogHeader>
@@ -478,6 +490,32 @@ export default function SuperadminPage() {
                 </form>
             </Form>
             </DialogContent>
+        </Dialog>
+        <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent className="sm:max-w-[425px] bg-white text-black">
+            <DialogHeader>
+            <DialogTitle>Delete User</DialogTitle>
+            <DialogDescription>
+                Are you sure you want to delete this user? This action cannot be undone.
+            </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="flex justify-end gap-2 pt-4">
+            <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowDeleteDialog(false)}
+            >
+                Cancel
+            </Button>
+            <Button
+                type="button"
+                variant="destructive"
+                onClick={handleConfirmDelete}
+            >
+                Delete
+            </Button>
+            </DialogFooter>
+        </DialogContent>
         </Dialog>
         </div>
     </div>
