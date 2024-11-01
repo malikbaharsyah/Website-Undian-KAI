@@ -85,6 +85,7 @@ export const getDetailWinnerHistory = async (eventId: number) => {
                     select: {
                         nipp: true,
                         name: true,
+                        operating_area: true,
                     },
                 },
                 prize: {
@@ -104,6 +105,7 @@ export const getDetailWinnerHistory = async (eventId: number) => {
                 nipp: winnerHistory.participant?.nipp || "N/A",
                 participant: winnerHistory.participant?.name || "N/A",
                 prize: winnerHistory.prize?.name || "N/A",
+                operating_area: winnerHistory.participant?.operating_area || "N/A",
             };
         });
 

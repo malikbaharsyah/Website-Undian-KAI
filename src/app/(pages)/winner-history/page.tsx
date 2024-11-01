@@ -39,6 +39,7 @@ interface Show {
     nipp: string;
     participant: string;
     prize: string;
+    operating_area: string;
 }
 
 const SkeletonRow = () => (
@@ -165,6 +166,7 @@ export default function WinnerHistory() {
                                                                     <TableHead>NIPP</TableHead>
                                                                     <TableHead>Participant</TableHead>
                                                                     <TableHead>Prize</TableHead>
+                                                                    <TableHead>Operating Area</TableHead>
                                                                 </TableRow>
                                                             </TableHeader>
                                                             <TableBody>
@@ -174,7 +176,7 @@ export default function WinnerHistory() {
                                                                     ))
                                                                 ) : show.length === 0 ? (
                                                                     <TableRow>
-                                                                        <TableCell colSpan={3} className="text-center">
+                                                                        <TableCell colSpan={4} className="text-center">
                                                                             No winner history available for this event.
                                                                         </TableCell>
                                                                     </TableRow>
@@ -184,6 +186,7 @@ export default function WinnerHistory() {
                                                                             <TableCell>{showItem.nipp}</TableCell>
                                                                             <TableCell>{showItem.participant}</TableCell>
                                                                             <TableCell>{showItem.prize}</TableCell>
+                                                                            <TableCell>{showItem.operating_area}</TableCell>
                                                                         </TableRow>
                                                                     ))
                                                                 )}
