@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/ca
 import { PencilIcon, UploadIcon, XIcon, FileSpreadsheet } from "lucide-react";
 import { DatePicker } from "@/app/components/ui/date-picker";
 import { DateRange } from "react-day-picker";
-import useAlert from "@/app/components/hooks/useAlert";
+import { useAlert } from "@/app/components/hooks/useAlert";
 import { useRouter } from 'next/navigation';
 import Image from "next/image";
 import useFetchAPI from "@/app/components/hooks/fetchAPI";
@@ -35,7 +35,7 @@ export default function EditEventDialog({ event }: EditEventDialogProps) {
     const [participantFile, setParticipantFile] = useState<File | null>(null);
     const participantFileInputRef = useRef<HTMLInputElement>(null);
     const fetchAPI = useFetchAPI();
-    const { showAlert, AlertComponent } = useAlert();
+    const { showAlert } = useAlert();
     const router = useRouter();
     const [loading, setLoading] = useState(true);
 
@@ -197,10 +197,8 @@ export default function EditEventDialog({ event }: EditEventDialogProps) {
 
     return (
         <div className="flex h-screen font-poppins bg-white text-black">
-            <AlertComponent />
             <main className="flex-1 flex flex-col overflow-hidden">
                 <div className="container mx-auto py-1.5 px-7 border-0">
-                    <AlertComponent />
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between content-center text-[#000072]">
                             {isEditing ? (

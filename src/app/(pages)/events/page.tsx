@@ -33,7 +33,7 @@ import { format } from "date-fns"
 import Event from "../../components/interfaces/Event"
 import useFetchAPI from "../../components/hooks/fetchAPI"
 import EditEventDialog from "./EditEvent"
-import useAlert from "@/app/components/hooks/useAlert"
+import { useAlert } from "@/app/components/hooks/useAlert"
 
 interface Detail {
   prize_id: number;
@@ -51,7 +51,7 @@ export default function Events() {
   const [totalPages, setTotalPages] = useState(1);
   const fetchAPI = useFetchAPI();
 
-  const { showAlert, AlertComponent } = useAlert();
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     setIsLoading(true);
@@ -129,7 +129,6 @@ export default function Events() {
     <div className="flex font-poppins bg-white text-black h-screen">
       <Sidebar />
       <main className="flex-1 flex flex-col">
-      <AlertComponent />
         <div className="p-6 space-y-6 flex-1 flex flex-col">
           <div className="flex justify-between items-center">
             <h1 className="text-3xl font-bold text-[#000072]">Events</h1>
