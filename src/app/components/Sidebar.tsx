@@ -117,7 +117,7 @@ export default function Sidebar() {
           <NavItem
             href="/superadmin"
             icon={<UserCog className="h-5 w-5" />}
-            text="Super Admin"
+            text="Superadmin"
             isOpen={isOpen}
             isActive={pathname === "/superadmin"}
           />
