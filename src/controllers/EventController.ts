@@ -113,7 +113,91 @@ export const createEvent = async (req: NextRequest) => {
     }
 };
 
-    export const getEvents = async (req: NextRequest) => {
+export const editEvent = async (req: NextRequest, eventId: string) => {
+    try {
+        const xUser = JSON.parse(req.headers.get('x-user')??'{}');
+        const operating_area = xUser.operating_area as string;
+
+        const formData = await req.formData();
+
+        const prizes: any[] = [];
+        const prize_length = parseInt(formData.get('prize_length') as string);
+        for (let i = 0; i < prize_length; i++) {
+            const prizeData = formData.get(`prize[${i}]`) as string;
+            if (prizeData) {
+                const prize = JSON.parse(prizeData) as PrizeData;
+                const prizeName = prize.name as string;
+                const prizeQuantity = prize.quantity as string;
+                const prizeImage = formData.get(`prize_image[${i}]`) as File;
+
+                if (prizeImage) {
+                    await saveFile(prizeImage, 'prizes', `${eventId}_${i}`);
+                }
+
+                prizes.push({
+                    name: prizeName,
+                    quantity: parseInt(prizeQuantity),
+                    operating_area: operating_area, 
+                    image: `events/${eventId}/prizes/${i}`,
+                    event_id: parseInt(eventId),
+                });
+            }
+        }
+
+        const name = formData.get('name') as string;
+        const startDate = formData.get('start_date') as string;
+        const endDate = formData.get('end_date') as string;
+
+        const participantsFile = formData.get('participants') as File;
+        let participants: Participant[] = [];
+
+        if (participantsFile) {
+            const excelFilePath = await saveExcel(participantsFile, 'participants', '2');
+            participants = await parseExcel(excelFilePath, parseInt(eventId));
+        }
+
+        const updatedEvent = await prisma.event.update({
+            where: {
+                event_id: parseInt(eventId)
+            },
+            data: {
+                name,
+                start_date: new Date(startDate),
+                end_date: new Date(endDate),
+            }
+        });
+
+        if (prizes.length > 0) {
+            await prisma.prize.deleteMany({
+                where: {
+                    event_id: parseInt(eventId)
+                }
+            });
+
+            await prisma.prize.createMany({
+                data: prizes
+            });
+        }
+
+        if (participants.length > 0) {
+            await prisma.participant.deleteMany({
+                where: {
+                    event_id: parseInt(eventId)
+                }
+            });
+
+            await prisma.participant.createMany({
+                data: participants
+            });
+        }
+
+        return NextResponse.json({ message: 'Event updated successfully', event: updatedEvent }, { status: 200 });
+    } catch (error) {
+        return NextResponse.json({ error: error instanceof Error ? error.message : "Unknown error occurred" }, { status: 500 });
+    }
+}
+
+export const getEvents = async (req: NextRequest) => {
     try {
         const xPage = req.headers.get('x-page');
         const xUser = JSON.parse(req.headers.get('x-user')??'{}');
@@ -175,16 +259,42 @@ export const createEvent = async (req: NextRequest) => {
     }
 };
 
+export const deleteEvent = async (req: NextRequest, eventId: string) => {
+    try {
+        await prisma.event.delete({
+            where: {
+                event_id: parseInt(eventId)
+            }
+        });
+        return NextResponse.json({ message: "Event deleted successfully" }, { status: 200 });
+    } catch (error) {
+        return NextResponse.json({ error: error instanceof Error ? error.message : "Unknown error occurred" }, { status: 500 });
+    }
+}
+
 
 export const getEventDetail = async (id: string) => {
     try {
         const event_id = parseInt(id);
+        const event = await prisma.event.findUnique({
+            where: {
+                event_id
+            }
+        });
         const prizes = await prisma.prize.findMany({
             where: {
                 event_id: event_id
             }
         });
-        return NextResponse.json({message:"Success GET event detail", data:prizes}, { status: 200 });
+        return NextResponse.json({message:"Success GET event detail", data:
+            {
+                event_name: event?.name,
+                operating_area: event?.operating_area,
+                start_date: event?.start_date,
+                end_date: event?.end_date,
+                prizes
+            }
+        }, { status: 200 });
     } catch (error) {
         if (error instanceof Error) {
             return NextResponse.json({ error: error.message }, { status: 500 });

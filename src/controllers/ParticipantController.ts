@@ -44,6 +44,18 @@ export async function getAndShuffleParticipants(eventId: number): Promise<string
     return shuffleArray(participants);
 }
 
+export async function getParticipants(eventId: number, nipps: string[]): Promise<Participant[]> {
+    const participants = await prisma.participant.findMany({
+        where: {
+            event_id: eventId,
+            nipp: {
+                in: nipps,
+            },
+        },
+    });
+    return participants;
+}
+
 function shuffleArray<T>(array: T[]): T[] {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
