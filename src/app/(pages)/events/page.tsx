@@ -131,7 +131,7 @@ export default function Events() {
               <TableBody>
                 {isLoading
                   ? [...Array(6)].map((_, index) => <TableRowSkeleton key={index} />)
-                  : events.map((event) => (
+                  : events?.map((event) => (
                       <TableRow key={event.event_id}>
                         <TableCell>{event.name}</TableCell>
                         <TableCell>{format(new Date(event.start_date), "MMMM dd, yyyy")}</TableCell>

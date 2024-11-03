@@ -10,37 +10,42 @@ import { CheckIcon, RefreshCwIcon } from 'lucide-react'
 import { useLottery } from './LotteryContext'
 import useFetchAPI from '../../components/hooks/fetchAPI'
 
-interface EmployeeButtonProps {
-  initialId: string | null
-  name: string
-  position: string
-  isShuffling: boolean
-  updateHandledStatus: (isHandled: boolean) => void
+export interface WinnerDetail {
+  nipp: string;
+  name: string;
+  operating_area: string;
 }
 
-export default function WinnerButton({ initialId = null, name, position, isShuffling, updateHandledStatus }: EmployeeButtonProps) {
+interface EmployeeButtonProps {
+  initialId: string | null
+  isShuffling: boolean
+  updateHandledStatus: (isHandled: boolean) => void
+  winnerDetail: WinnerDetail | null
+  setWinnerDetail: (winnerDetail: WinnerDetail) => void
+}
+
+export default function WinnerButton({ initialId = null, isShuffling, updateHandledStatus, winnerDetail, setWinnerDetail }: EmployeeButtonProps) {
   const [employeeId, setEmployeeId] = useState<string | null>(null)
   const [isDisabled, setIsDisabled] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
   const [isHandled, setIsHandled] = useState(false)
-  // const [isRetrying, setIsRetrying] = useState(false)
   const fetchAPI = useFetchAPI();
   const { selectedPrize, selectedEvent } = useLottery()
-
   const handleCheck = () => {
     try {
-      fetchAPI(`/winner-histories`, {
-        method: 'POST',
-        body: JSON.stringify({
-          event_id: selectedEvent?.event_id,
-          prize_id: selectedPrize?.prize_id,
-          nipp: employeeId
-        }),
-      })
+      fetchAPI(`/winner-histories`,
+        {
+          method : 'POST',
+          body : JSON.stringify({
+            event_id: selectedEvent?.event_id,
+            prize_id: selectedPrize?.prize_id,
+            nipp: employeeId
+          }),
+        }
+      )
       setIsDisabled(true)
       setIsHovered(false)
       setIsHandled(true)
-      // setIsRetrying(false)
       updateHandledStatus(true)
     } catch (error) {
       console.error(error)
@@ -52,7 +57,7 @@ export default function WinnerButton({ initialId = null, name, position, isShuff
     setIsDisabled(false)
     setIsHovered(false)
     setIsHandled(true)
-    // setIsRetrying(true)
+    setWinnerDetail({ nipp: '', name: '', operating_area: '' })
     updateHandledStatus(true)
   }
 
@@ -67,9 +72,8 @@ export default function WinnerButton({ initialId = null, name, position, isShuff
   useEffect(() => {
     if (!isDisabled && isShuffling) {
       setEmployeeId(initialId)
-      // setIsRetrying(false)
     }
-  }, [initialId, isShuffling, isDisabled, isHandled])
+  }, [initialId, isShuffling, isDisabled, isHandled, winnerDetail])
 
   return (
     <Popover>
@@ -103,7 +107,7 @@ export default function WinnerButton({ initialId = null, name, position, isShuff
               <span className="text-3xl">{employeeId || ''}</span>
               {!isShuffling && (
                 <div className="text-sm mt-1">
-                  <span className="font-normal">{name}</span> - <span className="font-normal">{position}</span>
+                  <span className="font-normal">{winnerDetail?.name}</span> - <span className="font-normal">{winnerDetail?.operating_area}</span>
                 </div>
               )}
             </div>
