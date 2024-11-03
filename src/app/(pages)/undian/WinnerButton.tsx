@@ -73,6 +73,9 @@ export default function WinnerButton({ initialId = null, isShuffling, updateHand
     if (!isDisabled && isShuffling) {
       setEmployeeId(initialId)
     }
+    if (isDisabled && isHandled) {
+      updateHandledStatus(true)
+    }
   }, [initialId, isShuffling, isDisabled, isHandled, winnerDetail])
 
   return (
