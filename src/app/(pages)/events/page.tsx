@@ -32,6 +32,13 @@ import Link from "next/link"
 import { format } from "date-fns"
 import Event from "../../components/interfaces/Event"
 import useFetchAPI from "../../components/hooks/fetchAPI"
+import EditEventDialog from "./EditEvent"
+import { useAlert } from "@/app/components/hooks/useAlert"
+import {
+  InfoIcon,
+  PencilIcon,
+  TrashIcon,
+} from "lucide-react"
 
 interface Detail {
   prize_id: number;
@@ -48,6 +55,8 @@ export default function Events() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const fetchAPI = useFetchAPI();
+
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     setIsLoading(true);
@@ -72,7 +81,7 @@ export default function Events() {
     setIsLoadingDetails(true);
     try {
       const data = await fetchAPI(`/events/${event.event_id}`);
-      setDetails(data.data);
+      setDetails(data.data.prizes);
     } catch (error) {
       console.error(error);
     } finally {
@@ -86,12 +95,26 @@ export default function Events() {
 
   const TableRowSkeleton = () => (
     <TableRow>
-      <TableCell><Skeleton className="h-4 w-[250px]" /></TableCell>
       <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
       <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
-      <TableCell className="text-right"><Skeleton className="h-8 w-[100px]" /></TableCell>
+      <TableCell><Skeleton className="h-8 w-[100px]" /></TableCell>
     </TableRow>
   );
+
+  const handleDeleteEvent = async (eventId: number) => {
+    if (confirm('Are you sure you want to delete this event?')) {
+      try {
+        await fetchAPI(`/events/${eventId}`, {
+          method: 'DELETE',
+        });
+        showAlert('success', 'Event deleted successfully');
+        setEvents((prev) => prev.filter((event) => event.event_id !== eventId));
+      } catch (error) {
+        console.error(error);
+        showAlert('error', 'Event failed to delete');
+      }
+    }
+  };
 
   const DialogContentSkeleton = () => (
     <div className="space-y-4">
@@ -137,15 +160,11 @@ export default function Events() {
                         <TableCell>{format(new Date(event.start_date), "MMMM dd, yyyy")}</TableCell>
                         <TableCell>{format(new Date(event.end_date), "MMMM dd, yyyy")}</TableCell>
                         <TableCell className="text-right">
+                        <div className="flex items-center justify-end gap-2">
                           <Dialog>
                             <DialogTrigger asChild>
-                              <Button 
-                                variant="outline" 
-                                size="sm"
-                                className="border-[#000072] text-[#000072] hover:bg-[#000072] hover:text-white"
-                                onClick={() => handleShowDetails(event)}
-                              >
-                                Details
+                              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleShowDetails(event)}>
+                                <InfoIcon className="h-4 w-4 text-blue-600 hover:text-blue-800" />
                               </Button>
                             </DialogTrigger>
                             <DialogContent className="sm:max-w-[700px] bg-white text-black">
@@ -176,7 +195,26 @@ export default function Events() {
                               )}
                             </DialogContent>
                           </Dialog>
-                        </TableCell>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-8 w-8">
+                                <PencilIcon className="h-4 w-4 text-blue-600 hover:text-blue-800" />
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-7xl bg-white text-black">
+                              <EditEventDialog event={event} />
+                            </DialogContent>
+                          </Dialog>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => handleDeleteEvent(event.event_id)}
+                          >
+                            <TrashIcon className="h-4 w-4 text-red-600 hover:text-red-800" />
+                          </Button>
+                        </div>
+                      </TableCell>
                       </TableRow>
                     ))}
               </TableBody>

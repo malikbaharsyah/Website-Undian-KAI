@@ -1,4 +1,4 @@
-import { createEvent, getEvents } from "@/controllers/EventController";
+import { createEvent, getEvents, editEvent, deleteEvent } from "@/controllers/EventController";
 import { verifyToken } from "@/controllers/LoginController";
 import { NextRequest } from "next/server";
 
