@@ -65,6 +65,7 @@ export const getWinnersDetail = async (req: NextRequest, eventId: number) => {
     } catch (error) {
         return NextResponse.json({ success: false, error: error instanceof Error ? error.message : "An unknown error occurred", message: "Error" }, { status: 500 });
     }
+}
 
 export async function getParticipants(eventId: number, nipps: string[]): Promise<Participant[]> {
     const participants = await prisma.participant.findMany({
