@@ -177,7 +177,7 @@ export default function StartLotteryPage(): JSX.Element {
                 className="hover:bg-[#000072]/90 hover:text-white"
                 variant="outline"
                 onClick={() => { setStep(step - 1); setQty(0); }}
-                disabled={isShuffling}
+                disabled={isShuffling || buttonStatuses.some((status) => !status)}
                 >
                     Choose Prize
                 </Button>
