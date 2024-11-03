@@ -151,26 +151,26 @@ export default function StartLotteryPage(): JSX.Element {
                     </div>
                 </div>
                 <div className="flex justify-center w-full">
-    <div className="flex flex-wrap gap-6 mb-6 w-full justify-center">
-        {currentParticipants.map((participant, index) => (
-            <div key={index} className="flex-grow min-w-[200px] max-w-[280px]">
-                <WinnerButton 
-                    initialId={participant} 
-                    isShuffling={isShuffling} 
-                    updateHandledStatus={(isHandled) => updateButtonHandledStatus(index, isHandled)}
-                    winnerDetail={winnerDetails[index]}
-                    setWinnerDetail={(winnerDetail) => {
-                        setWinnerDetails((prevDetails) => {
-                            const newDetails = [...prevDetails];
-                            newDetails[index] = winnerDetail;
-                            return newDetails;
-                        });
-                    }}
-                />
-            </div>
-        ))}
-    </div>
-</div>
+                    <div className="flex flex-wrap gap-6 mb-6 w-full justify-center">
+                        {currentParticipants.map((participant, index) => (
+                            <div key={index} className="flex-grow min-w-[200px] max-w-[280px]">
+                                <WinnerButton 
+                                    initialId={participant} 
+                                    isShuffling={isShuffling} 
+                                    updateHandledStatus={(isHandled) => updateButtonHandledStatus(index, isHandled)}
+                                    winnerDetail={winnerDetails[index]}
+                                    setWinnerDetail={(winnerDetail) => {
+                                        setWinnerDetails((prevDetails) => {
+                                            const newDetails = [...prevDetails];
+                                            newDetails[index] = winnerDetail;
+                                            return newDetails;
+                                        });
+                                    }}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
             <div className="flex justify-between space-x-4 items-end">
                 <Button
