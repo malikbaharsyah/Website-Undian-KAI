@@ -216,6 +216,7 @@ export const getEvents = async (req: NextRequest) => {
                 name: true,
                 start_date: true,
                 end_date: true,
+                operating_area: true,
             },
             });
     
@@ -243,6 +244,7 @@ export const getEvents = async (req: NextRequest) => {
                 name: true,
                 start_date: true,
                 end_date: true,
+                operating_area: true,
             },
             });
             return NextResponse.json(
