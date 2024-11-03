@@ -148,6 +148,7 @@ export default function Events() {
                   <TableHead>Event</TableHead>
                   <TableHead>Start Date</TableHead>
                   <TableHead>End Date</TableHead>
+                  <TableHead>Operating Area</TableHead>
                   <TableHead className="text-right">Action</TableHead>
                 </TableRow>
               </TableHeader>
@@ -159,6 +160,7 @@ export default function Events() {
                         <TableCell>{event.name}</TableCell>
                         <TableCell>{format(new Date(event.start_date), "MMMM dd, yyyy")}</TableCell>
                         <TableCell>{format(new Date(event.end_date), "MMMM dd, yyyy")}</TableCell>
+                        <TableCell>{event.operating_area}</TableCell>
                         <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-2">
                           <Dialog>
