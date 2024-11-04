@@ -78,7 +78,6 @@ function TableSkeleton() {
 }
 
 const userFormSchema = z.object({
-    email: z.string().email(),
     nipp: z.string().min(1, "NIPP is required"),
     user_name: z.string().min(1, "Name is required"),
     operating_area: z.string().min(1, "Operating area is required"),
@@ -93,7 +92,6 @@ interface User {
     nipp: string
     user_name: string
     operating_area: string
-    email: string
     password: string
     role: string
 }
@@ -118,7 +116,6 @@ export default function SuperadminPage() {
     const form = useForm<UserFormValues>({
         resolver: zodResolver(userFormSchema),
         defaultValues: {
-            email: "",
             nipp: "",
             user_name: "",
             operating_area: "",
@@ -140,7 +137,6 @@ export default function SuperadminPage() {
     const handleEdit = (user: User) => {
         setSelectedUser(user)
         form.reset({
-            email: user.email,
             nipp: user.nipp,
             user_name: user.user_name,
             operating_area: user.operating_area,
@@ -309,19 +305,6 @@ export default function SuperadminPage() {
                         </DialogHeader>
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(showAddModal ? handleAddUser : handleEditUser)} className="space-y-4">
-                                <FormField
-                                    control={form.control}
-                                    name="email"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Email</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Input Email" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
                                 <FormField
                                     control={form.control}
                                     name="nipp"
