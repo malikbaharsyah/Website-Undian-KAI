@@ -173,11 +173,12 @@ export default function EditEventDialog({ event }: EditEventDialogProps) {
                 method: 'PUT',
                 body: formData,
             });
-            showAlert("success", "Event created successfully");
-            router.push('/events');
+            showAlert("success", "Event updated successfully");
+            window.location.reload();
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "An error occurred while saving the event.";
             showAlert("error", errorMessage);
+            window.location.reload();
         }
     };
 
