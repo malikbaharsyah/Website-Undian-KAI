@@ -4,18 +4,34 @@ import { NextRequest, NextResponse } from "next/server";
 const prisma = new PrismaClient();
 
 export const getUsersByPage = async (req: NextRequest) => {
-    const { searchParams } = new URL(req.url);
-    const page = parseInt(searchParams.get("page") || "1", 10);
-    const limit = 8;
-    const skip = (page - 1) * limit;
+    const { searchParams } = new URL(req.url)
+    const page = parseInt(searchParams.get("page") || "1", 10)
+    const limit = 8
+    const skip = (page - 1) * limit
+    const search = searchParams.get("search") || "" // Get the search parameter
 
     try {
         const users = await prisma.user.findMany({
             skip,
             take: limit,
-        });
+            where: {
+                OR: [
+                    { user_name: { contains: search, mode: "insensitive" } },
+                    { nipp: { contains: search, mode: "insensitive" } },
+                    { operating_area: { contains: search, mode: "insensitive" } }
+                ]
+            },
+        })
 
-        const totalRecords = await prisma.user.count();
+        const totalRecords = await prisma.user.count({
+            where: {
+                OR: [
+                    { user_name: { contains: search, mode: "insensitive" } },
+                    { nipp: { contains: search, mode: "insensitive" } },
+                    { operating_area: { contains: search, mode: "insensitive" } }
+                ]
+            }
+        })
 
         return NextResponse.json({
             data: users,
@@ -24,12 +40,12 @@ export const getUsersByPage = async (req: NextRequest) => {
                 currentPage: page,
                 totalPages: Math.ceil(totalRecords / limit),
             },
-        });
+        })
     } catch (error) {
         return NextResponse.json(
             { message: error instanceof Error ? error.message : "An unknown error occurred" },
             { status: 500 }
-        );
+        )
     }
 }
 

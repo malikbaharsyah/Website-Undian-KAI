@@ -56,8 +56,8 @@ import {
 import Sidebar from "@/app/components/Sidebar"
 import useFetchAPI from "@/app/components/hooks/fetchAPI"
 import { useAlert } from "@/app/components/hooks/useAlert"
+import debounce from "lodash.debounce"
 
-// Define the skeleton component for table rows
 function TableSkeleton() {
     return (
         <TableRow className="h-12 animate-pulse">
@@ -78,7 +78,6 @@ function TableSkeleton() {
 }
 
 const userFormSchema = z.object({
-    email: z.string().email(),
     nipp: z.string().min(1, "NIPP is required"),
     user_name: z.string().min(1, "Name is required"),
     operating_area: z.string().min(1, "Operating area is required"),
@@ -93,7 +92,6 @@ interface User {
     nipp: string
     user_name: string
     operating_area: string
-    email: string
     password: string
     role: string
 }
@@ -108,6 +106,7 @@ export default function SuperadminPage() {
     const [showPassword, setShowPassword] = useState(false)
     const [showDeleteDialog, setShowDeleteDialog] = useState(false)
     const [userToDelete, setUserToDelete] = useState<string | null>(null)
+    const [debouncedQuery, setDebouncedQuery] = useState("")
     const itemsPerPage = 9
 
     const fetchAPI = useFetchAPI()
@@ -118,7 +117,6 @@ export default function SuperadminPage() {
     const form = useForm<UserFormValues>({
         resolver: zodResolver(userFormSchema),
         defaultValues: {
-            email: "",
             nipp: "",
             user_name: "",
             operating_area: "",
@@ -140,7 +138,6 @@ export default function SuperadminPage() {
     const handleEdit = (user: User) => {
         setSelectedUser(user)
         form.reset({
-            email: user.email,
             nipp: user.nipp,
             user_name: user.user_name,
             operating_area: user.operating_area,
@@ -170,9 +167,18 @@ export default function SuperadminPage() {
         }
     }
 
+    const debouncedSearch = debounce((query: string) => {
+        setDebouncedQuery(query)
+    }, 300)
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(e.target.value)
+        debouncedSearch(e.target.value)
+    }
+
     useEffect(() => {
         setIsLoading(true)
-        fetchAPI(`/admin?page=${currentPage}&limit=${itemsPerPage}`)
+        fetchAPI(`/admin?page=${currentPage}&limit=${itemsPerPage}&search=${debouncedQuery}`)
             .then((data) => {
                 setUsers(data.data)
                 setTotalPages(data.meta.totalPages)
@@ -182,13 +188,12 @@ export default function SuperadminPage() {
                 showAlert("error", "Failed to fetch users")
                 setIsLoading(false)
             })
-    }, [currentPage])
+    }, [currentPage, debouncedQuery])
 
     return (
         <div className="flex h-screen font-poppins bg-white text-black">
             <Sidebar />
             <div className="flex flex-col flex-1 p-6">
-                {/* Header */}
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-3xl font-bold text-[#000072]">Superadmin</h1>
                     <Button 
@@ -199,18 +204,16 @@ export default function SuperadminPage() {
                     </Button>
                 </div>
     
-                {/* Search Input */}
                 <div className="relative mb-4 w-1/4">
                     <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                         placeholder="Input Name Here..."
                         value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={handleSearchChange}
                         className="pl-8"
                     />
                 </div>
     
-                {/* Table */}
                 <div className="flex-1 flex flex-col min-h-0">
                     <div className="border rounded-lg overflow-hidden">
                         <div className="overflow-x-auto">
@@ -225,7 +228,6 @@ export default function SuperadminPage() {
                                 </TableHeader>
                                 <TableBody>
                                     {isLoading ? (
-                                        // Display 9 skeleton rows during loading
                                         Array.from({ length: 9 }).map((_, index) => (
                                             <TableSkeleton key={index} />
                                         ))
@@ -261,7 +263,6 @@ export default function SuperadminPage() {
                         </div>
                     </div> 
 
-                    {/* Pagination */}
                     <div className="mt-auto py-2">
                         <p className="text-xs text-muted-foreground text-center mb-2">
                             Showing {currentPage} of {totalPages} pages
@@ -301,7 +302,6 @@ export default function SuperadminPage() {
                     </div>
                 </div>
 
-                {/* Dialog for Add and Edit User */}
                 <Dialog open={showAddModal || showEditModal} onOpenChange={() => { setShowAddModal(false); setShowEditModal(false); }}>
                     <DialogContent className="sm:max-w-[425px] bg-white text-black">
                         <DialogHeader>
@@ -309,19 +309,6 @@ export default function SuperadminPage() {
                         </DialogHeader>
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(showAddModal ? handleAddUser : handleEditUser)} className="space-y-4">
-                                <FormField
-                                    control={form.control}
-                                    name="email"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Email</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Input Email" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
                                 <FormField
                                     control={form.control}
                                     name="nipp"
@@ -430,7 +417,6 @@ export default function SuperadminPage() {
                     </DialogContent>
                 </Dialog>
 
-                {/* Dialog for Delete User */}
                 <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
                     <DialogContent className="sm:max-w-[425px] bg-white text-black">
                         <DialogHeader>
