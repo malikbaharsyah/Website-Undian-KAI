@@ -30,6 +30,7 @@ export const login = async (req: NextRequest) => {
                 user_name: user.user_name,
                 operating_area: user.operating_area,
                 unit: user.unit,
+                role: user.role,
             },
             process.env.ACCESS_TOKEN_SECRET as string,
             { expiresIn: '24h' }
@@ -63,10 +64,45 @@ export const verifyToken = async (req: NextRequest) => {
             throw new Error('JWT secret not found');
         }
 
+        const decoded = jwt.verify(token, secret) as jwt.JwtPayload;
+
+        if (!decoded) {
+            console.error('Invalid token');
+            return { response: NextResponse.json({message: "Unauthorized"}, {status: 401}), isRedirect: true };
+        }
+        
+        const response = NextResponse.next();
+        req.headers.set('x-user', JSON.stringify(decoded));
+
+        return { response, isRedirect: false };
+    } catch (error) {
+        console.error('Error verifying token:', error);
+        return { response: NextResponse.json({message: "Unauthorized"}, {status: 401}), isRedirect: true };
+    }
+};
+
+export const verifySuperadmin = async (req: NextRequest) => {
+    try {
+        const token = req.cookies.get('token')?.value;
+        const secret = process.env.ACCESS_TOKEN_SECRET;
+
+        if (!token) {
+            return { response: NextResponse.json({message: "Unauthorized"}, {status: 401}), isRedirect: true };
+        }
+
+        if (!secret) {
+            console.error('JWT secret not found');
+            throw new Error('JWT secret not found');
+        }
+
         const decoded = jwt.verify(token, secret);
 
         if (!decoded) {
             console.error('Invalid token');
+            return { response: NextResponse.json({message: "Unauthorized"}, {status: 401}), isRedirect: true };
+        }
+
+        if ((decoded as jwt.JwtPayload).role !== 'superadmin') {
             return { response: NextResponse.json({message: "Unauthorized"}, {status: 401}), isRedirect: true };
         }
         

@@ -60,4 +60,5 @@ model User {
   user_name        String
   operating_area   String
   unit             String
+  role             String        @default("admin")
 }

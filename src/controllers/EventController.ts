@@ -202,23 +202,39 @@ export const getEvents = async (req: NextRequest) => {
         const xPage = req.headers.get('x-page');
         const xUser = JSON.parse(req.headers.get('x-user')??'{}');
         const operating_area = xUser.operating_area as string;
+        const role = xUser.role as string;
         if (xPage === '/events') {
             const { searchParams } = new URL(req.url);
             const page = parseInt(searchParams.get("page") || "1", 10);
             const limit = 7;
             const skip = (page - 1) * limit;
-            const events = await prisma.event.findMany({
-            where: { operating_area },
-            skip,
-            take: limit,
-            select: {
-                event_id: true,
-                name: true,
-                start_date: true,
-                end_date: true,
-                operating_area: true,
-            },
-            });
+            let events;
+            if (role === 'superadmin') {
+                events = await prisma.event.findMany({
+                skip,
+                take: limit,
+                select: {
+                    event_id: true,
+                    name: true,
+                    start_date: true,
+                    end_date: true,
+                    operating_area: true,
+                },
+                });
+            } else {
+                events = await prisma.event.findMany({
+                    where: { operating_area },
+                    skip,
+                    take: limit,
+                    select: {
+                        event_id: true,
+                        name: true,
+                        start_date: true,
+                        end_date: true,
+                        operating_area: true,
+                    },
+                    });
+            }
     
             const totalRecords = await prisma.event.count({ where: { operating_area } });
     
@@ -231,22 +247,42 @@ export const getEvents = async (req: NextRequest) => {
             },
             });
         } else {
-            const events = await prisma.event.findMany({
-            where: { operating_area,
-                start_date: {
-                    lte: new Date(),
-                }, end_date: {
-                    gte: new Date(),
-                }
-             },
-            select: {
-                event_id: true,
-                name: true,
-                start_date: true,
-                end_date: true,
-                operating_area: true,
-            },
-            });
+            let events;
+            if (role === 'superadmin') {
+                events = await prisma.event.findMany({
+                where: {
+                    start_date: {
+                        lte: new Date(),
+                    }, end_date: {
+                        gte: new Date(),
+                    }
+                 },
+                select: {
+                    event_id: true,
+                    name: true,
+                    start_date: true,
+                    end_date: true,
+                    operating_area: true,
+                },
+                });
+            } else {
+                events = await prisma.event.findMany({
+                    where: { operating_area,
+                        start_date: {
+                            lte: new Date(),
+                        }, end_date: {
+                            gte: new Date(),
+                        }
+                     },
+                    select: {
+                        event_id: true,
+                        name: true,
+                        start_date: true,
+                        end_date: true,
+                        operating_area: true,
+                    },
+                    });
+            }
             return NextResponse.json(
                 {data: events, message: "Success GET events"},
                 { status: 200 }
