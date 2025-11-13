@@ -190,7 +190,9 @@ export default function EditEventDialog({ event }: EditEventDialogProps) {
     };
 
     const urlToFile = async (url: string, fileName: string, mimeType: string) => {
-        const response = await fetch(url);
+        const response = await fetch(url,
+            { credentials: 'include' }
+        );
         const blob = await response.blob();
         return new File([blob], fileName, { type: mimeType });
     };

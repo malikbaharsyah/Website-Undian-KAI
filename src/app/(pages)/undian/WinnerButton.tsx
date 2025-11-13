@@ -36,6 +36,9 @@ export default function WinnerButton({ initialId = null, isShuffling, updateHand
       fetchAPI(`/winner-histories`,
         {
           method : 'POST',
+          headers : {
+            'Content-Type': 'application/json',
+          },
           body : JSON.stringify({
             event_id: selectedEvent?.event_id,
             prize_id: selectedPrize?.prize_id,

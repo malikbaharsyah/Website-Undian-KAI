@@ -65,6 +65,9 @@ export default function StartLotteryPage(): JSX.Element {
         setIsShuffling(false);
         const winnersRes = await fetchAPI(`/winners/${selectedEvent?.event_id}`, {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: JSON.stringify({
                 winners: currentParticipants
             })
