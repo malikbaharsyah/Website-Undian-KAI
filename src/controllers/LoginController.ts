@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 export const login = async (req: NextRequest) => {
     const { nipp, password } = await req.json();
 
-    if (!process.env.ACCESS_TOKEN_SECRET) {
+    if (!process.env.JWT_SECRET) {
         console.error('JWT_SECRET is not set');
         return NextResponse.json({ message: 'Internal server error' }, { status: 501 });
     }
@@ -32,7 +32,7 @@ export const login = async (req: NextRequest) => {
                 unit: user.unit,
                 role: user.role,
             },
-            process.env.ACCESS_TOKEN_SECRET as string,
+            process.env.JWT_SECRET as string,
             { expiresIn: '24h' }
         );
 
@@ -53,7 +53,7 @@ export const login = async (req: NextRequest) => {
 export const verifyToken = async (req: NextRequest) => {
     try {
         const token = req.cookies.get('token')?.value;
-        const secret = process.env.ACCESS_TOKEN_SECRET;
+        const secret = process.env.JWT_SECRET;
 
         if (!token) {
             return { response: NextResponse.json({message: "Unauthorized"}, {status: 401}), isRedirect: true };
@@ -84,7 +84,7 @@ export const verifyToken = async (req: NextRequest) => {
 export const verifySuperadmin = async (req: NextRequest) => {
     try {
         const token = req.cookies.get('token')?.value;
-        const secret = process.env.ACCESS_TOKEN_SECRET;
+        const secret = process.env.JWT_SECRET;
 
         if (!token) {
             return { response: NextResponse.json({message: "Unauthorized"}, {status: 401}), isRedirect: true };
