@@ -3,7 +3,7 @@
   <img src="./public/images/logo-readme.svg" alt="Undian KAI Logo" width="200">
 </div>
 
-Undian KAI Web App developed using Next.js to manage lottery and winner history for PT KAI. You can view the deployed app [here](https://undian.likluk.live).
+Undian KAI Web App developed using Next.js to manage lottery and winner history for PT KAI. You can view the deployed app [here](https://undian.mals.dev).
 
 ```
 NIPP: 13510
